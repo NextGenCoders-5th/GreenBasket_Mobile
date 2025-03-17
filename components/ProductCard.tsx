@@ -1,5 +1,12 @@
 import React from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  ViewStyle,
+} from 'react-native';
 
 interface ProductCardProps {
   product: {
@@ -8,11 +15,12 @@ interface ProductCardProps {
     price: string;
     image: any;
   };
+  style?: ViewStyle;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+const ProductCard: React.FC<ProductCardProps> = ({ product, style }) => {
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, style]}>
       <Image source={product.image} style={styles.image} />
       <Text style={styles.title}>{product.name}</Text>
       <View style={styles.subContainer}>
