@@ -18,7 +18,10 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    Montserrat: require('@/assets/fonts/montserrat/Montserrat-VariableFont_wght.ttf'),
+    MontserratItalic: require('@/assets/fonts/montserrat/Montserrat-Italic-VariableFont_wght.ttf'),
+    Inter: require('@/assets/fonts/inter/Inter-VariableFont_opsz,wght.ttf'),
+    InterItalic: require('@/assets/fonts/inter/Inter-Italic-VariableFont_opsz,wght.ttf'),
   });
 
   useEffect(() => {
@@ -32,12 +35,14 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    <>
+      {/* <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}> */}
       <Stack>
         <Stack.Screen name='(tabs)' options={{ headerShown: false }} />
         <Stack.Screen name='+not-found' />
       </Stack>
       <StatusBar style='auto' />
-    </ThemeProvider>
+      {/* </ThemeProvider> */}
+    </>
   );
 }
