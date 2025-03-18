@@ -1,7 +1,10 @@
+import { blue } from 'react-native-reanimated/lib/typescript/Colors';
+
 export const Colors = {
   light: {
     white: '#ffffff',
     black: '#000000',
+    blue: '#2f80ed',
     primary: '#53b175',
     notification: '#EC4D45',
     background: '#ffffff',
@@ -30,6 +33,7 @@ export const Colors = {
   dark: {
     white: '#ffffff',
     black: '#000000',
+    blue: '#2f80ed',
     primary: '#53b175',
     notification: '#EC4D45',
     background: '#151718',

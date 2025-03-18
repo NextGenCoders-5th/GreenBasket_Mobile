@@ -1,12 +1,15 @@
 import React from 'react';
 import { View, Text, TextInput, ScrollView, Image } from 'react-native';
 import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Link } from 'expo-router';
 
 import { sampleProducts } from '@/data/sampleData';
 import ProductCard from '@/components/ProductCard';
-import { Link } from 'expo-router';
+import { useColorTheme } from '@/hooks/useColorTheme';
 
 const HomeScreen = () => {
+  const colors = useColorTheme();
+
   return (
     <ScrollView
       style={{
@@ -18,7 +21,6 @@ const HomeScreen = () => {
       {/* Location and Search Bar */}
       <View
         style={{
-          //  backgroundColor: 'yellow',
           marginBottom: 10,
         }}
       >
@@ -32,12 +34,17 @@ const HomeScreen = () => {
             gap: 5,
           }}
         >
-          <MaterialCommunityIcons name='map-marker' size={24} color='blue' />
+          <MaterialCommunityIcons
+            name='map-marker'
+            size={24}
+            color={colors.blue}
+          />
           <Text
             style={{
               fontSize: 16,
               fontFamily: 'SpaceMono',
               fontWeight: '500',
+              color: colors['gray-600'],
             }}
           >
             Kebele 10, Poli
@@ -52,22 +59,22 @@ const HomeScreen = () => {
             flex: 1,
             gap: 5,
             borderRadius: 50,
-            borderColor: 'gray',
+            borderColor: colors['gray-600'],
             borderWidth: 2,
-            backgroundColor: 'white',
+            backgroundColor: colors.white,
             margin: 5,
           }}
         >
           <AntDesign
             name='search1'
             size={22}
-            color='black'
+            color={colors['gray-600']}
             style={{ paddingLeft: 10 }}
           />
           <TextInput
             placeholder='Search...'
             style={{
-              color: 'black',
+              color: colors['gray-900'],
               flex: 1,
               padding: 15,
               borderRadius: 50,
@@ -88,7 +95,6 @@ const HomeScreen = () => {
       {/* Exclusive Offer */}
       <View
         style={{
-          // backgroundColor: 'blue',
           marginBottom: 15,
         }}
       >
@@ -106,7 +112,8 @@ const HomeScreen = () => {
             style={{
               fontFamily: 'Inter',
               fontSize: 22,
-              fontWeight: '600',
+              fontWeight: '700',
+              color: colors['gray-900'],
             }}
           >
             Exclusive Offer
@@ -114,7 +121,7 @@ const HomeScreen = () => {
           <Link href={'/explore'}>
             <Text
               style={{
-                color: 'green',
+                color: colors['primary-600'],
                 textDecorationLine: 'underline',
                 fontFamily: 'Inter',
                 fontWeight: '500',
@@ -135,7 +142,6 @@ const HomeScreen = () => {
       {/* Best Selling */}
       <View
         style={{
-          // backgroundColor: 'blue',
           marginBottom: 15,
         }}
       >
@@ -153,7 +159,8 @@ const HomeScreen = () => {
             style={{
               fontFamily: 'Inter',
               fontSize: 22,
-              fontWeight: '600',
+              fontWeight: '700',
+              color: colors['gray-900'],
             }}
           >
             Best Selling
@@ -161,7 +168,7 @@ const HomeScreen = () => {
           <Link href={'/explore'}>
             <Text
               style={{
-                color: 'green',
+                color: colors['primary-500'],
                 textDecorationLine: 'underline',
                 fontFamily: 'Inter',
                 fontWeight: '500',
