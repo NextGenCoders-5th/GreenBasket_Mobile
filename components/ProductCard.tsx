@@ -1,4 +1,5 @@
 import { useColorTheme } from '@/hooks/useColorTheme';
+import { Link } from 'expo-router';
 import React, { useMemo } from 'react';
 import {
   View,
@@ -7,6 +8,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   ViewStyle,
+  Platform,
 } from 'react-native';
 
 interface ProductCardProps {
@@ -30,24 +32,32 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, style }) => {
           height: 180,
           display: 'flex',
           alignItems: 'flex-start',
+          justifyContent: 'space-between',
+          paddingBottom: 5,
           gap: 5,
           marginRight: 10,
-          borderRadius: 15,
-          overflow: 'hidden',
+          borderRadius: 10,
           borderColor: colors['gray-500'],
           borderWidth: 1,
           shadowColor: colors['gray-900'],
-          shadowOffset: {
-            width: 0,
-            height: 50,
-          },
-          shadowOpacity: 0.25,
-          shadowRadius: 5,
-          elevation: 5,
+          backgroundColor: colors['gray-50'],
+          ...Platform.select({
+            android: {
+              elevation: 5,
+            },
+            ios: {
+              shadowOffset: {
+                width: 0,
+                height: 5,
+              },
+              shadowOpacity: 0.25,
+              shadowRadius: 5,
+            },
+          }),
         },
         image: {
           width: '100%',
-          height: '50%',
+          height: '100%',
           objectFit: 'cover',
           borderRadius: 10,
         },
@@ -64,8 +74,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, style }) => {
           flexDirection: 'row',
           alignItems: 'center',
           justifyContent: 'space-between',
-          paddingHorizontal: 10,
-          marginTop: 15,
+          paddingHorizontal: 5,
         },
         price: {
           fontFamily: 'Inter',
@@ -75,9 +84,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, style }) => {
         },
         button: {
           backgroundColor: colors['primary'],
-          paddingHorizontal: 10,
-          paddingVertical: 5,
+          width: 30,
+          height: 30,
           borderRadius: 10,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
         },
         buttonIcon: {
           fontSize: 20,
@@ -90,8 +102,16 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, style }) => {
 
   return (
     <View style={[styles.container, style]}>
-      <Image source={product.image} style={styles.image} />
-      <Text style={styles.title}>{product.name}</Text>
+      <Link
+        href='/product'
+        style={{
+          width: '100%',
+          height: '50%',
+        }}
+      >
+        <Image source={product.image} style={styles.image} />
+        <Text style={styles.title}>{product.name}</Text>
+      </Link>
       <View style={styles.subContainer}>
         <Text style={styles.price}>{product.price}/kg</Text>
         <TouchableOpacity style={styles.button}>

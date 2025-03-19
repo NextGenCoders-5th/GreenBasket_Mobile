@@ -8,12 +8,14 @@ import 'react-native-reanimated';
 
 import { darkTheme, lightTheme } from '@/hooks/colorTheme';
 import { useColorScheme } from 'react-native';
+import { useColorTheme } from '@/hooks/useColorTheme';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+  const colors = useColorTheme();
 
   const [loaded] = useFonts({
     Montserrat: require('@/assets/fonts/montserrat/Montserrat-VariableFont_wght.ttf'),
@@ -37,6 +39,13 @@ export default function RootLayout() {
     <ThemeProvider value={lightTheme}>
       <Stack>
         <Stack.Screen name='(tabs)' options={{ headerShown: false }} />
+        <Stack.Screen
+          name='product'
+          options={{
+            headerTitle: 'Product',
+            headerShown: true,
+          }}
+        />
         <Stack.Screen name='+not-found' />
       </Stack>
       <StatusBar style='auto' />
