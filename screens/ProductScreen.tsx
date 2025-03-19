@@ -73,7 +73,7 @@ export default function ProductScreen() {
           onPress={() => {
             setIsFavorite(!isFavorite);
           }}
-          color={isFavorite ? colors.notification : ''}
+          color={isFavorite ? colors.notification : colors['gray-900']}
           icon={isFavorite ? 'heart' : 'heart-outline'}
           size={28}
         />
@@ -83,6 +83,7 @@ export default function ProductScreen() {
           fontWeight: '500',
           fontSize: 16,
           paddingHorizontal: 5,
+          color: colors['gray-900'],
         }}
       >
         price -{' '}
@@ -203,7 +204,15 @@ export default function ProductScreen() {
             gap: 5,
           }}
         >
-          <Text style={{ fontSize: 16 }}>5.0</Text>
+          <Text
+            style={{
+              fontSize: 16,
+              fontWeight: '600',
+              color: colors['gray-900'],
+            }}
+          >
+            5.0
+          </Text>
           {[1, 2, 3, 4, 5].map((i) => (
             <Ionicons key={i} name='star' size={20} color='yellow' />
           ))}
