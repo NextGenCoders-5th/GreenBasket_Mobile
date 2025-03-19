@@ -7,15 +7,15 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 
 import { darkTheme, lightTheme } from '@/hooks/colorTheme';
-import { useColorScheme } from 'react-native';
+import { useColorScheme, View } from 'react-native';
 import { useColorTheme } from '@/hooks/useColorTheme';
+import { Ionicons } from '@expo/vector-icons';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
-  const colors = useColorTheme();
 
   const [loaded] = useFonts({
     Montserrat: require('@/assets/fonts/montserrat/Montserrat-VariableFont_wght.ttf'),
@@ -37,15 +37,37 @@ export default function RootLayout() {
   return (
     // <ThemeProvider value={colorScheme === 'dark' ? darkTheme : lightTheme}>
     <ThemeProvider value={lightTheme}>
-      <Stack>
+      <Stack screenOptions={{}}>
         <Stack.Screen name='(tabs)' options={{ headerShown: false }} />
         <Stack.Screen
           name='product'
           options={{
+            headerLeft: () => (
+              <View
+                style={{
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  paddingHorizontal: 10,
+                  height: '100%',
+                }}
+              >
+                <Ionicons
+                  name='chevron-back'
+                  size={30}
+                  style={{
+                    color: 'white',
+                  }}
+                />
+              </View>
+            ),
+            headerStyle: {
+              backgroundColor: '#53b175',
+            },
             headerTitle: 'Product',
             headerShown: true,
           }}
         />
+
         <Stack.Screen name='+not-found' />
       </Stack>
       <StatusBar style='auto' />

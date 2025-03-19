@@ -1,25 +1,27 @@
 export const sampleProducts = [
   {
     id: '1',
-    name: 'Organic Potato',
-    price: '$4.99',
-    image: require('@/assets/images/products/potato.jpg'),
+    title: 'Organic Potato',
+    price: '4.99',
+    image: require('@/assets/images/products/tomato.jpg'),
+    description:
+      'Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius harum dicta itaque natus sunt commodi quia aut ea ipsum et, repellat nisi pariatur voluptate architecto.',
   },
   {
     id: '2',
-    name: 'Carrot',
+    title: 'Carrot',
     price: '$3.2',
     image: require('@/assets/images/products/carrot.jpg'),
   },
   {
     id: '3',
-    name: 'Tomato',
+    title: 'Tomato',
     price: '$2.99',
-    image: require('@/assets/images/products/tomato.jpg'),
+    image: require('@/assets/images/products/onion.jpg'),
   },
   {
     id: '4',
-    name: 'Chili Pepper',
+    title: 'Chili Pepper',
     price: '$5.99',
     image: require('@/assets/images/products/chili.jpg'),
   },

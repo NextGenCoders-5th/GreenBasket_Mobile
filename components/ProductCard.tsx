@@ -14,7 +14,7 @@ import {
 interface ProductCardProps {
   product: {
     id: string;
-    name: string;
+    title: string;
     price: string;
     image: any;
   };
@@ -110,7 +110,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, style }) => {
         }}
       >
         <Image source={product.image} style={styles.image} />
-        <Text style={styles.title}>{product.name}</Text>
+        <Text style={styles.title}>{product.title}</Text>
       </Link>
       <View style={styles.subContainer}>
         <Text style={styles.price}>{product.price}/kg</Text>
