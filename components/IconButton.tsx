@@ -1,9 +1,11 @@
 import { Pressable, StyleSheet, ViewStyle } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useColorTheme } from '@/hooks/useColorTheme';
 
 interface IconButtonProps {
-  icon: keyof typeof Ionicons.glyphMap;
+  icon:
+    | keyof typeof Ionicons.glyphMap
+    | keyof typeof MaterialCommunityIcons.glyphMap;
   onPress?: () => void;
   size?: number;
   color?: string;
@@ -19,18 +21,25 @@ export const IconButton = ({
 }: IconButtonProps) => {
   const colors = useColorTheme();
 
+  const isMaterialCommunityIcon = icon in MaterialCommunityIcons.glyphMap;
+  const IconLibrary = isMaterialCommunityIcon
+    ? MaterialCommunityIcons
+    : Ionicons;
+
   return (
     <Pressable onPress={onPress} style={[styles.button, style]}>
-      <Ionicons name={icon} size={size} color={color || colors.primary} />
+      <IconLibrary
+        name={icon as any}
+        size={size}
+        color={color || colors.primary}
+      />
     </Pressable>
   );
 };
 
 const styles = StyleSheet.create({
   button: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 5,
-    borderRadius: 8,
+    padding: 2,
+    borderRadius: 5,
   },
 });
