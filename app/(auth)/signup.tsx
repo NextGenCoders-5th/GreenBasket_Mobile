@@ -1,12 +1,19 @@
-import { View, Text, Button } from 'react-native';
+import { View, Text, Button, SafeAreaView } from 'react-native';
 import React from 'react';
 import { router } from 'expo-router';
-import SignUpForm from '@/components/ui/SignUpForm';
+import SignUpForm from '@/components/forms/SignUpForm';
+import { useColorTheme } from '@/hooks/useColorTheme';
 
 export default function SignUp() {
+  const colors = useColorTheme();
   return (
-    <View>
+    <SafeAreaView
+      style={{
+        flex: 1,
+        backgroundColor: colors.background,
+      }}
+    >
       <SignUpForm />
-    </View>
+    </SafeAreaView>
   );
 }
