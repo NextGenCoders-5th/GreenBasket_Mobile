@@ -16,6 +16,7 @@ import {
 
 import { useColorTheme } from '@/hooks/useColorTheme';
 import examples from '@/utils/examples.mobile.json';
+import { useColorSchemeContext } from '@/contexts/ColorSchmeContext';
 
 type PhoneNumberInputProps<T extends FieldValues> = {
   control: Control<T>;
@@ -42,7 +43,7 @@ export default function PhoneNumberInput<T extends FieldValues>({
   const [placeholder, setPlaceholder] = useState<string>('');
   const [isFocused, setIsFocused] = useState(false);
 
-  const colorScheme = useColorScheme();
+  const colorScheme = useColorSchemeContext();
 
   const colors = useColorTheme();
 
@@ -130,6 +131,7 @@ export default function PhoneNumberInput<T extends FieldValues>({
             >
               {/* Country Picker */}
               <CountryPicker
+                key={colorScheme}
                 withFlag
                 withCallingCode
                 withFilter

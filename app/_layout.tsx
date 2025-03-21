@@ -10,6 +10,7 @@ import 'react-native-reanimated';
 import { darkTheme, lightTheme } from '@/hooks/colorTheme';
 import { useColorScheme, View } from 'react-native';
 import { IconButton } from '@/components/IconButton';
+import { ColorSchemeProvider } from '@/contexts/ColorSchmeContext';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -35,48 +36,50 @@ export default function RootLayout() {
   }
 
   return (
-    // <ThemeProvider value={colorScheme === 'dark' ? darkTheme : lightTheme}>
-    <ThemeProvider value={lightTheme}>
-      <Stack screenOptions={{}}>
-        <Stack.Screen name='(tabs)' options={{ headerShown: false }} />
-        <Stack.Screen
-          name='product'
-          options={{
-            headerLeft: () => (
-              <View
-                style={{
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  paddingHorizontal: 10,
-                  height: '100%',
-                }}
-              >
-                <IconButton
-                  icon='chevron-back'
-                  size={30}
-                  color='white'
-                  onPress={() => {
-                    router.navigate('/');
+    <ColorSchemeProvider>
+      <ThemeProvider value={colorScheme === 'dark' ? darkTheme : lightTheme}>
+        {/* <ThemeProvider value={lightTheme}> */}
+        <Stack screenOptions={{}}>
+          <Stack.Screen name='(tabs)' options={{ headerShown: false }} />
+          <Stack.Screen
+            name='product'
+            options={{
+              headerLeft: () => (
+                <View
+                  style={{
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    paddingHorizontal: 10,
+                    height: '100%',
                   }}
-                />
-              </View>
-            ),
-            headerStyle: {
-              backgroundColor: '#53b175',
-            },
-            headerTitle: 'Product',
-            headerTitleStyle: {
-              color: 'white',
-            },
-            headerShown: true,
-          }}
-        />
-        <Stack.Screen name='(auth)/signin' options={{ headerShown: false }} />
-        <Stack.Screen name='(auth)/signup' options={{ headerShown: false }} />
+                >
+                  <IconButton
+                    icon='chevron-back'
+                    size={30}
+                    color='white'
+                    onPress={() => {
+                      router.navigate('/');
+                    }}
+                  />
+                </View>
+              ),
+              headerStyle: {
+                backgroundColor: '#53b175',
+              },
+              headerTitle: 'Product',
+              headerTitleStyle: {
+                color: 'white',
+              },
+              headerShown: true,
+            }}
+          />
+          <Stack.Screen name='(auth)/signin' options={{ headerShown: false }} />
+          <Stack.Screen name='(auth)/signup' options={{ headerShown: false }} />
 
-        <Stack.Screen name='+not-found' />
-      </Stack>
-      <StatusBar style='auto' />
-    </ThemeProvider>
+          <Stack.Screen name='+not-found' />
+        </Stack>
+        <StatusBar style='auto' />
+      </ThemeProvider>
+    </ColorSchemeProvider>
   );
 }
