@@ -1,6 +1,7 @@
+import React from 'react';
 import { ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
+import { router, Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
@@ -8,8 +9,7 @@ import 'react-native-reanimated';
 
 import { darkTheme, lightTheme } from '@/hooks/colorTheme';
 import { useColorScheme, View } from 'react-native';
-import { useColorTheme } from '@/hooks/useColorTheme';
-import { Ionicons } from '@expo/vector-icons';
+import { IconButton } from '@/components/IconButton';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -51,11 +51,12 @@ export default function RootLayout() {
                   height: '100%',
                 }}
               >
-                <Ionicons
-                  name='chevron-back'
+                <IconButton
+                  icon='chevron-back'
                   size={30}
-                  style={{
-                    color: 'white',
+                  color='white'
+                  onPress={() => {
+                    router.navigate('/');
                   }}
                 />
               </View>
@@ -64,9 +65,14 @@ export default function RootLayout() {
               backgroundColor: '#53b175',
             },
             headerTitle: 'Product',
+            headerTitleStyle: {
+              color: 'white',
+            },
             headerShown: true,
           }}
         />
+        <Stack.Screen name='(auth)/signin' options={{ headerShown: false }} />
+        <Stack.Screen name='(auth)/signup' options={{ headerShown: false }} />
 
         <Stack.Screen name='+not-found' />
       </Stack>

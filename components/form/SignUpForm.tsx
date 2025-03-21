@@ -1,26 +1,26 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import {
-  TextInput,
-  Button,
-  Text,
-  View,
-  TouchableOpacity,
-  Alert,
-  ScrollView,
-  Image,
-} from 'react-native';
+import { Text, View, ScrollView, Image } from 'react-native';
 import * as yup from 'yup';
+
 import { yupResolver } from '@hookform/resolvers/yup';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useColorTheme } from '@/hooks/useColorTheme';
 import FloatingLabelInput from './FloatingLableInput';
 import ErrorMessage from './ErrorMessage';
 import { IconButton } from '../IconButton';
 import TextButton from '../TextButton';
+import PhoneNumberInput from './PhoneNumberInput';
+import parsePhoneNumberFromString from 'libphonenumber-js';
 
-// Yup validation schema
-const schema = yup.object({
+const phoneNumberValidator = yup
+  .string()
+  .test('is-valid-phone', 'Invalid phone number', (value) => {
+    if (!value) return false;
+    const phoneNumber = parsePhoneNumberFromString(value);
+    return phoneNumber?.isValid() || false;
+  });
+
+const SignUpschema = yup.object({
   firstName: yup.string().required('First name is required'),
   lastName: yup.string().required('Last name is required'),
   username: yup.string().required('Username is required'),
@@ -28,18 +28,18 @@ const schema = yup.object({
     .string()
     .email('Invalid email address')
     .required('Email is required'),
-  phoneNumber: yup
-    .string()
-    .matches(/^\+?[1-9]\d{1,14}$/, 'Invalid phone number')
-    .required('Phone number is required'),
+  phoneNumber: phoneNumberValidator.required('Phone number is required'),
+
   password: yup
     .string()
     .min(6, 'Password must be at least 6 characters')
     .required('Password is required'),
+
   confirmPassword: yup
     .string()
     .oneOf([yup.ref('password'), undefined], 'Passwords must match')
     .required('Confirm your password'),
+
   agreeToTerms: yup
     .boolean()
     .oneOf([true], 'You must accept the terms and conditions')
@@ -64,7 +64,17 @@ export default function SignUpForm() {
     formState: { errors },
     watch,
   } = useForm<FormData>({
-    resolver: yupResolver(schema),
+    resolver: yupResolver(SignUpschema),
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+      username: '',
+      email: '',
+      phoneNumber: '',
+      password: '',
+      confirmPassword: '',
+      agreeToTerms: false,
+    },
   });
 
   const colors = useColorTheme();
@@ -73,8 +83,6 @@ export default function SignUpForm() {
     // Alert.alert('Form Data', JSON.stringify(data, null, 2));
     console.log('data', data);
   };
-
-  const [isFocused, setIsFocused] = useState(false);
 
   return (
     <ScrollView
@@ -103,13 +111,13 @@ export default function SignUpForm() {
           style={{
             fontSize: 24,
             color: colors['gray-800'],
+            fontFamily: 'Inter',
             fontWeight: '700',
             marginBottom: 10,
           }}
         >
           Create account
         </Text>
-
         {/* First Name */}
         <View
           style={{
@@ -128,7 +136,6 @@ export default function SignUpForm() {
             <ErrorMessage message={errors.firstName.message!} />
           )}
         </View>
-
         {/* Last name */}
         <View
           style={{
@@ -147,7 +154,6 @@ export default function SignUpForm() {
             <ErrorMessage message={errors.lastName.message!} />
           )}
         </View>
-
         {/* Username */}
         <View
           style={{
@@ -166,7 +172,6 @@ export default function SignUpForm() {
             <ErrorMessage message={errors.username.message!} />
           )}
         </View>
-
         {/* Email */}
         <View
           style={{
@@ -183,7 +188,6 @@ export default function SignUpForm() {
           />
           {errors.email && <ErrorMessage message={errors.email.message!} />}
         </View>
-
         {/* Phone Number */}
         <View
           style={{
@@ -192,17 +196,15 @@ export default function SignUpForm() {
             gap: 4,
           }}
         >
-          <FloatingLabelInput
+          <PhoneNumberInput
             control={control}
             name='phoneNumber'
-            label='Phone Number'
-            placeholder='Phone Number'
+            label='Phone number'
           />
           {errors.phoneNumber && (
             <ErrorMessage message={errors.phoneNumber.message!} />
           )}
         </View>
-
         {/* Password */}
         <View
           style={{
@@ -221,7 +223,6 @@ export default function SignUpForm() {
             <ErrorMessage message={errors.password.message!} />
           )}
         </View>
-
         {/* Confirm Password */}
         <View
           style={{
@@ -240,11 +241,9 @@ export default function SignUpForm() {
             <ErrorMessage message={errors.confirmPassword.message!} />
           )}
         </View>
-
         {/* Agree to Terms */}
         <View
           style={{
-            // padding: 5,
             gap: 4,
             marginBottom: 20,
           }}
@@ -269,6 +268,8 @@ export default function SignUpForm() {
                   style={{
                     color: colors['gray-700'],
                     fontSize: 16,
+                    fontFamily: 'Inter',
+                    fontWeight: '300',
                   }}
                 >
                   Agree to our the{' '}
@@ -289,8 +290,15 @@ export default function SignUpForm() {
             <ErrorMessage message={errors.agreeToTerms.message!} />
           )}
         </View>
+
         {/* Submit Button */}
-        <TextButton onPress={handleSubmit(onSubmit)} title='Sign Up' />
+        <TextButton
+          onPress={handleSubmit(onSubmit)}
+          title='Sign Up'
+          style={{
+            width: '100%',
+          }}
+        />
       </View>
     </ScrollView>
   );

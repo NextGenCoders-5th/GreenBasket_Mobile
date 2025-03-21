@@ -36,7 +36,7 @@ const TextButton: React.FC<TextButtonProps> = ({
         },
         title: {
           fontWeight: '700',
-          color: colors['gray-100'],
+          color: colors['white'],
           fontSize: 16,
         },
       }),
