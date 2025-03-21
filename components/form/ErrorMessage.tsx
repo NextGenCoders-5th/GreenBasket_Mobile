@@ -1,4 +1,6 @@
-import { Text } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
+import React from 'react';
+import { Text, View } from 'react-native';
 
 type ErrorMessageProp = {
   message: string;
@@ -6,8 +8,11 @@ type ErrorMessageProp = {
 
 export default function ErrorMessage({ message }: ErrorMessageProp) {
   return (
-    <Text style={{ color: 'red', fontSize: 12, paddingLeft: 3 }}>
-      {message}
-    </Text>
+    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+      <MaterialIcons name='error-outline' size={12} color='red' />
+      <Text style={{ color: 'red', fontSize: 12, paddingLeft: 3 }}>
+        {message}
+      </Text>
+    </View>
   );
 }

@@ -27,7 +27,12 @@ const SignUpschema = yup.object({
   email: yup
     .string()
     .email('Invalid email address')
-    .required('Email is required'),
+    .required('Email is required')
+    .matches(
+      /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
+      'Invalid email address'
+    ),
+
   phoneNumber: phoneNumberValidator.required('Phone number is required'),
 
   password: yup
