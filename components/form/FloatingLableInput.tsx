@@ -55,7 +55,7 @@ export default function FloatingLabelInput<T extends FieldValues>({
                 position: 'absolute',
                 top: position,
                 fontFamily: 'Inter',
-                fontSize: isFocused || !!value ? 16 : 14,
+                fontSize: 16,
                 color: isFocused ? colors.primary : colors['gray-800'],
                 fontWeight: '600',
                 backgroundColor: colors['gray-50'],

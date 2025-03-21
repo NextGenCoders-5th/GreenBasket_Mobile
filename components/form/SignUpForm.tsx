@@ -11,6 +11,7 @@ import { IconButton } from '../IconButton';
 import TextButton from '../TextButton';
 import PhoneNumberInput from './PhoneNumberInput';
 import parsePhoneNumberFromString from 'libphonenumber-js';
+import { router } from 'expo-router';
 
 const phoneNumberValidator = yup
   .string()
@@ -23,11 +24,14 @@ const phoneNumberValidator = yup
 const SignUpschema = yup.object({
   firstName: yup.string().required('First name is required'),
   lastName: yup.string().required('Last name is required'),
-  username: yup.string().required('Username is required'),
+  username: yup
+    .string()
+    .required('Username is required')
+    .min(3, 'Username must be at least 3 characters'),
   email: yup
     .string()
-    .email('Invalid email address')
     .required('Email is required')
+    .email('Invalid email address')
     .matches(
       /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
       'Invalid email address'
@@ -37,8 +41,8 @@ const SignUpschema = yup.object({
 
   password: yup
     .string()
-    .min(6, 'Password must be at least 6 characters')
-    .required('Password is required'),
+    .required('Password is required')
+    .min(6, 'Password must be at least 6 characters'),
 
   confirmPassword: yup
     .string()
@@ -63,6 +67,8 @@ type FormData = {
 };
 
 export default function SignUpForm() {
+  const colors = useColorTheme();
+
   const {
     control,
     handleSubmit,
@@ -81,8 +87,6 @@ export default function SignUpForm() {
       agreeToTerms: false,
     },
   });
-
-  const colors = useColorTheme();
 
   const onSubmit = (data: FormData) => {
     // Alert.alert('Form Data', JSON.stringify(data, null, 2));
@@ -110,6 +114,7 @@ export default function SignUpForm() {
           gap: 10,
           width: '100%',
           alignItems: 'center',
+          marginBottom: 30,
         }}
       >
         <Text
@@ -239,8 +244,8 @@ export default function SignUpForm() {
           <FloatingLabelInput
             control={control}
             name='confirmPassword'
-            label='Confirm Password'
-            placeholder='Confirm Password'
+            label='Confirm password'
+            placeholder='Confirm password'
           />
           {errors.confirmPassword && (
             <ErrorMessage message={errors.confirmPassword.message!} />
@@ -272,7 +277,7 @@ export default function SignUpForm() {
                 <Text
                   style={{
                     color: colors['gray-700'],
-                    fontSize: 16,
+                    fontSize: 14,
                     fontFamily: 'Inter',
                     fontWeight: '300',
                   }}
@@ -304,6 +309,36 @@ export default function SignUpForm() {
             width: '100%',
           }}
         />
+        <View style={{ width: '100%', marginTop: 10, alignItems: 'center' }}>
+          <Text
+            style={{
+              color: colors['gray-600'],
+              fontSize: 14,
+              fontFamily: 'Inter',
+              fontWeight: '300',
+              alignSelf: 'flex-end',
+            }}
+          >
+            Already have an account?
+            <TextButton
+              title='Sign in'
+              onPress={() => router.navigate('/signin')}
+              style={{
+                paddingVertical: 0,
+                paddingHorizontal: 5,
+                margin: 0,
+                borderRadius: 0,
+                backgroundColor: 'transparent',
+              }}
+              titleStyle={{
+                fontSize: 14,
+                color: colors.primary,
+                textDecorationLine: 'underline',
+                textDecorationColor: colors.primary,
+              }}
+            />
+          </Text>
+        </View>
       </View>
     </ScrollView>
   );
