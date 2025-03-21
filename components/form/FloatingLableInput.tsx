@@ -18,7 +18,7 @@ export default function FloatingLabelInput<T extends FieldValues>({
 }: FloatingLabelInputProps<T>) {
   const [isFocused, setIsFocused] = useState(false);
   const position = useRef(
-    new Animated.Value(!!control._formValues[name] ? -8 : 15)
+    new Animated.Value(!!control._formValues[name] ? -12 : 15)
   ).current;
 
   const colors = useColorTheme();
@@ -32,25 +32,34 @@ export default function FloatingLabelInput<T extends FieldValues>({
           // Move label up only if focused or has value
           const shouldMoveUp = isFocused || !!value;
           Animated.timing(position, {
-            toValue: shouldMoveUp ? -8 : 15,
+            toValue: shouldMoveUp ? -12 : 15,
             duration: 100,
             useNativeDriver: false,
           }).start();
         }, [isFocused, value]);
 
         return (
-          <View style={{ width: '100%', position: 'relative' }}>
+          <View
+            style={{
+              width: '100%',
+              position: 'relative',
+              borderWidth: 1,
+              padding: 4,
+              borderRadius: 5,
+              borderColor: isFocused ? colors.primary : colors['gray-400'],
+            }}
+          >
             {/* Label */}
             <Animated.Text
               style={{
                 position: 'absolute',
-                left: 4,
                 top: position,
+                fontFamily: 'Inter',
                 fontSize: isFocused || !!value ? 16 : 14,
                 color: isFocused ? colors.primary : colors['gray-800'],
-                fontWeight: '700',
+                fontWeight: '600',
                 backgroundColor: colors['gray-50'],
-                paddingHorizontal: 4,
+                marginLeft: 2,
                 display: isFocused || value ? 'flex' : 'none',
               }}
             >
@@ -68,14 +77,12 @@ export default function FloatingLabelInput<T extends FieldValues>({
               onChangeText={onChange}
               value={value}
               style={{
-                paddingVertical: 15,
-                paddingHorizontal: 8,
+                paddingVertical: 10,
+                paddingHorizontal: 4,
+                fontFamily: 'Inter',
                 fontSize: 16,
-                fontWeight: '500',
+                fontWeight: '200',
                 color: colors['gray-700'],
-                borderWidth: isFocused ? 3 : 1,
-                borderRadius: 5,
-                borderColor: isFocused ? colors.primary : colors['gray-400'],
                 outline: 'none',
               }}
             />
