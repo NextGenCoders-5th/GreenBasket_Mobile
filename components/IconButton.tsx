@@ -1,3 +1,4 @@
+import React from 'react';
 import { Pressable, StyleSheet, ViewStyle } from 'react-native';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useColorTheme } from '@/hooks/useColorTheme';
@@ -21,10 +22,8 @@ export const IconButton = ({
 }: IconButtonProps) => {
   const colors = useColorTheme();
 
-  const isMaterialCommunityIcon = icon in MaterialCommunityIcons.glyphMap;
-  const IconLibrary = isMaterialCommunityIcon
-    ? MaterialCommunityIcons
-    : Ionicons;
+  const isIonicons = icon in Ionicons.glyphMap;
+  const IconLibrary = isIonicons ? Ionicons : MaterialCommunityIcons;
 
   return (
     <Pressable onPress={onPress} style={[styles.button, style]}>
