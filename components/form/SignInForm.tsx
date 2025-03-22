@@ -89,6 +89,7 @@ export default function SignInForm() {
             name='email'
             label='Email'
             placeholder='Email'
+            icon='email'
           />
           {errors.email && <ErrorMessage message={errors.email.message!} />}
         </View>
@@ -104,6 +105,7 @@ export default function SignInForm() {
             name='password'
             label='Password'
             placeholder='Password'
+            icon='lock'
           />
           {errors.password && (
             <ErrorMessage message={errors.password.message!} />

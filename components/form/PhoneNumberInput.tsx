@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { TextInput, View, Text, useColorScheme } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { TextInput, View, Text, Animated } from 'react-native';
 import { Controller, Control, FieldValues, Path } from 'react-hook-form';
 import CountryPicker, {
   Country,
@@ -42,8 +42,13 @@ export default function PhoneNumberInput<T extends FieldValues>({
   const [callingCode, setCallingCode] = useState<string>('251');
   const [placeholder, setPlaceholder] = useState<string>('');
   const [isFocused, setIsFocused] = useState(false);
+  const position = useRef(
+    new Animated.Value(!!control._formValues[name] ? -12 : 15)
+  ).current;
 
-  const colorScheme = useColorSchemeContext();
+  const opacity = useRef(
+    new Animated.Value(!!control._formValues[name] ? 1 : 0)
+  ).current;
 
   const colors = useColorTheme();
 
@@ -52,6 +57,8 @@ export default function PhoneNumberInput<T extends FieldValues>({
     setCountryCode(country.cca2 as PickerCountryCode);
     setCallingCode(country.callingCode[0]);
   };
+
+  const colorScheme = useColorSchemeContext();
 
   // Update placeholder with sample phone number when country changes
   useEffect(() => {
@@ -71,6 +78,25 @@ export default function PhoneNumberInput<T extends FieldValues>({
       control={control}
       name={name}
       render={({ field: { onChange, onBlur, value } }) => {
+        useEffect(() => {
+          // const shouldShow = isFocused || !!value;
+          const shouldShow =
+            isFocused || value?.replace(`+${callingCode}`, '') !== '';
+
+          Animated.parallel([
+            Animated.timing(position, {
+              toValue: shouldShow ? -12 : 15,
+              duration: 100,
+              useNativeDriver: false,
+            }),
+            Animated.timing(opacity, {
+              toValue: shouldShow ? 1 : 0,
+              duration: 150,
+              useNativeDriver: false,
+            }),
+          ]).start();
+        }, [isFocused, value]);
+
         // Ensure country code is added to value when callingCode changes
         useEffect(() => {
           if (value && !value.startsWith(`+${callingCode}`)) {
@@ -85,6 +111,11 @@ export default function PhoneNumberInput<T extends FieldValues>({
         }, [placeholder]);
 
         const handlePhoneNumberChange = (input: string) => {
+          if (input === '') {
+            onChange('');
+            return;
+          }
+
           const formattedInput = `+${callingCode}${input.replace(
             new RegExp(`^\\+?${callingCode}`),
             ''
@@ -93,7 +124,6 @@ export default function PhoneNumberInput<T extends FieldValues>({
           const phoneNumber = parsePhoneNumberFromString(formattedInput);
 
           if (phoneNumber?.isValid()) {
-            // onChange(phoneNumber.formatInternational());
             onChange(phoneNumber.formatInternational());
           } else {
             onChange(formattedInput);
@@ -101,23 +131,30 @@ export default function PhoneNumberInput<T extends FieldValues>({
         };
 
         return (
-          <View style={{ width: '100%', position: 'relative' }}>
+          <View
+            style={{
+              width: '100%',
+              position: 'relative',
+            }}
+          >
             {/* Label */}
-            <Text
+            <Animated.Text
               style={{
                 position: 'absolute',
                 left: 6,
-                top: -10,
+                top: position,
                 fontFamily: 'Inter',
                 fontSize: 16,
-                color: isFocused ? colors.primary : colors['gray-800'],
+                color: isFocused || value ? colors.primary : colors['gray-500'],
                 fontWeight: '600',
                 backgroundColor: colors['gray-50'],
+                opacity,
                 zIndex: 1,
+                pointerEvents: 'none',
               }}
             >
               {label}
-            </Text>
+            </Animated.Text>
 
             <View
               style={{
@@ -126,7 +163,8 @@ export default function PhoneNumberInput<T extends FieldValues>({
                 borderWidth: 1,
                 borderColor: isFocused ? colors.primary : colors['gray-400'],
                 borderRadius: 5,
-                paddingHorizontal: 8,
+                paddingLeft: 8,
+                backgroundColor: colors['gray-50'],
               }}
             >
               {/* Country Picker */}
@@ -142,6 +180,9 @@ export default function PhoneNumberInput<T extends FieldValues>({
                 containerButtonStyle={{
                   alignItems: 'center',
                   justifyContent: 'center',
+                  height: 26,
+                  width: 36,
+                  zIndex: 10,
                 }}
                 {...(colorScheme === 'dark' ? { theme: DARK_THEME } : {})}
               />
@@ -151,10 +192,9 @@ export default function PhoneNumberInput<T extends FieldValues>({
                 style={{
                   color: colors['gray-700'],
                   fontFamily: 'inter',
-
                   fontSize: 16,
                   fontWeight: '200',
-                  paddingRight: 8,
+                  marginRight: 10,
                 }}
               >
                 +{callingCode}
