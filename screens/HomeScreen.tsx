@@ -1,11 +1,12 @@
 import React from 'react';
 import { View, Text, TextInput, ScrollView, Image } from 'react-native';
 import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
-import { Link } from 'expo-router';
+import { Link, router } from 'expo-router';
 
 import { sampleProducts } from '@/data/sampleData';
 import ProductCard from '@/components/ProductCard';
 import { useColorTheme } from '@/hooks/useColorTheme';
+import TextButton from '@/components/TextButton';
 
 const HomeScreen = () => {
   const colors = useColorTheme();
@@ -184,6 +185,11 @@ const HomeScreen = () => {
             <ProductCard key={product.id} product={product} />
           ))}
         </ScrollView>
+
+        <TextButton
+          title='sign up'
+          onPress={() => router.navigate('/signup')}
+        />
       </View>
     </ScrollView>
   );

@@ -10,7 +10,11 @@ import 'react-native-reanimated';
 import { darkTheme, lightTheme } from '@/hooks/colorTheme';
 import { useColorScheme, View } from 'react-native';
 import { IconButton } from '@/components/IconButton';
-import { ColorSchemeProvider } from '@/contexts/ColorSchmeContext';
+import {
+  ColorSchemeProvider,
+  useColorSchemeContext,
+} from '@/contexts/ColorSchmeContext';
+import { Colors, CommonColors } from '@/constants/Colors';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -39,11 +43,23 @@ export default function RootLayout() {
     <ColorSchemeProvider>
       <ThemeProvider value={colorScheme === 'dark' ? darkTheme : lightTheme}>
         {/* <ThemeProvider value={lightTheme}> */}
-        <Stack screenOptions={{}}>
-          <Stack.Screen name='(tabs)' options={{ headerShown: false }} />
+        <Stack screenOptions={{ headerShown: true }}>
+          <Stack.Screen
+            name='(tabs)'
+            options={{
+              headerTitle: '',
+              headerStyle: {
+                backgroundColor:
+                  colorScheme === 'light'
+                    ? Colors.light.header
+                    : Colors.dark.header,
+              },
+            }}
+          />
           <Stack.Screen
             name='product'
             options={{
+              // headerShown: false,
               headerLeft: () => (
                 <View
                   style={{
@@ -64,17 +80,26 @@ export default function RootLayout() {
                 </View>
               ),
               headerStyle: {
-                backgroundColor: '#53b175',
+                backgroundColor: Colors.light.header,
               },
               headerTitle: 'Product',
               headerTitleStyle: {
                 color: 'white',
               },
-              headerShown: true,
             }}
           />
-          <Stack.Screen name='(auth)/signin' options={{ headerShown: false }} />
-          <Stack.Screen name='(auth)/signup' options={{ headerShown: false }} />
+          <Stack.Screen
+            name='(auth)'
+            options={{
+              headerTitle: '',
+              headerStyle: {
+                backgroundColor:
+                  colorScheme === 'light'
+                    ? Colors.light.header
+                    : Colors.dark.header,
+              },
+            }}
+          />
 
           <Stack.Screen name='+not-found' />
         </Stack>

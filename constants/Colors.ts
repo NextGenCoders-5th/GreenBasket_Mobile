@@ -1,12 +1,16 @@
 import { blue } from 'react-native-reanimated/lib/typescript/Colors';
 
-export const Colors = {
+const CommonColors = {
+  white: '#ffffff',
+  black: '#000000',
+  blue: '#2f80ed',
+  primary: '#53b175',
+  notification: '#EC4D45',
+};
+
+const Colors = {
   light: {
-    white: '#ffffff',
-    black: '#000000',
-    blue: '#2f80ed',
-    primary: '#53b175',
-    notification: '#EC4D45',
+    ...CommonColors,
     background: '#ffffff',
     text: '#11181C',
     card: '#f2f2f2',
@@ -33,11 +37,7 @@ export const Colors = {
     'gray-900': '#222222',
   },
   dark: {
-    white: '#ffffff',
-    black: '#000000',
-    blue: '#2f80ed',
-    primary: '#53b175',
-    notification: '#EC4D45',
+    ...CommonColors,
     background: '#151718',
     text: '#ECEDEE',
     card: '#1c1c1e',
@@ -64,3 +64,5 @@ export const Colors = {
     'gray-900': '#eeeeee',
   },
 };
+
+export { CommonColors, Colors };

@@ -9,19 +9,20 @@ export default function TabsLayout() {
   return (
     <Tabs
       screenOptions={{
-        headerStyle: {
-          backgroundColor: colors['header'],
-        },
-        headerTitleStyle: {
-          color: colors['white'],
-        },
-        tabBarActiveTintColor: colors.primary,
+        headerShown: false,
+        // headerStyle: {
+        //   backgroundColor: colors['header'],
+        // },
+        // headerTitleStyle: {
+        //   color: colors['white'],
+        // },
+        // tabBarActiveTintColor: colors.primary,
       }}
     >
       <Tabs.Screen
         name='index'
         options={{
-          headerTitle: 'Home',
+          headerTitle: '',
           tabBarLabel: 'Home',
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons name='home' size={24} color={color} />
