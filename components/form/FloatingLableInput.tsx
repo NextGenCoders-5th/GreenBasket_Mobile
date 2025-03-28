@@ -72,7 +72,7 @@ export default function FloatingLabelInput<T extends FieldValues>({
                 fontFamily: 'Inter',
                 fontSize: 16,
                 color: isFocused ? colors.primary : colors['gray-800'],
-                fontWeight: '600',
+                fontWeight: '500',
                 backgroundColor: colors['gray-50'],
                 marginLeft: icon ? 28 : 2,
                 display: isFocused || value ? 'flex' : 'none',
@@ -90,7 +90,7 @@ export default function FloatingLabelInput<T extends FieldValues>({
               />
             )}
             <TextInput
-              secureTextEntry={!isPasswordVisible}
+              secureTextEntry={(name === 'password' || name === 'confirmPassword') && !isPasswordVisible}
               placeholder={isFocused ? '' : placeholder}
               onBlur={() => {
                 onBlur();

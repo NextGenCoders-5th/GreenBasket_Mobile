@@ -141,6 +141,7 @@ export default function SignUpForm() {
             name='firstName'
             label='First name'
             placeholder='First name'
+            icon='account'
           />
           {errors.firstName && (
             <ErrorMessage message={errors.firstName.message!} />
@@ -159,6 +160,7 @@ export default function SignUpForm() {
             name='lastName'
             label='Last name'
             placeholder='Last name'
+            icon='account'
           />
           {errors.lastName && (
             <ErrorMessage message={errors.lastName.message!} />
@@ -177,6 +179,7 @@ export default function SignUpForm() {
             name='username'
             label='Username'
             placeholder='Username'
+            icon='account'
           />
           {errors.username && (
             <ErrorMessage message={errors.username.message!} />
@@ -195,11 +198,12 @@ export default function SignUpForm() {
             name='email'
             label='Email'
             placeholder='Email'
+            icon='email'
           />
           {errors.email && <ErrorMessage message={errors.email.message!} />}
         </View>
         {/* Phone Number */}
-        <View
+        {/* <View
           style={{
             width: '100%',
             padding: 5,
@@ -214,7 +218,8 @@ export default function SignUpForm() {
           {errors.phoneNumber && (
             <ErrorMessage message={errors.phoneNumber.message!} />
           )}
-        </View>
+          
+        </View> */}
         {/* Password */}
         <View
           style={{
@@ -228,6 +233,7 @@ export default function SignUpForm() {
             name='password'
             label='Password'
             placeholder='Password'
+            icon='lock'
           />
           {errors.password && (
             <ErrorMessage message={errors.password.message!} />
@@ -246,6 +252,7 @@ export default function SignUpForm() {
             name='confirmPassword'
             label='Confirm password'
             placeholder='Confirm password'
+            icon='lock'
           />
           {errors.confirmPassword && (
             <ErrorMessage message={errors.confirmPassword.message!} />
