@@ -16,6 +16,7 @@ const Colors = {
     card: '#f2f2f2',
     border: '#dcdcdc',
     header: '#53b175',
+    'primary-50': '#F4FFF8',
     'primary-100': '#ddefe3',
     'primary-200': '#bae0c8',
     'primary-300': '#98d0ac',
@@ -43,6 +44,7 @@ const Colors = {
     card: '#1c1c1e',
     border: '#2c2c2e',
     header: '#21472f',
+    'primary-50': '#0D1B12',
     'primary-100': '#112317',
     'primary-200': '#21472f',
     'primary-300': '#326a46',
@@ -66,3 +68,4 @@ const Colors = {
 };
 
 export { CommonColors, Colors };
+
