@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Animated, TextInput, View } from 'react-native';
+import { Animated, StyleSheet, TextInput, View } from 'react-native';
 import { Control, Controller, FieldValues, Path } from 'react-hook-form';
 import { useColorTheme } from '@/hooks/useColorTheme';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
@@ -43,7 +43,7 @@ export default function FloatingLabelInput<T extends FieldValues>({
           // Move label up only if focused or has value
           const shouldMoveUp = isFocused || !!value;
           Animated.timing(position, {
-            toValue: shouldMoveUp ? -12 : 20,
+            toValue: shouldMoveUp ? -14 : 20,
             duration: 100,
             useNativeDriver: false,
           }).start();
@@ -52,29 +52,19 @@ export default function FloatingLabelInput<T extends FieldValues>({
         return (
           <View
             style={{
-              width: '100%',
-              position: 'relative',
-              borderWidth: 1,
-              padding: 4,
-              backgroundColor: colors['gray-50'],
-              borderRadius: 5,
+              ...styles.container,
+              backgroundColor: colors.background,
               borderColor: isFocused ? colors.primary : colors['gray-400'],
-              flexDirection: 'row',
-              alignItems: 'center',
-              gap: 5,
             }}
           >
             {/* Label */}
             <Animated.Text
               style={{
-                position: 'absolute',
+                ...styles.label,
+                marginLeft: icon ? 33 : 2,
                 top: position,
-                fontFamily: 'Inter',
-                fontSize: 16,
-                color: isFocused ? colors.primary : colors['gray-800'],
-                fontWeight: '500',
-                backgroundColor: colors['gray-50'],
-                marginLeft: icon ? 28 : 2,
+                color: isFocused ? colors.primary : colors['gray-600'],
+                backgroundColor: colors.background,
                 display: isFocused || value ? 'flex' : 'none',
               }}
             >
@@ -86,12 +76,17 @@ export default function FloatingLabelInput<T extends FieldValues>({
               <IconLibrary
                 name={icon as any}
                 size={20}
-                color={colors['gray-400']}
+                color={colors['primary-400']}
               />
             )}
             <TextInput
-              secureTextEntry={(name === 'password' || name === 'confirmPassword') && !isPasswordVisible}
+              secureTextEntry={
+                (name === 'password' || name === 'confirmPassword') &&
+                !isPasswordVisible
+              }
+              keyboardType={name === 'email' ? 'email-address' : 'default'}
               placeholder={isFocused ? '' : placeholder}
+              placeholderTextColor={colors['gray-400']}
               onBlur={() => {
                 onBlur();
                 setIsFocused(false);
@@ -100,14 +95,8 @@ export default function FloatingLabelInput<T extends FieldValues>({
               onChangeText={onChange}
               value={value}
               style={{
-                flex: 1,
-                paddingVertical: 10,
-                paddingHorizontal: 4,
-                fontFamily: 'Inter',
-                fontSize: 16,
-                fontWeight: '200',
-                color: colors['gray-700'],
-                outline: 'none',
+                ...styles.input,
+                color: colors['gray-400'],
               }}
             />
 
@@ -115,7 +104,7 @@ export default function FloatingLabelInput<T extends FieldValues>({
               <IconButton
                 icon={isPasswordVisible ? 'eye-off-outline' : 'eye-outline'}
                 size={24}
-                color={colors['gray-600']}
+                color={colors['primary-400']}
                 onPress={() => {
                   setIsPasswordVisible((prev) => !prev);
                 }}
@@ -127,3 +116,31 @@ export default function FloatingLabelInput<T extends FieldValues>({
     />
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    width: '100%',
+    position: 'relative',
+    borderWidth: 1,
+    padding: 4,
+    borderRadius: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+  },
+  label: {
+    position: 'absolute',
+    fontFamily: 'Inter',
+    fontSize: 16,
+    fontWeight: '500',
+  },
+  input: {
+    flex: 1,
+    paddingVertical: 10,
+    paddingHorizontal: 4,
+    fontFamily: 'Inter',
+    fontSize: 16,
+    fontWeight: '200',
+    outline: 'none',
+  },
+});

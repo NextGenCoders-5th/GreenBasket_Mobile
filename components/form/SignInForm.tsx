@@ -1,25 +1,25 @@
-import { View, Text, Image, StyleSheet } from "react-native";
-import React from "react";
-import { useColorTheme } from "@/hooks/useColorTheme";
-import FloatingLabelInput from "./FloatingLableInput";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
-import ErrorMessage from "./ErrorMessage";
-import TextButton from "../TextButton";
-import { router } from "expo-router";
-import { shadows } from "@/styles/shadows";
+import { View, Text, Image, StyleSheet } from 'react-native';
+import React from 'react';
+import { useColorTheme } from '@/hooks/useColorTheme';
+import FloatingLabelInput from './FloatingLableInput';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import ErrorMessage from './ErrorMessage';
+import TextButton from '../TextButton';
+import { router } from 'expo-router';
+import { shadows } from '@/styles/shadows';
 
 const SingInSchema = yup.object({
   email: yup
     .string()
-    .email("Invalid email address")
-    .required("Email is required")
+    .email('Invalid email address')
+    .required('Email is required')
     .matches(
       /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
-      "Invalid email address"
+      'Invalid email address'
     ),
-  password: yup.string().required("Password is required"),
+  password: yup.string().required('Password is required'),
 });
 
 type FormData = {
@@ -38,8 +38,8 @@ export default function SignInForm() {
   } = useForm<FormData>({
     resolver: yupResolver(SingInSchema),
     defaultValues: {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
     },
   });
 
@@ -49,9 +49,9 @@ export default function SignInForm() {
 
   return (
     <View style={styles.container}>
-      <Image source={require("@/assets/images/react-logo.png")} />
-      <View style={[styles.subContainer, { borderColor: colors["gray-300"] }]}>
-        <Text style={[styles.signinText, { color: colors["gray-800"] }]}>
+      <Image source={require('@/assets/images/react-logo.png')} />
+      <View style={[styles.subContainer, { borderColor: colors['gray-300'] }]}>
+        <Text style={[styles.signinText, { color: colors['gray-800'] }]}>
           Sign in
         </Text>
         <View style={styles.inputContainer}>
@@ -79,7 +79,7 @@ export default function SignInForm() {
         <TextButton
           style={styles.signinButton}
           onPress={() => {
-            console.log("Forgot password");
+            console.log('Forgot password');
           }}
           title="Forgot password?"
           titleStyle={{
@@ -91,15 +91,18 @@ export default function SignInForm() {
         <TextButton
           title="Sign in"
           onPress={handleSubmit(onSubmit)}
-          style={{ width: "100%" }}
+          style={{ width: '100%' }}
+          titleStyle={{
+            color: colors['gray-50'],
+          }}
         />
         <View style={styles.noAccountContainer}>
-          <Text style={{ ...styles.noAccountText, color: colors["gray-600"] }}>
+          <Text style={{ ...styles.noAccountText, color: colors['gray-600'] }}>
             Don't have an account?
           </Text>
           <TextButton
             title="Sign up"
-            onPress={() => router.navigate("/signup")}
+            onPress={() => router.navigate('/signup')}
             style={styles.signupButton}
             titleStyle={{
               ...styles.signupTitle,
@@ -115,31 +118,31 @@ export default function SignInForm() {
 
 const styles = StyleSheet.create({
   container: {
-    display: "flex",
+    display: 'flex',
     gap: 10,
-    alignItems: "center",
+    alignItems: 'center',
     padding: 20,
-    width: "100%",
-    minHeight: "100%",
+    width: '100%',
+    minHeight: '100%',
   },
   subContainer: {
-    display: "flex",
+    display: 'flex',
     gap: 10,
-    width: "100%",
-    alignItems: "center",
+    width: '100%',
+    alignItems: 'center',
     borderWidth: 1,
     borderRadius: 10,
     padding: 15,
-    boxShadow: shadows["shadow-1"],
+    boxShadow: shadows['shadow-1'],
   },
   signinText: {
     fontSize: 24,
-    fontFamily: "Inter",
-    fontWeight: "700",
+    fontFamily: 'Inter',
+    fontWeight: '700',
     marginBottom: 10,
   },
   inputContainer: {
-    width: "100%",
+    width: '100%',
     padding: 5,
     gap: 4,
   },
@@ -147,38 +150,38 @@ const styles = StyleSheet.create({
     padding: 0,
     margin: 0,
     borderRadius: 0,
-    alignSelf: "flex-end",
-    backgroundColor: "transparent",
+    alignSelf: 'flex-end',
+    backgroundColor: 'transparent',
     marginBottom: 10,
   },
   titleStyle: {
     fontSize: 14,
-    fontFamily: "Inter",
-    fontWeight: "600",
-    textDecorationLine: "underline",
+    fontFamily: 'Inter',
+    fontWeight: '600',
+    textDecorationLine: 'underline',
   },
   noAccountContainer: {
-    width: "100%",
+    width: '100%',
     marginTop: 10,
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "flex-end",
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
   },
   noAccountText: {
     fontSize: 14,
-    fontFamily: "Inter",
-    fontWeight: "300",
+    fontFamily: 'Inter',
+    fontWeight: '300',
   },
   signupButton: {
     paddingVertical: 0,
     paddingHorizontal: 2,
     margin: 0,
     borderRadius: 0,
-    backgroundColor: "transparent",
+    backgroundColor: 'transparent',
   },
   signupTitle: {
     fontSize: 14,
-    textDecorationLine: "underline",
+    textDecorationLine: 'underline',
   },
 });

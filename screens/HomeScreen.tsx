@@ -36,7 +36,7 @@ const HomeScreen = () => {
           }}
         >
           <MaterialCommunityIcons
-            name='map-marker'
+            name="map-marker"
             size={24}
             color={colors.blue}
           />
@@ -60,26 +60,29 @@ const HomeScreen = () => {
             flex: 1,
             gap: 5,
             borderRadius: 50,
-            borderColor: colors['gray-600'],
+            borderColor: colors['gray-300'],
             borderWidth: 2,
-            backgroundColor: colors.white,
+            backgroundColor: colors.background,
             margin: 5,
           }}
         >
           <AntDesign
-            name='search1'
+            name="search1"
             size={22}
-            color={colors['gray-600']}
+            color={colors['gray-300']}
             style={{ paddingLeft: 10 }}
           />
           <TextInput
-            placeholder='Search...'
+            placeholder="Search..."
             style={{
-              color: colors['gray-900'],
+              color: colors['gray-700'],
               flex: 1,
               padding: 15,
               borderRadius: 50,
               fontSize: 16,
+              fontFamily: 'Inter',
+              fontWeight: '500',
+              outline: 'none',
             }}
           />
         </View>
@@ -187,7 +190,7 @@ const HomeScreen = () => {
         </ScrollView>
 
         <TextButton
-          title='sign up'
+          title="sign up"
           onPress={() => router.navigate('/signup')}
         />
       </View>

@@ -8,7 +8,7 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 
 import { darkTheme, lightTheme } from '@/hooks/colorTheme';
-import { useColorScheme, View } from 'react-native';
+import { TouchableOpacity, useColorScheme, View } from 'react-native';
 import { IconButton } from '@/components/IconButton';
 import {
   ColorSchemeProvider,
@@ -43,9 +43,13 @@ export default function RootLayout() {
     <ColorSchemeProvider>
       <ThemeProvider value={colorScheme === 'dark' ? darkTheme : lightTheme}>
         {/* <ThemeProvider value={lightTheme}> */}
-        <Stack screenOptions={{ headerShown: true }}>
+        <Stack
+          screenOptions={{
+            headerShown: true,
+          }}
+        >
           <Stack.Screen
-            name='(tabs)'
+            name="(tabs)"
             options={{
               headerTitle: '',
               headerStyle: {
@@ -57,27 +61,18 @@ export default function RootLayout() {
             }}
           />
           <Stack.Screen
-            name='product'
+            name="product"
             options={{
               // headerShown: false,
               headerLeft: () => (
-                <View
-                  style={{
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    paddingHorizontal: 10,
-                    height: '100%',
+                <IconButton
+                  icon="chevron-back"
+                  size={30}
+                  color="white"
+                  onPress={() => {
+                    router.back();
                   }}
-                >
-                  <IconButton
-                    icon='chevron-back'
-                    size={30}
-                    color='white'
-                    onPress={() => {
-                      router.navigate('/');
-                    }}
-                  />
-                </View>
+                />
               ),
               headerStyle: {
                 backgroundColor: Colors.light.header,
@@ -89,7 +84,7 @@ export default function RootLayout() {
             }}
           />
           <Stack.Screen
-            name='(auth)'
+            name="(auth)"
             options={{
               headerTitle: '',
               headerStyle: {
@@ -98,12 +93,22 @@ export default function RootLayout() {
                     ? Colors.light.header
                     : Colors.dark.header,
               },
+              headerLeft: () => (
+                <IconButton
+                  icon="chevron-back"
+                  size={30}
+                  color="white"
+                  onPress={() => {
+                    router.back();
+                  }}
+                />
+              ),
             }}
           />
 
-          <Stack.Screen name='+not-found' />
+          <Stack.Screen name="+not-found" />
         </Stack>
-        <StatusBar style='auto' />
+        <StatusBar style="auto" />
       </ThemeProvider>
     </ColorSchemeProvider>
   );

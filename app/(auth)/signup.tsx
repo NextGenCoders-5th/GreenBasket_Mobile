@@ -10,7 +10,7 @@ export default function SignUp() {
     <SafeAreaView
       style={{
         flex: 1,
-        backgroundColor: colors.background,
+        backgroundColor: colors['primary-50'],
       }}
     >
       <SignUpForm />

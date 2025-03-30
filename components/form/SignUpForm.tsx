@@ -1,6 +1,6 @@
 import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { Text, View, ScrollView, Image } from 'react-native';
+import { Text, View, ScrollView, Image, StyleSheet } from 'react-native';
 import * as yup from 'yup';
 
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -94,188 +94,137 @@ export default function SignUpForm() {
   };
 
   return (
-    <ScrollView
-      contentContainerStyle={{
-        width: '100%',
-        padding: 20,
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        gap: 25,
-      }}
-    >
+    <ScrollView contentContainerStyle={styles.container}>
       {/* Logo */}
       <Image source={require('@/assets/images/react-logo.png')} />
 
       <View
         style={{
-          display: 'flex',
-          gap: 10,
-          width: '100%',
-          alignItems: 'center',
-          marginBottom: 30,
+          ...styles.subContainer,
+          borderColor: colors['gray-300'],
         }}
       >
         <Text
-          style={{
-            fontSize: 24,
-            color: colors['gray-800'],
-            fontFamily: 'Inter',
-            fontWeight: '700',
-            marginBottom: 10,
-          }}
+          style={{ ...styles.createAccountText, color: colors['gray-800'] }}
         >
           Create account
         </Text>
+
         {/* First Name */}
-        <View
-          style={{
-            width: '100%',
-            padding: 5,
-            gap: 4,
-          }}
-        >
+        <View style={styles.inputContainer}>
           <FloatingLabelInput
             control={control}
-            name='firstName'
-            label='First name'
-            placeholder='First name'
-            icon='account'
+            name="firstName"
+            label="First name"
+            placeholder="First name"
+            icon="account"
           />
           {errors.firstName && (
             <ErrorMessage message={errors.firstName.message!} />
           )}
         </View>
+
         {/* Last name */}
-        <View
-          style={{
-            width: '100%',
-            padding: 5,
-            gap: 4,
-          }}
-        >
+        <View style={styles.inputContainer}>
           <FloatingLabelInput
             control={control}
-            name='lastName'
-            label='Last name'
-            placeholder='Last name'
-            icon='account'
+            name="lastName"
+            label="Last name"
+            placeholder="Last name"
+            icon="account"
           />
           {errors.lastName && (
             <ErrorMessage message={errors.lastName.message!} />
           )}
         </View>
+
         {/* Username */}
-        <View
-          style={{
-            width: '100%',
-            padding: 5,
-            gap: 4,
-          }}
-        >
+        <View style={styles.inputContainer}>
           <FloatingLabelInput
             control={control}
-            name='username'
-            label='Username'
-            placeholder='Username'
-            icon='account'
+            name="username"
+            label="Username"
+            placeholder="Username"
+            icon="account"
           />
           {errors.username && (
             <ErrorMessage message={errors.username.message!} />
           )}
         </View>
+
         {/* Email */}
-        <View
-          style={{
-            width: '100%',
-            padding: 5,
-            gap: 4,
-          }}
-        >
+        <View style={styles.inputContainer}>
           <FloatingLabelInput
             control={control}
-            name='email'
-            label='Email'
-            placeholder='Email'
-            icon='email'
+            name="email"
+            label="Email"
+            placeholder="Email"
+            icon="email"
           />
           {errors.email && <ErrorMessage message={errors.email.message!} />}
         </View>
+
         {/* Phone Number */}
-        {/* <View
-          style={{
-            width: '100%',
-            padding: 5,
-            gap: 4,
-          }}
-        >
-          <PhoneNumberInput
+        <View style={styles.inputContainer}>
+          {/* <PhoneNumberInput
             control={control}
             name='phoneNumber'
             label='Phone number'
+          /> */}
+          <FloatingLabelInput
+            control={control}
+            name="phoneNumber"
+            label="Phone number"
+            placeholder="PhoneNumber"
+            icon="call"
           />
+
           {errors.phoneNumber && (
             <ErrorMessage message={errors.phoneNumber.message!} />
           )}
-          
-        </View> */}
+        </View>
+
         {/* Password */}
-        <View
-          style={{
-            width: '100%',
-            padding: 5,
-            gap: 4,
-          }}
-        >
+        <View style={styles.inputContainer}>
           <FloatingLabelInput
             control={control}
-            name='password'
-            label='Password'
-            placeholder='Password'
-            icon='lock'
+            name="password"
+            label="Password"
+            placeholder="Password"
+            icon="lock"
           />
           {errors.password && (
             <ErrorMessage message={errors.password.message!} />
           )}
         </View>
+
         {/* Confirm Password */}
-        <View
-          style={{
-            width: '100%',
-            padding: 5,
-            gap: 4,
-          }}
-        >
+        <View style={styles.inputContainer}>
           <FloatingLabelInput
             control={control}
-            name='confirmPassword'
-            label='Confirm password'
-            placeholder='Confirm password'
-            icon='lock'
+            name="confirmPassword"
+            label="Confirm password"
+            placeholder="Confirm password"
+            icon="lock"
           />
           {errors.confirmPassword && (
             <ErrorMessage message={errors.confirmPassword.message!} />
           )}
         </View>
+
         {/* Agree to Terms */}
         <View
           style={{
-            gap: 4,
+            ...styles.inputContainer,
+            padding: 0,
             marginBottom: 20,
           }}
         >
           <Controller
             control={control}
-            name='agreeToTerms'
+            name="agreeToTerms"
             render={({ field: { onChange, value } }) => (
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  gap: 5,
-                }}
-              >
+              <View style={styles.termsContainer}>
                 <IconButton
                   onPress={() => onChange(!value)}
                   icon={value ? 'checkbox-marked' : 'checkbox-blank-outline'}
@@ -283,13 +232,11 @@ export default function SignUpForm() {
                 />
                 <Text
                   style={{
+                    ...styles.termsText,
                     color: colors['gray-700'],
-                    fontSize: 14,
-                    fontFamily: 'Inter',
-                    fontWeight: '300',
                   }}
                 >
-                  Agree to our the{' '}
+                  Agree to our{' '}
                   <Text
                     style={{
                       color: colors.blue,
@@ -311,42 +258,100 @@ export default function SignUpForm() {
         {/* Submit Button */}
         <TextButton
           onPress={handleSubmit(onSubmit)}
-          title='Sign Up'
+          title="Sign Up"
           style={{
             width: '100%',
           }}
+          titleStyle={{
+            color: colors['gray-50'],
+          }}
         />
-        <View style={{ width: '100%', marginTop: 10, alignItems: 'center' }}>
+        <View style={styles.haveAccountContainer}>
           <Text
-            style={{
-              color: colors['gray-600'],
-              fontSize: 14,
-              fontFamily: 'Inter',
-              fontWeight: '300',
-              alignSelf: 'flex-end',
-            }}
+            style={{ ...styles.haveAccountText, color: colors['gray-600'] }}
           >
             Already have an account?
-            <TextButton
-              title='Sign in'
-              onPress={() => router.navigate('/signin')}
-              style={{
-                paddingVertical: 0,
-                paddingHorizontal: 5,
-                margin: 0,
-                borderRadius: 0,
-                backgroundColor: 'transparent',
-              }}
-              titleStyle={{
-                fontSize: 14,
-                color: colors.primary,
-                textDecorationLine: 'underline',
-                textDecorationColor: colors.primary,
-              }}
-            />
           </Text>
+          <TextButton
+            title="Sign in"
+            onPress={() => router.navigate('/signin')}
+            style={styles.signinButton}
+            titleStyle={{
+              ...styles.signinTitle,
+              color: colors.primary,
+              textDecorationColor: colors.primary,
+            }}
+          />
         </View>
       </View>
     </ScrollView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    width: '100%',
+    padding: 20,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 25,
+  },
+  subContainer: {
+    display: 'flex',
+    gap: 10,
+    width: '100%',
+    alignItems: 'center',
+    marginBottom: 30,
+    borderWidth: 1,
+    borderRadius: 10,
+    padding: 15,
+  },
+  createAccountText: {
+    fontSize: 24,
+    fontFamily: 'Inter',
+    fontWeight: '700',
+    marginBottom: 10,
+  },
+  inputContainer: {
+    width: '100%',
+    padding: 5,
+    gap: 4,
+  },
+  termsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 2,
+  },
+  termsText: {
+    fontSize: 14,
+    fontFamily: 'Inter',
+    fontWeight: '300',
+    flex: 1,
+  },
+  haveAccountContainer: {
+    width: '100%',
+    marginTop: 10,
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+  },
+  haveAccountText: {
+    fontSize: 14,
+    fontFamily: 'Inter',
+    fontWeight: '300',
+  },
+  signinButton: {
+    paddingVertical: 0,
+    paddingHorizontal: 2,
+    margin: 0,
+    borderRadius: 0,
+    backgroundColor: 'transparent',
+  },
+  signinTitle: {
+    fontSize: 14,
+    textDecorationLine: 'underline',
+  },
+});
