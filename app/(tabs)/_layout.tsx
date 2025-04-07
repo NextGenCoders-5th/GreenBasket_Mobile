@@ -30,12 +30,22 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
-        name='explore'
+        name='cart'
         options={{
-          headerTitle: 'Explore',
-          tabBarLabel: 'Explore',
+          headerTitle: 'Cart',
+          tabBarLabel: 'Cart',
           tabBarIcon: ({ color }) => (
-            <MaterialCommunityIcons name='compass' size={24} color={color} />
+            <MaterialCommunityIcons name='cart' size={24} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name='account'
+        options={{
+          headerTitle: 'Account',
+          tabBarLabel: 'Account',
+          tabBarIcon: ({ color }) => (
+            <MaterialCommunityIcons name='account' size={24} color={color} />
           ),
         }}
       />
