@@ -10,8 +10,8 @@ export default function ProductScreen() {
   const colors = useColorTheme();
   const product = sampleProducts[0];
 
-  const [showDetail, setShowDetail] = useState(false);
-  const [showReview, setShowReview] = useState(false);
+  const [showDetail, setShowDetail] = useState(true);
+  const [showReview, setShowReview] = useState(true);
   const [isFavorite, setIsFavorite] = useState(false);
 
   const handleShowDetail = () => {
@@ -28,7 +28,8 @@ export default function ProductScreen() {
         display: 'flex',
         flex: 1,
         gap: 10,
-        padding: 5,
+        paddingHorizontal: 10,
+        paddingVertical: 5,
         backgroundColor: colors.background,
       }}
     >
@@ -109,7 +110,7 @@ export default function ProductScreen() {
           }}
         >
           <IconButton
-            icon='remove'
+            icon="remove"
             size={24}
             onPress={() => {}}
             style={{
@@ -127,7 +128,7 @@ export default function ProductScreen() {
             1
           </Text>
           <IconButton
-            icon='add'
+            icon="add"
             onPress={() => {}}
             style={{
               borderWidth: 2,
@@ -214,7 +215,7 @@ export default function ProductScreen() {
             5.0
           </Text>
           {[1, 2, 3, 4, 5].map((i) => (
-            <Ionicons key={i} name='star' size={20} color='yellow' />
+            <Ionicons key={i} name="star" size={20} color="yellow" />
           ))}
           <IconButton
             icon={showReview ? 'chevron-up' : 'chevron-down'}
@@ -241,7 +242,7 @@ export default function ProductScreen() {
           </Text>
         </View>
       )}
-      <TextButton title='Add to Cart' style={{}} onPress={() => {}} />
+      <TextButton title="Add to Cart" style={{}} onPress={() => {}} />
     </View>
   );
 }

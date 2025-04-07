@@ -4,7 +4,11 @@ import ProductScreen from '@/screens/ProductScreen';
 
 export default function Product() {
   return (
-    <SafeAreaView>
+    <SafeAreaView
+      style={{
+        flex: 1,
+      }}
+    >
       <ProductScreen />
     </SafeAreaView>
   );
