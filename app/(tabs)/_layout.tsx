@@ -1,8 +1,8 @@
-import { View, Text } from 'react-native';
 import React from 'react';
-import { Stack, Tabs } from 'expo-router';
+import { Tabs } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useColorTheme } from '@/hooks/useColorTheme';
+import CustomHeader from '@/components/CustomHeader';
 
 export default function TabsLayout() {
   const colors = useColorTheme();
@@ -10,13 +10,8 @@ export default function TabsLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        // headerStyle: {
-        //   backgroundColor: colors['header'],
-        // },
-        // headerTitleStyle: {
-        //   color: colors['white'],
-        // },
-        // tabBarActiveTintColor: colors.primary,
+        // header: () => <CustomHeader />,
+        tabBarActiveTintColor: colors.primary,
       }}
     >
       <Tabs.Screen
@@ -32,7 +27,7 @@ export default function TabsLayout() {
       <Tabs.Screen
         name='cart'
         options={{
-          headerTitle: 'Cart',
+          headerTitle: '',
           tabBarLabel: 'Cart',
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons name='cart' size={24} color={color} />
@@ -42,7 +37,6 @@ export default function TabsLayout() {
       <Tabs.Screen
         name='account'
         options={{
-          headerTitle: 'Account',
           tabBarLabel: 'Account',
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons name='account' size={24} color={color} />

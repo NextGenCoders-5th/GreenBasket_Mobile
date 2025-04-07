@@ -1,26 +1,25 @@
 import React from 'react';
 import { ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
-import { router, Stack } from 'expo-router';
+import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
 
 import { darkTheme, lightTheme } from '@/hooks/colorTheme';
-import { TouchableOpacity, useColorScheme, View } from 'react-native';
-import { IconButton } from '@/components/IconButton';
-import {
-  ColorSchemeProvider,
-  useColorSchemeContext,
-} from '@/contexts/ColorSchmeContext';
-import { Colors, CommonColors } from '@/constants/Colors';
+import { StyleSheet, useColorScheme } from 'react-native';
+import { ColorSchemeProvider } from '@/contexts/ColorSchmeContext';
+import { useColorTheme } from '@/hooks/useColorTheme';
+import CustomHeader from '@/components/CustomHeader';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+
+  const colors = useColorTheme();
 
   const [loaded] = useFonts({
     Montserrat: require('@/assets/fonts/montserrat/Montserrat-VariableFont_wght.ttf'),
@@ -39,76 +38,30 @@ export default function RootLayout() {
     return null;
   }
 
+  const styles = StyleSheet.create({
+    header: {
+      backgroundColor: colorScheme === 'light' ? 'red' : 'blue',
+      height: 40,
+    },
+  });
+
   return (
     <ColorSchemeProvider>
-      <ThemeProvider value={colorScheme === 'dark' ? darkTheme : lightTheme}>
-        {/* <ThemeProvider value={lightTheme}> */}
+      {/* <ThemeProvider value={colorScheme === 'dark' ? darkTheme : lightTheme}> */}
+      <ThemeProvider value={lightTheme}>
         <Stack
           screenOptions={{
             headerShown: true,
+            header: () => <CustomHeader />,
           }}
         >
-          <Stack.Screen
-            name="(tabs)"
-            options={{
-              headerTitle: '',
-              headerStyle: {
-                backgroundColor:
-                  colorScheme === 'light'
-                    ? Colors.light.header
-                    : Colors.dark.header,
-              },
-            }}
-          />
-          <Stack.Screen
-            name="product"
-            options={{
-              // headerShown: false,
-              headerLeft: () => (
-                <IconButton
-                  icon="chevron-back"
-                  size={30}
-                  color="white"
-                  onPress={() => {
-                    router.back();
-                  }}
-                />
-              ),
-              headerStyle: {
-                backgroundColor: Colors.light.header,
-              },
-              headerTitle: 'Product',
-              headerTitleStyle: {
-                color: 'white',
-              },
-            }}
-          />
-          <Stack.Screen
-            name="(auth)"
-            options={{
-              headerTitle: '',
-              headerStyle: {
-                backgroundColor:
-                  colorScheme === 'light'
-                    ? Colors.light.header
-                    : Colors.dark.header,
-              },
-              headerLeft: () => (
-                <IconButton
-                  icon="chevron-back"
-                  size={30}
-                  color="white"
-                  onPress={() => {
-                    router.back();
-                  }}
-                />
-              ),
-            }}
-          />
+          <Stack.Screen name='(tabs)' />
+          <Stack.Screen name='product' />
+          <Stack.Screen name='(auth)' />
 
-          <Stack.Screen name="+not-found" />
+          <Stack.Screen name='+not-found' />
         </Stack>
-        <StatusBar style="auto" />
+        <StatusBar style='auto' />
       </ThemeProvider>
     </ColorSchemeProvider>
   );
