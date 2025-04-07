@@ -25,7 +25,7 @@ const HomeScreen = () => {
           marginBottom: 10,
         }}
       >
-        <View
+        {/* <View
           style={{
             display: 'flex',
             flexDirection: 'row',
@@ -50,7 +50,7 @@ const HomeScreen = () => {
           >
             Kebele 10, Poli
           </Text>
-        </View>
+        </View> */}
 
         <View
           style={{
@@ -58,26 +58,26 @@ const HomeScreen = () => {
             alignItems: 'center',
             flexDirection: 'row',
             flex: 1,
-            gap: 5,
             borderRadius: 50,
             borderColor: colors['gray-300'],
             borderWidth: 2,
             backgroundColor: colors.background,
-            margin: 5,
+            marginHorizontal: 5,
           }}
         >
           <AntDesign
-            name="search1"
+            name='search1'
             size={22}
             color={colors['gray-300']}
             style={{ paddingLeft: 10 }}
           />
           <TextInput
-            placeholder="Search..."
+            placeholder='Search...'
             style={{
               color: colors['gray-700'],
               flex: 1,
-              padding: 15,
+              paddingVertical: 15,
+              paddingHorizontal: 10,
               borderRadius: 50,
               fontSize: 16,
               fontFamily: 'Inter',
@@ -122,7 +122,7 @@ const HomeScreen = () => {
           >
             Exclusive Offer
           </Text>
-          <Link href={'/explore'}>
+          <Link href={'/product'}>
             <Text
               style={{
                 color: colors['primary-600'],
@@ -169,7 +169,7 @@ const HomeScreen = () => {
           >
             Best Selling
           </Text>
-          <Link href={'/explore'}>
+          <Link href={'/product'}>
             <Text
               style={{
                 color: colors['primary-500'],
@@ -189,10 +189,10 @@ const HomeScreen = () => {
           ))}
         </ScrollView>
 
-        <TextButton
-          title="sign up"
+        {/* <TextButton
+          title='sign up'
           onPress={() => router.navigate('/signup')}
-        />
+        /> */}
       </View>
     </ScrollView>
   );
