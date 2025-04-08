@@ -110,7 +110,7 @@ export default function ProductScreen() {
           }}
         >
           <IconButton
-            icon="remove"
+            icon='remove'
             size={24}
             onPress={() => {}}
             style={{
@@ -128,7 +128,7 @@ export default function ProductScreen() {
             1
           </Text>
           <IconButton
-            icon="add"
+            icon='add'
             onPress={() => {}}
             style={{
               borderWidth: 2,
@@ -215,7 +215,7 @@ export default function ProductScreen() {
             5.0
           </Text>
           {[1, 2, 3, 4, 5].map((i) => (
-            <Ionicons key={i} name="star" size={20} color="yellow" />
+            <Ionicons key={i} name='star' size={20} color='yellow' />
           ))}
           <IconButton
             icon={showReview ? 'chevron-up' : 'chevron-down'}
@@ -242,7 +242,7 @@ export default function ProductScreen() {
           </Text>
         </View>
       )}
-      <TextButton title="Add to Cart" style={{}} onPress={() => {}} />
+      <TextButton title='Add to Cart' style={{}} onPress={() => {}} />
     </View>
   );
 }

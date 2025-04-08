@@ -30,6 +30,8 @@ const TextButton: React.FC<TextButtonProps> = ({
           paddingVertical: 12,
           paddingHorizontal: 16,
           borderRadius: 12,
+          display: 'flex',
+          flexDirection: 'row',
           alignItems: 'center',
           justifyContent: 'center',
           backgroundColor: colors.primary,

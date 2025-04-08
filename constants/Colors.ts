@@ -6,6 +6,7 @@ const CommonColors = {
   blue: '#2f80ed',
   primary: '#53b175',
   notification: '#EC4D45',
+  red: '#f70811',
 };
 
 const Colors = {
@@ -68,4 +69,3 @@ const Colors = {
 };
 
 export { CommonColors, Colors };
-

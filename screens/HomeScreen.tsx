@@ -189,10 +189,10 @@ const HomeScreen = () => {
           ))}
         </ScrollView>
 
-        {/* <TextButton
+        <TextButton
           title='sign up'
           onPress={() => router.navigate('/signup')}
-        /> */}
+        />
       </View>
     </ScrollView>
   );
