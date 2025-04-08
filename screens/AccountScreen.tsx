@@ -1,4 +1,11 @@
-import { View, Text, ScrollView, Image, StyleSheet } from 'react-native';
+import {
+  View,
+  Text,
+  ScrollView,
+  Image,
+  StyleSheet,
+  Pressable,
+} from 'react-native';
 import React from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { useColorTheme } from '@/hooks/useColorTheme';
@@ -17,6 +24,7 @@ export default function AccountScreen() {
         paddingHorizontal: 5,
         paddingVertical: 5,
         width: '100%',
+        backgroundColor: colors.background,
       }}
     >
       <View
@@ -135,109 +143,197 @@ export default function AccountScreen() {
       </View> */}
       <View
         style={{
-          width: '100%',
-          paddingTop: 10,
           marginTop: 10,
+          borderBottomWidth: 1,
+          borderColor: colors['gray-100'],
+          display: 'flex',
+          flexDirection: 'row',
           gap: 10,
-          paddingHorizontal: 10,
+        }}
+      >
+        <View
+          style={{
+            display: 'flex',
+            // width: 60,
+            alignSelf: 'flex-start',
+            padding: 5,
+            alignItems: 'center',
+          }}
+        >
+          <Ionicons
+            style={{}}
+            name='heart-outline'
+            size={20}
+            color={colors['gray-600']}
+          />
+          <Text
+            style={{
+              fontFamily: 'Inter',
+              fontSize: 12,
+              fontWeight: '500',
+            }}
+          >
+            Wishlists
+          </Text>
+        </View>
+        <View
+          style={{
+            display: 'flex',
+            // width: 60,
+            alignSelf: 'flex-start',
+            padding: 5,
+            alignItems: 'center',
+          }}
+        >
+          <Ionicons
+            style={{}}
+            name='cart'
+            size={20}
+            color={colors['gray-600']}
+          />
+          <Text
+            style={{
+              fontFamily: 'Inter',
+              fontSize: 12,
+              fontWeight: '500',
+            }}
+          >
+            Cart
+          </Text>
+        </View>
+      </View>
+      <View
+        style={{
+          width: '100%',
+          marginTop: 10,
+          // gap: 15,
           paddingVertical: 10,
           backgroundColor: colors.background,
           borderRadius: 10,
         }}
       >
-        <View style={styles.btnContainer}>
-          <TextButton
-            style={styles.btn}
-            titleStyle={{ color: colors['gray-900'] }}
-            title='Profile'
-            onPress={() => {}}
-          />
+        <Pressable
+          style={{ ...styles.btn, backgroundColor: colors['gray-50'] }}
+          onPress={() => {
+            router.navigate('/profile/12');
+          }}
+        >
+          <Text
+            style={{
+              fontFamily: 'Inter',
+              fontSize: 16,
+              fontWeight: '700',
+              color: colors['gray-900'],
+            }}
+          >
+            Profile
+          </Text>
           <Ionicons
             name='chevron-forward-outline'
             size={20}
             color={colors['gray-600']}
           />
-        </View>
-        <View style={styles.btnContainer}>
-          <TextButton
-            style={styles.btn}
-            titleStyle={{ color: colors['gray-900'] }}
-            title='Shipping Address'
-            onPress={() => {}}
-          />
-          <Ionicons
-            name='chevron-forward-outline'
-            size={20}
-            color={colors['gray-600']}
-          />
-        </View>
-        <View style={styles.btnContainer}>
-          <TextButton
-            style={styles.btn}
-            titleStyle={{ color: colors['gray-900'] }}
-            title='Payment Methods'
-            onPress={() => {}}
-          />
-          <Ionicons
-            name='chevron-forward-outline'
-            size={20}
-            color={colors['gray-600']}
-          />
-        </View>
-        <View style={styles.btnContainer}>
-          <TextButton
-            style={styles.btn}
-            titleStyle={{ color: colors['gray-900'] }}
-            title='Order History'
-            onPress={() => {}}
-          />
-          <Ionicons
-            name='chevron-forward-outline'
-            size={20}
-            color={colors['gray-600']}
-          />
-        </View>
-        <View style={styles.btnContainer}>
-          <TextButton
-            style={styles.btn}
-            titleStyle={{ color: colors['gray-900'] }}
-            title='Currency'
-            onPress={() => {}}
-          />
-          <Ionicons
-            name='chevron-forward-outline'
-            size={20}
-            color={colors['gray-600']}
-          />
-        </View>
-        <View style={styles.btnContainer}>
-          <TextButton
-            style={styles.btn}
-            titleStyle={{ color: colors['gray-900'] }}
-            title='Language'
-            onPress={() => {}}
-          />
-          <Ionicons
-            name='chevron-forward-outline'
-            size={20}
-            color={colors['gray-600']}
-          />
-        </View>
+        </Pressable>
 
-        <View style={styles.btnContainer}>
-          <TextButton
-            style={styles.btn}
-            titleStyle={{ color: colors.notification }}
-            title='Delete Account'
-            onPress={() => {}}
+        <Pressable
+          style={{ ...styles.btn, backgroundColor: colors['gray-50'] }}
+          onPress={() => {}}
+        >
+          <Text
+            style={{
+              fontFamily: 'Inter',
+              fontSize: 16,
+              fontWeight: '700',
+              color: colors['gray-900'],
+            }}
+          >
+            Shipping Address
+          </Text>
+          <Ionicons
+            name='chevron-forward-outline'
+            size={20}
+            color={colors['gray-600']}
           />
-        </View>
+        </Pressable>
+
+        <Pressable
+          style={{ ...styles.btn, backgroundColor: colors['gray-50'] }}
+          onPress={() => {}}
+        >
+          <Text
+            style={{
+              fontFamily: 'Inter',
+              fontSize: 16,
+              fontWeight: '700',
+              color: colors['gray-900'],
+            }}
+          >
+            Order History
+          </Text>
+          <Ionicons
+            name='chevron-forward-outline'
+            size={20}
+            color={colors['gray-600']}
+          />
+        </Pressable>
+
+        <Pressable
+          style={{ ...styles.btn, backgroundColor: colors['gray-50'] }}
+          onPress={() => {}}
+        >
+          <Text
+            style={{
+              fontFamily: 'Inter',
+              fontSize: 16,
+              fontWeight: '700',
+              color: colors['gray-900'],
+            }}
+          >
+            Currency
+          </Text>
+          <Ionicons
+            name='chevron-forward-outline'
+            size={20}
+            color={colors['gray-600']}
+          />
+        </Pressable>
+
+        <Pressable
+          style={{ ...styles.btn, backgroundColor: colors['gray-50'] }}
+          onPress={() => {}}
+        >
+          <Text
+            style={{
+              fontFamily: 'Inter',
+              fontSize: 16,
+              fontWeight: '700',
+              color: colors['gray-900'],
+            }}
+          >
+            Language
+          </Text>
+          <Ionicons
+            name='chevron-forward-outline'
+            size={20}
+            color={colors['gray-600']}
+          />
+        </Pressable>
+        <TextButton
+          style={{
+            ...styles.btn,
+            backgroundColor: colors['gray-50'],
+            marginBottom: 20,
+          }}
+          titleStyle={{ color: colors.red }}
+          title='Delete Account'
+          onPress={() => {}}
+        />
 
         <TextButton
           style={{
-            backgroundColor: colors.notification,
+            backgroundColor: colors.red,
           }}
-          titleStyle={{ color: colors['gray-100'] }}
+          titleStyle={{ color: colors['gray-50'] }}
           title='Sign Out'
           onPress={() => {}}
         />
@@ -255,8 +351,15 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   btn: {
-    borderRadius: 0,
-    backgroundColor: 'transparent',
-    justifyContent: 'flex-start',
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    marginBottom: 5,
+    borderBottomWidth: 0,
+    borderRadius: 10,
   },
 });
