@@ -6,7 +6,6 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useColorTheme } from '@/hooks/useColorTheme';
 import FloatingLabelInput from './FloatingLableInput';
-import ErrorMessage from './ErrorMessage';
 import { IconButton } from '../IconButton';
 import TextButton from '../TextButton';
 import PhoneNumberInput from './PhoneNumberInput';
@@ -114,54 +113,44 @@ export default function SignUpForm() {
         <View style={styles.inputContainer}>
           <FloatingLabelInput
             control={control}
-            name="firstName"
-            label="First name"
-            placeholder="First name"
-            icon="account"
+            name='firstName'
+            label='First name'
+            placeholder='First name'
+            // icon="account"
           />
-          {errors.firstName && (
-            <ErrorMessage message={errors.firstName.message!} />
-          )}
         </View>
 
         {/* Last name */}
         <View style={styles.inputContainer}>
           <FloatingLabelInput
             control={control}
-            name="lastName"
-            label="Last name"
-            placeholder="Last name"
-            icon="account"
+            name='lastName'
+            label='Last name'
+            placeholder='Last name'
+            // icon="account"
           />
-          {errors.lastName && (
-            <ErrorMessage message={errors.lastName.message!} />
-          )}
         </View>
 
         {/* Username */}
         <View style={styles.inputContainer}>
           <FloatingLabelInput
             control={control}
-            name="username"
-            label="Username"
-            placeholder="Username"
-            icon="account"
+            name='username'
+            label='Username'
+            placeholder='Username'
+            // icon="account"
           />
-          {errors.username && (
-            <ErrorMessage message={errors.username.message!} />
-          )}
         </View>
 
         {/* Email */}
         <View style={styles.inputContainer}>
           <FloatingLabelInput
             control={control}
-            name="email"
-            label="Email"
-            placeholder="Email"
-            icon="email"
+            name='email'
+            label='Email'
+            placeholder='Email'
+            // icon='email'
           />
-          {errors.email && <ErrorMessage message={errors.email.message!} />}
         </View>
 
         {/* Phone Number */}
@@ -173,43 +162,33 @@ export default function SignUpForm() {
           /> */}
           <FloatingLabelInput
             control={control}
-            name="phoneNumber"
-            label="Phone number"
-            placeholder="PhoneNumber"
-            icon="call"
+            name='phoneNumber'
+            label='Phone number'
+            placeholder='PhoneNumber'
+            // icon='call'
           />
-
-          {errors.phoneNumber && (
-            <ErrorMessage message={errors.phoneNumber.message!} />
-          )}
         </View>
 
         {/* Password */}
         <View style={styles.inputContainer}>
           <FloatingLabelInput
             control={control}
-            name="password"
-            label="Password"
-            placeholder="Password"
-            icon="lock"
+            name='password'
+            label='Password'
+            placeholder='Password'
+            // icon='lock'
           />
-          {errors.password && (
-            <ErrorMessage message={errors.password.message!} />
-          )}
         </View>
 
         {/* Confirm Password */}
         <View style={styles.inputContainer}>
           <FloatingLabelInput
             control={control}
-            name="confirmPassword"
-            label="Confirm password"
-            placeholder="Confirm password"
-            icon="lock"
+            name='confirmPassword'
+            label='Confirm password'
+            placeholder='Confirm password'
+            // icon='lock'
           />
-          {errors.confirmPassword && (
-            <ErrorMessage message={errors.confirmPassword.message!} />
-          )}
         </View>
 
         {/* Agree to Terms */}
@@ -222,7 +201,7 @@ export default function SignUpForm() {
         >
           <Controller
             control={control}
-            name="agreeToTerms"
+            name='agreeToTerms'
             render={({ field: { onChange, value } }) => (
               <View style={styles.termsContainer}>
                 <IconButton
@@ -239,7 +218,7 @@ export default function SignUpForm() {
                   Agree to our{' '}
                   <Text
                     style={{
-                      color: colors.blue,
+                      color: colors.primary,
                       textDecorationLine: 'underline',
                     }}
                   >
@@ -250,15 +229,12 @@ export default function SignUpForm() {
               </View>
             )}
           />
-          {errors.agreeToTerms && (
-            <ErrorMessage message={errors.agreeToTerms.message!} />
-          )}
         </View>
 
         {/* Submit Button */}
         <TextButton
           onPress={handleSubmit(onSubmit)}
-          title="Sign Up"
+          title='Sign Up'
           style={{
             width: '100%',
           }}
@@ -273,7 +249,7 @@ export default function SignUpForm() {
             Already have an account?
           </Text>
           <TextButton
-            title="Sign in"
+            title='Sign in'
             onPress={() => router.navigate('/signin')}
             style={styles.signinButton}
             titleStyle={{

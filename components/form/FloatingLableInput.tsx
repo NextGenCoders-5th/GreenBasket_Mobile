@@ -4,6 +4,7 @@ import { Control, Controller, FieldValues, Path } from 'react-hook-form';
 import { useColorTheme } from '@/hooks/useColorTheme';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { IconButton } from '../IconButton';
+import ErrorMessage from './ErrorMessage';
 
 type FloatingLabelInputProps<T extends FieldValues> = {
   control: Control<T>;
@@ -38,13 +39,16 @@ export default function FloatingLabelInput<T extends FieldValues>({
     <Controller
       control={control}
       name={name}
-      render={({ field: { onChange, onBlur, value } }) => {
+      render={({
+        field: { onChange, onBlur, value },
+        fieldState: { error },
+      }) => {
         useEffect(() => {
           // Move label up only if focused or has value
           const shouldMoveUp = isFocused || !!value;
           Animated.timing(position, {
-            toValue: shouldMoveUp ? -14 : 20,
-            duration: 100,
+            toValue: shouldMoveUp ? 0 : 20,
+            duration: 150,
             useNativeDriver: false,
           }).start();
         }, [isFocused, value]);
@@ -52,64 +56,85 @@ export default function FloatingLabelInput<T extends FieldValues>({
         return (
           <View
             style={{
-              ...styles.container,
-              backgroundColor: colors.background,
-              borderColor: isFocused ? colors.primary : colors['gray-400'],
+              gap: 2,
             }}
           >
-            {/* Label */}
-            <Animated.Text
+            <View
               style={{
-                ...styles.label,
-                marginLeft: icon ? 33 : 2,
-                top: position,
-                color: isFocused ? colors.primary : colors['gray-600'],
+                ...styles.container,
                 backgroundColor: colors.background,
-                display: isFocused || value ? 'flex' : 'none',
+                borderColor: error
+                  ? colors.red
+                  : isFocused
+                  ? colors.primary
+                  : colors['gray-400'],
               }}
             >
-              {label}
-            </Animated.Text>
-
-            {/* TextInput */}
-            {icon && (
-              <IconLibrary
-                name={icon as any}
-                size={20}
-                color={colors['primary-400']}
-              />
-            )}
-            <TextInput
-              secureTextEntry={
-                (name === 'password' || name === 'confirmPassword') &&
-                !isPasswordVisible
-              }
-              keyboardType={name === 'email' ? 'email-address' : 'default'}
-              placeholder={isFocused ? '' : placeholder}
-              placeholderTextColor={colors['gray-400']}
-              onBlur={() => {
-                onBlur();
-                setIsFocused(false);
-              }}
-              onFocus={() => setIsFocused(true)}
-              onChangeText={onChange}
-              value={value}
-              style={{
-                ...styles.input,
-                color: colors['gray-400'],
-              }}
-            />
-
-            {(name === 'password' || name === 'confirmPassword') && (
-              <IconButton
-                icon={isPasswordVisible ? 'eye-off-outline' : 'eye-outline'}
-                size={24}
-                color={colors['primary-400']}
-                onPress={() => {
-                  setIsPasswordVisible((prev) => !prev);
+              {/* Label */}
+              <Animated.Text
+                style={{
+                  ...styles.label,
+                  marginLeft: icon ? 24 : 4,
+                  top: position,
+                  fontSize: isFocused || value ? 12 : 14,
+                  color: colors['gray-600'],
+                  backgroundColor: colors.background,
+                  display: isFocused || value ? 'flex' : 'none',
                 }}
-              />
-            )}
+              >
+                {label}
+              </Animated.Text>
+              <View
+                style={{
+                  flex: 1,
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  top: isFocused || value ? 5 : 0,
+                }}
+              >
+                {/* TextInput */}
+                {icon && (
+                  <IconLibrary
+                    name={icon as any}
+                    size={20}
+                    color={colors['primary-400']}
+                  />
+                )}
+                <TextInput
+                  secureTextEntry={
+                    (name === 'password' || name === 'confirmPassword') &&
+                    !isPasswordVisible
+                  }
+                  keyboardType={name === 'email' ? 'email-address' : 'default'}
+                  placeholder={isFocused ? '' : placeholder}
+                  placeholderTextColor={colors['gray-400']}
+                  onBlur={() => {
+                    onBlur();
+                    setIsFocused(false);
+                  }}
+                  onFocus={() => setIsFocused(true)}
+                  onChangeText={onChange}
+                  value={value}
+                  style={{
+                    ...styles.input,
+                    color: colors['gray-800'],
+                    outline: 'none',
+                  }}
+                />
+              </View>
+              {(name === 'password' || name === 'confirmPassword') && (
+                <IconButton
+                  icon={isPasswordVisible ? 'eye-off-outline' : 'eye-outline'}
+                  size={24}
+                  color={colors['primary-400']}
+                  onPress={() => {
+                    setIsPasswordVisible((prev) => !prev);
+                  }}
+                />
+              )}
+            </View>
+            {error && <ErrorMessage message={error.message!} />}
           </View>
         );
       }}
@@ -131,16 +156,14 @@ const styles = StyleSheet.create({
   label: {
     position: 'absolute',
     fontFamily: 'Inter',
-    fontSize: 16,
-    fontWeight: '500',
+    fontWeight: '400',
   },
   input: {
     flex: 1,
     paddingVertical: 10,
     paddingHorizontal: 4,
     fontFamily: 'Inter',
-    fontSize: 16,
-    fontWeight: '200',
-    outline: 'none',
+    fontSize: 14,
+    fontWeight: '400',
   },
 });

@@ -8,8 +8,10 @@ type ErrorMessageProp = {
 
 export default function ErrorMessage({ message }: ErrorMessageProp) {
   return (
-    <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 5 }}>
-      <MaterialIcons name='error-outline' size={12} color='red' />
+    <View
+      style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 5 }}
+    >
+      <MaterialIcons name='warning-amber' size={12} color='red' />
       <Text style={{ color: 'red', fontSize: 12, paddingLeft: 3 }}>
         {message}
       </Text>

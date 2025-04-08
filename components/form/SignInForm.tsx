@@ -57,31 +57,27 @@ export default function SignInForm() {
         <View style={styles.inputContainer}>
           <FloatingLabelInput
             control={control}
-            name="email"
-            label="Email"
-            placeholder="Email"
-            icon="email"
+            name='email'
+            label='Email'
+            placeholder='Email'
+            icon='email'
           />
-          {errors.email && <ErrorMessage message={errors.email.message!} />}
         </View>
         <View style={styles.inputContainer}>
           <FloatingLabelInput
             control={control}
-            name="password"
-            label="Password"
-            placeholder="Password"
-            icon="lock"
+            name='password'
+            label='Password'
+            placeholder='Password'
+            icon='lock'
           />
-          {errors.password && (
-            <ErrorMessage message={errors.password.message!} />
-          )}
         </View>
         <TextButton
           style={styles.signinButton}
           onPress={() => {
             console.log('Forgot password');
           }}
-          title="Forgot password?"
+          title='Forgot password?'
           titleStyle={{
             ...styles.titleStyle,
             color: colors.primary,
@@ -89,7 +85,7 @@ export default function SignInForm() {
           }}
         />
         <TextButton
-          title="Sign in"
+          title='Sign in'
           onPress={handleSubmit(onSubmit)}
           style={{ width: '100%' }}
           titleStyle={{
@@ -101,7 +97,7 @@ export default function SignInForm() {
             Don't have an account?
           </Text>
           <TextButton
-            title="Sign up"
+            title='Sign up'
             onPress={() => router.navigate('/signup')}
             style={styles.signupButton}
             titleStyle={{
