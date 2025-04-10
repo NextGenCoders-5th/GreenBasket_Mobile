@@ -11,6 +11,7 @@ import TextButton from '../TextButton';
 import PhoneNumberInput from './PhoneNumberInput';
 import parsePhoneNumberFromString from 'libphonenumber-js';
 import { router } from 'expo-router';
+import ErrorMessage from './ErrorMessage';
 
 const phoneNumberValidator = yup
   .string()
@@ -21,12 +22,6 @@ const phoneNumberValidator = yup
   });
 
 const SignUpschema = yup.object({
-  firstName: yup.string().required('First name is required'),
-  lastName: yup.string().required('Last name is required'),
-  username: yup
-    .string()
-    .required('Username is required')
-    .min(3, 'Username must be at least 3 characters'),
   email: yup
     .string()
     .required('Email is required')
@@ -36,14 +31,14 @@ const SignUpschema = yup.object({
       'Invalid email address'
     ),
 
-  phoneNumber: phoneNumberValidator.required('Phone number is required'),
+  phoneNumber: yup.string().required('Phone number is required'),
 
   password: yup
     .string()
     .required('Password is required')
     .min(6, 'Password must be at least 6 characters'),
 
-  confirmPassword: yup
+  passwordConfirm: yup
     .string()
     .oneOf([yup.ref('password'), undefined], 'Passwords must match')
     .required('Confirm your password'),
@@ -55,13 +50,10 @@ const SignUpschema = yup.object({
 });
 
 type FormData = {
-  firstName: string;
-  lastName: string;
-  username: string;
   email: string;
   phoneNumber: string;
   password: string;
-  confirmPassword: string;
+  passwordConfirm: string;
   agreeToTerms: boolean;
 };
 
@@ -76,20 +68,50 @@ export default function SignUpForm() {
   } = useForm<FormData>({
     resolver: yupResolver(SignUpschema),
     defaultValues: {
-      firstName: '',
-      lastName: '',
-      username: '',
       email: '',
       phoneNumber: '',
       password: '',
-      confirmPassword: '',
+      passwordConfirm: '',
       agreeToTerms: false,
     },
   });
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = async (data: FormData) => {
     // Alert.alert('Form Data', JSON.stringify(data, null, 2));
+
     console.log('data', data);
+
+    const { email, phoneNumber, password, passwordConfirm } = data;
+
+    try {
+      const response = await fetch(
+        'http://localhost:5000/api/v1/auth/sign-up',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email,
+            phoneNumber,
+            password,
+            passwordConfirm,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Something went wrong');
+      }
+
+      alert('Success, You have successfully signed up!');
+      console.log(data); // Handle the response (e.g., token, user info)
+    } catch (error: any) {
+      // alert('Error', error.message);
+      console.error(error);
+    }
   };
 
   return (
@@ -108,39 +130,6 @@ export default function SignUpForm() {
         >
           Create account
         </Text>
-
-        {/* First Name */}
-        <View style={styles.inputContainer}>
-          <FloatingLabelInput
-            control={control}
-            name='firstName'
-            label='First name'
-            placeholder='First name'
-            // icon="account"
-          />
-        </View>
-
-        {/* Last name */}
-        <View style={styles.inputContainer}>
-          <FloatingLabelInput
-            control={control}
-            name='lastName'
-            label='Last name'
-            placeholder='Last name'
-            // icon="account"
-          />
-        </View>
-
-        {/* Username */}
-        <View style={styles.inputContainer}>
-          <FloatingLabelInput
-            control={control}
-            name='username'
-            label='Username'
-            placeholder='Username'
-            // icon="account"
-          />
-        </View>
 
         {/* Email */}
         <View style={styles.inputContainer}>
@@ -163,8 +152,8 @@ export default function SignUpForm() {
           <FloatingLabelInput
             control={control}
             name='phoneNumber'
-            label='Phone number'
-            placeholder='PhoneNumber'
+            label='Phone Number'
+            placeholder='Phone Number'
             // icon='call'
           />
         </View>
@@ -184,7 +173,7 @@ export default function SignUpForm() {
         <View style={styles.inputContainer}>
           <FloatingLabelInput
             control={control}
-            name='confirmPassword'
+            name='passwordConfirm'
             label='Confirm password'
             placeholder='Confirm password'
             // icon='lock'
@@ -203,29 +192,34 @@ export default function SignUpForm() {
             control={control}
             name='agreeToTerms'
             render={({ field: { onChange, value } }) => (
-              <View style={styles.termsContainer}>
-                <IconButton
-                  onPress={() => onChange(!value)}
-                  icon={value ? 'checkbox-marked' : 'checkbox-blank-outline'}
-                  color={value ? colors.primary : colors['gray-400']}
-                />
-                <Text
-                  style={{
-                    ...styles.termsText,
-                    color: colors['gray-700'],
-                  }}
-                >
-                  Agree to our{' '}
+              <View>
+                <View style={styles.termsContainer}>
+                  <IconButton
+                    onPress={() => onChange(!value)}
+                    icon={value ? 'checkbox-marked' : 'checkbox-blank-outline'}
+                    color={value ? colors.primary : colors['gray-400']}
+                  />
                   <Text
                     style={{
-                      color: colors.primary,
-                      textDecorationLine: 'underline',
+                      ...styles.termsText,
+                      color: colors['gray-700'],
                     }}
                   >
-                    terms and conditions
-                  </Text>{' '}
-                  to continue.
-                </Text>
+                    Agree to our{' '}
+                    <Text
+                      style={{
+                        color: colors.primary,
+                        textDecorationLine: 'underline',
+                      }}
+                    >
+                      terms and conditions
+                    </Text>{' '}
+                    to continue.
+                  </Text>
+                </View>
+                {errors.agreeToTerms && (
+                  <ErrorMessage message={errors.agreeToTerms.message!} />
+                )}
               </View>
             )}
           />

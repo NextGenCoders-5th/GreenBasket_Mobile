@@ -47,7 +47,7 @@ export default function FloatingLabelInput<T extends FieldValues>({
           // Move label up only if focused or has value
           const shouldMoveUp = isFocused || !!value;
           Animated.timing(position, {
-            toValue: shouldMoveUp ? 0 : 20,
+            toValue: shouldMoveUp ? 0 : 15,
             duration: 150,
             useNativeDriver: false,
           }).start();
@@ -68,6 +68,7 @@ export default function FloatingLabelInput<T extends FieldValues>({
                   : isFocused
                   ? colors.primary
                   : colors['gray-400'],
+                borderWidth: isFocused ? 2 : 1,
               }}
             >
               {/* Label */}
@@ -103,12 +104,12 @@ export default function FloatingLabelInput<T extends FieldValues>({
                 )}
                 <TextInput
                   secureTextEntry={
-                    (name === 'password' || name === 'confirmPassword') &&
+                    (name === 'password' || name === 'passwordConfirm') &&
                     !isPasswordVisible
                   }
                   keyboardType={name === 'email' ? 'email-address' : 'default'}
                   placeholder={isFocused ? '' : placeholder}
-                  placeholderTextColor={colors['gray-400']}
+                  placeholderTextColor={colors['gray-600']}
                   onBlur={() => {
                     onBlur();
                     setIsFocused(false);
@@ -123,7 +124,7 @@ export default function FloatingLabelInput<T extends FieldValues>({
                   }}
                 />
               </View>
-              {(name === 'password' || name === 'confirmPassword') && (
+              {(name === 'password' || name === 'passwordConfirm') && (
                 <IconButton
                   icon={isPasswordVisible ? 'eye-off-outline' : 'eye-outline'}
                   size={24}
