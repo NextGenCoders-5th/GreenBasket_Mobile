@@ -12,6 +12,7 @@ import PhoneNumberInput from './PhoneNumberInput';
 import parsePhoneNumberFromString from 'libphonenumber-js';
 import { router } from 'expo-router';
 import ErrorMessage from './ErrorMessage';
+import { useSignUpMutation } from '@/redux/api/userApi';
 
 const phoneNumberValidator = yup
   .string()
@@ -59,6 +60,7 @@ type FormData = {
 
 export default function SignUpForm() {
   const colors = useColorTheme();
+  const [signup, { isLoading }] = useSignUpMutation();
 
   const {
     control,
@@ -84,30 +86,14 @@ export default function SignUpForm() {
     const { email, phoneNumber, password, passwordConfirm } = data;
 
     try {
-      const response = await fetch(
-        'http://localhost:5000/api/v1/auth/sign-up',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            email,
-            phoneNumber,
-            password,
-            passwordConfirm,
-          }),
-        }
-      );
+      const response = await signup({
+        email,
+        phoneNumber,
+        password,
+        passwordConfirm,
+      }).unwrap();
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Something went wrong');
-      }
-
-      alert('Success, You have successfully signed up!');
-      console.log(data); // Handle the response (e.g., token, user info)
+      console.log('response', response);
     } catch (error: any) {
       // alert('Error', error.message);
       console.error(error);
@@ -235,6 +221,7 @@ export default function SignUpForm() {
           titleStyle={{
             color: colors['gray-50'],
           }}
+          disabled={isLoading}
         />
         <View style={styles.haveAccountContainer}>
           <Text

@@ -12,6 +12,8 @@ import { StyleSheet, useColorScheme } from 'react-native';
 import { ColorSchemeProvider } from '@/contexts/ColorSchmeContext';
 import { useColorTheme } from '@/hooks/useColorTheme';
 import CustomHeader from '@/components/CustomHeader';
+import { Provider } from 'react-redux';
+import { store } from '@/redux/store';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -48,21 +50,23 @@ export default function RootLayout() {
   return (
     <ColorSchemeProvider>
       {/* <ThemeProvider value={colorScheme === 'dark' ? darkTheme : lightTheme}> */}
-      <ThemeProvider value={lightTheme}>
-        <Stack
-          screenOptions={{
-            headerShown: true,
-            header: () => <CustomHeader />,
-          }}
-        >
-          <Stack.Screen name='(tabs)' />
-          <Stack.Screen name='product' />
-          <Stack.Screen name='(auth)' />
+      <Provider store={store}>
+        <ThemeProvider value={lightTheme}>
+          <Stack
+            screenOptions={{
+              headerShown: true,
+              header: () => <CustomHeader />,
+            }}
+          >
+            <Stack.Screen name='(tabs)' />
+            <Stack.Screen name='product' />
+            <Stack.Screen name='(auth)' />
 
-          <Stack.Screen name='+not-found' />
-        </Stack>
-        <StatusBar style='auto' />
-      </ThemeProvider>
+            <Stack.Screen name='+not-found' />
+          </Stack>
+          <StatusBar style='auto' />
+        </ThemeProvider>
+      </Provider>
     </ColorSchemeProvider>
   );
 }
