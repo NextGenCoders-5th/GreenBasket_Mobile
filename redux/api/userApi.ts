@@ -1,4 +1,10 @@
-import { UserSignUpResponseType, UserSignUpType, UserType } from '@/types/user';
+import {
+  UserSignInResponseType,
+  UserSignInType,
+  UserSignUpResponseType,
+  UserSignUpType,
+  UserType,
+} from '@/types/user';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 export const userApi = createApi({
@@ -14,7 +20,14 @@ export const userApi = createApi({
         body: signUpData,
       }),
     }),
+    signIn: build.mutation<UserSignInResponseType, UserSignInType>({
+      query: (signInData) => ({
+        url: 'auth/sign-in',
+        method: 'POST',
+        body: signInData,
+      }),
+    }),
   }),
 });
 
-export const { useSignUpMutation } = userApi;
+export const { useSignUpMutation, useSignInMutation } = userApi;

@@ -43,3 +43,26 @@ export interface UserSignUpResponseType {
     data: UserType;
   };
 }
+
+export interface UserSignInType {
+  email: string;
+  password: string;
+}
+
+export interface UserSignInResponseType {
+  data: {
+    status: string;
+    message: string;
+    timestamp: string;
+
+    data: {
+      accessToken: string;
+      refreshToken: string;
+      data: {
+        accessToken: string;
+        refreshToken: string;
+        user: UserType;
+      };
+    };
+  };
+}

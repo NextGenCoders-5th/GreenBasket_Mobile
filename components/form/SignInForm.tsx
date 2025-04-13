@@ -5,10 +5,10 @@ import FloatingLabelInput from './FloatingLableInput';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import ErrorMessage from './ErrorMessage';
 import TextButton from '../TextButton';
 import { router } from 'expo-router';
 import { shadows } from '@/styles/shadows';
+import { useSignInMutation } from '@/redux/api/userApi';
 
 const SingInSchema = yup.object({
   email: yup
@@ -29,6 +29,7 @@ type FormData = {
 
 export default function SignInForm() {
   const colors = useColorTheme();
+  const [singIn, { isLoading, isSuccess }] = useSignInMutation();
 
   const {
     control,
@@ -43,9 +44,26 @@ export default function SignInForm() {
     },
   });
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = async (data: FormData) => {
     console.log(data);
+    const { email, password } = data;
+    try {
+      const response = await singIn({
+        email,
+        password,
+      });
+      console.log('response', response);
+    } catch (error) {
+      console.log(error);
+    }
   };
+
+  if (isLoading) {
+    return <Text>Signing in...</Text>;
+  }
+
+  // if(isSuccess) {
+  // }
 
   return (
     <View style={styles.container}>
@@ -91,6 +109,7 @@ export default function SignInForm() {
           titleStyle={{
             color: colors['gray-50'],
           }}
+          disabled={isLoading}
         />
         <View style={styles.noAccountContainer}>
           <Text style={{ ...styles.noAccountText, color: colors['gray-600'] }}>
