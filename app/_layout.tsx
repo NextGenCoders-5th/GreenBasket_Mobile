@@ -6,6 +6,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
+import Toast from 'react-native-toast-message';
 
 import { darkTheme, lightTheme } from '@/hooks/colorTheme';
 import { StyleSheet, useColorScheme } from 'react-native';
@@ -65,6 +66,16 @@ export default function RootLayout() {
             <Stack.Screen name='+not-found' />
           </Stack>
           <StatusBar style='auto' />
+          <Toast
+            position='top'
+            visibilityTime={4000}
+            autoHide={true}
+            topOffset={50}
+            keyboardOffset={50}
+            onPress={() => {
+              Toast.hide();
+            }}
+          />
         </ThemeProvider>
       </Provider>
     </ColorSchemeProvider>
