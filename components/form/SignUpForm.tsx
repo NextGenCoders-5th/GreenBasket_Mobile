@@ -1,6 +1,13 @@
 import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { Text, View, ScrollView, Image, StyleSheet } from 'react-native';
+import {
+  Text,
+  View,
+  ScrollView,
+  Image,
+  StyleSheet,
+  ActivityIndicator,
+} from 'react-native';
 import * as yup from 'yup';
 
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -13,6 +20,7 @@ import parsePhoneNumberFromString from 'libphonenumber-js';
 import { router } from 'expo-router';
 import ErrorMessage from './ErrorMessage';
 import { useSignUpMutation } from '@/redux/api/userApi';
+import Toast from 'react-native-toast-message';
 
 const phoneNumberValidator = yup
   .string()
@@ -79,9 +87,7 @@ export default function SignUpForm() {
   });
 
   const onSubmit = async (data: FormData) => {
-    // Alert.alert('Form Data', JSON.stringify(data, null, 2));
-
-    console.log('data', data);
+    // console.log('data', data);
 
     const { email, phoneNumber, password, passwordConfirm } = data;
 
@@ -93,12 +99,57 @@ export default function SignUpForm() {
         passwordConfirm,
       }).unwrap();
 
-      console.log('response', response);
-    } catch (error: any) {
-      // alert('Error', error.message);
-      console.error(error);
+      Toast.show({
+        type: 'success',
+        position: 'top',
+        text1: 'Welcome👋',
+        text2: 'You are successfully registered',
+        text1Style: {
+          color: colors.primary,
+          fontFamily: 'Inter',
+          fontWeight: '700',
+          fontSize: 18,
+        },
+        text2Style: {
+          color: colors['gray-600'],
+          fontFamily: 'Inter',
+          fontWeight: '400',
+          fontSize: 12,
+        },
+      });
+      router.replace('/(tabs)');
+      // console.log('response', response);
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        visibilityTime: 4000,
+        text1: 'Error',
+        text2: 'Please enter fields correctly and try again',
+        text1Style: {
+          color: colors.red,
+          fontFamily: 'Inter',
+          fontWeight: '700',
+          fontSize: 18,
+        },
+        text2Style: {
+          color: colors['gray-600'],
+          fontFamily: 'Inter',
+          fontWeight: '400',
+          fontSize: 12,
+        },
+      });
+
+      // console.log(error);
     }
   };
+
+  if (isLoading) {
+    return (
+      <view style={styles.loadingContainer}>
+        <ActivityIndicator size={'large'} color={colors['primary-600']} />
+      </view>
+    );
+  }
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -246,6 +297,13 @@ export default function SignUpForm() {
 }
 
 const styles = StyleSheet.create({
+  loadingContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    minHeight: '100%',
+  },
   container: {
     width: '100%',
     padding: 20,

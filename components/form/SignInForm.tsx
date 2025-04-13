@@ -9,6 +9,8 @@ import TextButton from '../TextButton';
 import { router } from 'expo-router';
 import { shadows } from '@/styles/shadows';
 import { useSignInMutation } from '@/redux/api/userApi';
+import Toast from 'react-native-toast-message';
+import { ActivityIndicator } from 'react-native';
 
 const SingInSchema = yup.object({
   email: yup
@@ -29,7 +31,7 @@ type FormData = {
 
 export default function SignInForm() {
   const colors = useColorTheme();
-  const [singIn, { isLoading, isSuccess }] = useSignInMutation();
+  const [singIn, { isLoading }] = useSignInMutation();
 
   const {
     control,
@@ -51,19 +53,59 @@ export default function SignInForm() {
       const response = await singIn({
         email,
         password,
+      }).unwrap();
+
+      Toast.show({
+        type: 'success',
+        position: 'top',
+        text1: 'Welcome👋',
+        text2: 'You have successfully logged in',
+        text1Style: {
+          color: colors.primary,
+          fontFamily: 'Inter',
+          fontWeight: '700',
+          fontSize: 18,
+        },
+        text2Style: {
+          color: colors['gray-600'],
+          fontFamily: 'Inter',
+          fontWeight: '400',
+          fontSize: 12,
+        },
       });
-      console.log('response', response);
+      router.replace('/(tabs)');
+      // console.log('response', response);
     } catch (error) {
-      console.log(error);
+      Toast.show({
+        type: 'error',
+        visibilityTime: 4000,
+        text1: 'Error',
+        text2: 'Invalid email or password',
+        text1Style: {
+          color: colors.red,
+          fontFamily: 'Inter',
+          fontWeight: '700',
+          fontSize: 18,
+        },
+        text2Style: {
+          color: colors['gray-600'],
+          fontFamily: 'Inter',
+          fontWeight: '400',
+          fontSize: 12,
+        },
+      });
+
+      // console.log(error);
     }
   };
 
   if (isLoading) {
-    return <Text>Signing in...</Text>;
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size='large' color={colors['primary-600']} />
+      </View>
+    );
   }
-
-  // if(isSuccess) {
-  // }
 
   return (
     <View style={styles.container}>
@@ -132,6 +174,13 @@ export default function SignInForm() {
 }
 
 const styles = StyleSheet.create({
+  loadingContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    minHeight: '100%',
+  },
   container: {
     display: 'flex',
     gap: 10,
