@@ -50,8 +50,8 @@ export default function RootLayout() {
 
   return (
     <ColorSchemeProvider>
-      {/* <ThemeProvider value={colorScheme === 'dark' ? darkTheme : lightTheme}> */}
       <Provider store={store}>
+        {/* <ThemeProvider value={colorScheme === 'dark' ? darkTheme : lightTheme}> */}
         <ThemeProvider value={lightTheme}>
           <Stack
             screenOptions={{

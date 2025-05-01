@@ -1,15 +1,22 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { setupListeners } from '@reduxjs/toolkit/query/react';
-
-import { userApi } from './api/userApi';
+import { setupListeners } from '@reduxjs/toolkit/query';
+import { authApi } from './apis/authApi';
+import authReducer from './slices/authSlice';
 
 export const store = configureStore({
   reducer: {
-    [userApi.reducerPath]: userApi.reducer,
+    // Add the authApi reducer using its reducerPath
+    [authApi.reducerPath]: authApi.reducer,
+
+    auth: authReducer,
   },
+  // Add middleware for all APIs
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(userApi.middleware),
+    getDefaultMiddleware().concat(authApi.middleware),
+  // .concat(userApi.middleware) // Add middleware for other APIs
 });
 
-// optional, but required for refetchOnFocus/refetchOnReconnect behaviors
 setupListeners(store.dispatch);
+
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;

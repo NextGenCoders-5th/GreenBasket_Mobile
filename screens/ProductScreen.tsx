@@ -1,4 +1,4 @@
-import { View, Text, Image } from 'react-native';
+import { View, Text, Image, ScrollView } from 'react-native';
 import React, { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { sampleProducts } from '@/data/sampleData';
@@ -23,7 +23,7 @@ export default function ProductScreen() {
   };
 
   return (
-    <View
+    <ScrollView
       style={{
         display: 'flex',
         flex: 1,
@@ -243,6 +243,6 @@ export default function ProductScreen() {
         </View>
       )}
       <TextButton title='Add to Cart' style={{}} onPress={() => {}} />
-    </View>
+    </ScrollView>
   );
 }

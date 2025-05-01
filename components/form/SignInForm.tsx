@@ -8,7 +8,7 @@ import * as yup from 'yup';
 import TextButton from '../TextButton';
 import { router } from 'expo-router';
 import { shadows } from '@/styles/shadows';
-import { useSignInMutation } from '@/redux/api/userApi';
+import { useSignInMutation } from '@/redux/apis/authApi';
 import Toast from 'react-native-toast-message';
 import { ActivityIndicator } from 'react-native';
 
@@ -73,8 +73,8 @@ export default function SignInForm() {
           fontSize: 12,
         },
       });
+      console.log('response', response);
       router.replace('/(tabs)');
-      // console.log('response', response);
     } catch (error) {
       Toast.show({
         type: 'error',

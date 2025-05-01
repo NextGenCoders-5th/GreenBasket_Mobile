@@ -19,7 +19,7 @@ import PhoneNumberInput from './PhoneNumberInput';
 import parsePhoneNumberFromString from 'libphonenumber-js';
 import { router } from 'expo-router';
 import ErrorMessage from './ErrorMessage';
-import { useSignUpMutation } from '@/redux/api/userApi';
+import { useSignUpMutation } from '@/redux/apis/authApi';
 import Toast from 'react-native-toast-message';
 
 const phoneNumberValidator = yup
@@ -139,15 +139,15 @@ export default function SignUpForm() {
         },
       });
 
-      // console.log(error);
+      console.log(error);
     }
   };
 
   if (isLoading) {
     return (
-      <view style={styles.loadingContainer}>
+      <View style={styles.loadingContainer}>
         <ActivityIndicator size={'large'} color={colors['primary-600']} />
-      </view>
+      </View>
     );
   }
 
