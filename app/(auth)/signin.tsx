@@ -1,11 +1,4 @@
-import {
-  SafeAreaView,
-  View,
-  Text,
-  Image,
-  StyleSheet,
-  ActivityIndicator,
-} from 'react-native';
+import { SafeAreaView, View, Text, Image, StyleSheet } from 'react-native';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { router } from 'expo-router';
@@ -16,13 +9,12 @@ import { useColorTheme } from '@/hooks/useColorTheme';
 import FloatingLabelInput from '@/components/form/FloatingLableInput';
 import TextButton from '@/components/ui/TextButton';
 import { shadows } from '@/styles/shadows';
-import { useSignInMutation } from '@/redux/api/authApi';
 import { AuthSignInType } from '@/types/auth';
 import { SingInSchema } from '@/utils/validators';
+import { useAuth } from '@/hooks/useAuth';
 
-export default function SignIn() {
+export default function SignInScreen() {
   const colors = useColorTheme();
-  const [singIn, { isLoading }] = useSignInMutation();
 
   const {
     control,
@@ -37,15 +29,12 @@ export default function SignIn() {
     },
   });
 
-  const onSubmit = async (data: AuthSignInType) => {
-    // console.log(data);
-    const { email, password } = data;
-    try {
-      const response = await singIn({
-        email,
-        password,
-      }).unwrap();
+  const { signIn, isLoading } = useAuth();
 
+  const onSubmit = async (formData: AuthSignInType) => {
+    const { success, error } = await signIn(formData);
+
+    if (success) {
       Toast.show({
         type: 'success',
         position: 'top',
@@ -64,14 +53,14 @@ export default function SignIn() {
           fontSize: 12,
         },
       });
-      console.log('response', response);
+
       router.replace('/(tabs)');
-    } catch (error) {
+    } else {
       Toast.show({
         type: 'error',
         visibilityTime: 4000,
-        text1: 'Error',
-        text2: 'Invalid email or password',
+        text1: 'Sign in failed',
+        text2: error || 'Invalid email or password',
         text1Style: {
           color: colors.red,
           fontFamily: 'Inter',
@@ -83,20 +72,11 @@ export default function SignIn() {
           fontFamily: 'Inter',
           fontWeight: '400',
           fontSize: 12,
+          wordWrap: 'wrap',
         },
       });
-
-      // console.log(error);
     }
   };
-
-  if (isLoading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size='large' color={colors['primary-600']} />
-      </View>
-    );
-  }
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors['primary-50'] }}>
@@ -146,6 +126,7 @@ export default function SignIn() {
               color: colors['gray-50'],
             }}
             disabled={isLoading}
+            isLoading={isLoading}
           />
           <View style={styles.noAccountContainer}>
             <Text

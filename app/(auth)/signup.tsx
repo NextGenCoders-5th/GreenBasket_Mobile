@@ -18,15 +18,13 @@ import { IconButton } from '@/components/ui/IconButton';
 import TextButton from '@/components/ui/TextButton';
 import PhoneNumberInput from '@/components/form/PhoneNumberInput';
 import ErrorMessage from '@/components/ui/ErrorMessage';
-import { useSignUpMutation } from '@/redux/api/authApi';
 import { SignUpschema } from '@/utils/validators';
 import { SignUpFormType } from '@/types/auth';
 import { useColorTheme } from '@/hooks/useColorTheme';
+import { useAuth } from '@/hooks/useAuth';
 
-export default function SignUp() {
+export default function SignUpScreen() {
   const colors = useColorTheme();
-
-  const [signup, { isLoading }] = useSignUpMutation();
 
   const {
     control,
@@ -44,24 +42,23 @@ export default function SignUp() {
     },
   });
 
-  const onSubmit = async (data: SignUpFormType) => {
-    // console.log('data', data);
+  const { signUp, isLoading } = useAuth();
 
-    const { email, phoneNumber, password, passwordConfirm } = data;
+  const onSubmit = async (formData: SignUpFormType) => {
+    const { email, phoneNumber, password, passwordConfirm } = formData;
+    const { success, error } = await signUp({
+      email,
+      phoneNumber,
+      password,
+      passwordConfirm,
+    });
 
-    try {
-      const response = await signup({
-        email,
-        phoneNumber,
-        password,
-        passwordConfirm,
-      }).unwrap();
-
+    if (success) {
       Toast.show({
         type: 'success',
         position: 'top',
         text1: 'Welcome👋',
-        text2: 'You are successfully registered',
+        text2: 'Successfully registered',
         text1Style: {
           color: colors.primary,
           fontFamily: 'Inter',
@@ -75,14 +72,13 @@ export default function SignUp() {
           fontSize: 12,
         },
       });
-      router.replace('/(tabs)');
-      // console.log('response', response);
-    } catch (error) {
+      router.replace('/(auth)/signin');
+    } else {
       Toast.show({
         type: 'error',
         visibilityTime: 4000,
-        text1: 'Error',
-        text2: 'Please enter fields correctly and try again',
+        text1: 'Sign up failed',
+        text2: error || 'User with this email or phone number already exists',
         text1Style: {
           color: colors.red,
           fontFamily: 'Inter',
@@ -94,10 +90,9 @@ export default function SignUp() {
           fontFamily: 'Inter',
           fontWeight: '400',
           fontSize: 12,
+          wordWrap: 'wrap',
         },
       });
-
-      console.log(error);
     }
   };
 
@@ -145,17 +140,11 @@ export default function SignUp() {
 
           {/* Phone Number */}
           <View style={styles.inputContainer}>
-            {/* <PhoneNumberInput
-            control={control}
-            name='phoneNumber'
-            label='Phone number'
-          /> */}
-            <FloatingLabelInput
+            <PhoneNumberInput
               control={control}
               name='phoneNumber'
-              label='Phone Number'
-              placeholder='Phone Number'
-              // icon='call'
+              label='Phone number'
+              placeholder='9/7xxxxxxxx'
             />
           </View>
 
