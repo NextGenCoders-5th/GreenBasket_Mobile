@@ -1,4 +1,5 @@
 import { useColorTheme } from '@/hooks/useColorTheme';
+import { isLoading } from 'expo-font';
 import React, { useMemo } from 'react';
 import {
   Text,
@@ -6,11 +7,14 @@ import {
   StyleSheet,
   TouchableOpacityProps,
   TextStyle,
+  ActivityIndicator,
 } from 'react-native';
 
 interface TextButtonProps extends TouchableOpacityProps {
   title: string;
   titleStyle?: TextStyle;
+  isLoading?: boolean;
+  loadingColor?: string;
   onPress: () => void;
 }
 
@@ -19,6 +23,8 @@ const TextButton: React.FC<TextButtonProps> = ({
   titleStyle,
   onPress,
   style,
+  isLoading = false,
+  loadingColor = '#fff',
   ...props
 }) => {
   const colors = useColorTheme();
@@ -51,7 +57,11 @@ const TextButton: React.FC<TextButtonProps> = ({
       style={[styles.button, style]}
       {...props}
     >
-      <Text style={[styles.title, titleStyle]}>{title}</Text>
+      {isLoading ? (
+        <ActivityIndicator color={loadingColor} size='small' />
+      ) : (
+        <Text style={[styles.title, titleStyle]}>{title}</Text>
+      )}
     </TouchableOpacity>
   );
 };
