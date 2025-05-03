@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 4,
     fontFamily: 'Inter',
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: '400',
   },
 });
