@@ -1,7 +1,200 @@
 import { View, Text } from 'react-native';
 import React from 'react';
-import HomeScreen from '@/components/home/HomeScreen';
+import { TextInput, ScrollView, Image } from 'react-native';
+import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Link, router } from 'expo-router';
+
+import { sampleProducts } from '@/data/sampleData';
+import ProductCard from '@/components/product/ProductCard';
+import { useColorTheme } from '@/hooks/useColorTheme';
+import TextButton from '@/components/ui/TextButton';
 
 export default function Home() {
-  return <HomeScreen />;
+  const colors = useColorTheme();
+
+  return (
+    <ScrollView
+      style={{
+        display: 'flex',
+        padding: 5,
+        marginBottom: 10,
+      }}
+    >
+      {/* Location and Search Bar */}
+      <View
+        style={{
+          marginBottom: 10,
+        }}
+      >
+        {/* <View
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: 10,
+            gap: 5,
+          }}
+        >
+          <MaterialCommunityIcons
+            name="map-marker"
+            size={24}
+            color={colors.blue}
+          />
+          <Text
+            style={{
+              fontSize: 16,
+              fontFamily: 'SpaceMono',
+              fontWeight: '500',
+              color: colors['gray-600'],
+            }}
+          >
+            Kebele 10, Poli
+          </Text>
+        </View> */}
+
+        <View
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            flexDirection: 'row',
+            flex: 1,
+            borderRadius: 50,
+            borderColor: colors['gray-300'],
+            borderWidth: 2,
+            backgroundColor: colors.background,
+            marginHorizontal: 5,
+          }}
+        >
+          <AntDesign
+            name='search1'
+            size={22}
+            color={colors['gray-300']}
+            style={{ paddingLeft: 10 }}
+          />
+          <TextInput
+            placeholder='Search...'
+            style={{
+              color: colors['gray-700'],
+              flex: 1,
+              paddingVertical: 15,
+              paddingHorizontal: 10,
+              borderRadius: 50,
+              fontSize: 16,
+              fontFamily: 'Inter',
+              fontWeight: '500',
+              outline: 'none',
+            }}
+          />
+        </View>
+      </View>
+
+      {/* Banner */}
+      {/* <View>
+        <Image
+          source={require('@/assets/images/products/vegetables.jpg')}
+          style={{ width: 96, height: 96, borderRadius: 12 }}
+        />
+      </View> */}
+
+      {/* Exclusive Offer */}
+      <View
+        style={{
+          marginBottom: 15,
+        }}
+      >
+        <View
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            paddingHorizontal: 10,
+            paddingVertical: 10,
+          }}
+        >
+          <Text
+            style={{
+              fontFamily: 'Inter',
+              fontSize: 22,
+              fontWeight: '700',
+              color: colors['gray-900'],
+            }}
+          >
+            Exclusive Offer
+          </Text>
+          <Link href={'/(product)/20'}>
+            <Text
+              style={{
+                color: colors['primary-600'],
+                textDecorationLine: 'underline',
+                fontFamily: 'Inter',
+                fontWeight: '500',
+                fontSize: 16,
+              }}
+            >
+              See all
+            </Text>
+          </Link>
+        </View>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          {sampleProducts.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </ScrollView>
+      </View>
+
+      {/* Best Selling */}
+      <View
+        style={{
+          marginBottom: 15,
+        }}
+      >
+        <View
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            paddingHorizontal: 10,
+            paddingVertical: 10,
+          }}
+        >
+          <Text
+            style={{
+              fontFamily: 'Inter',
+              fontSize: 22,
+              fontWeight: '700',
+              color: colors['gray-900'],
+            }}
+          >
+            Best Selling
+          </Text>
+          <Link href={'/(product)/22'}>
+            <Text
+              style={{
+                color: colors['primary-500'],
+                textDecorationLine: 'underline',
+                fontFamily: 'Inter',
+                fontWeight: '500',
+                fontSize: 16,
+              }}
+            >
+              See all
+            </Text>
+          </Link>
+        </View>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          {sampleProducts.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </ScrollView>
+
+        <TextButton
+          title='sign up'
+          onPress={() => router.navigate('/signup')}
+        />
+      </View>
+    </ScrollView>
+  );
 }

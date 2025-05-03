@@ -59,9 +59,12 @@ export default function RootLayout() {
               header: () => <CustomHeader />,
             }}
           >
-            <Stack.Screen name='(tabs)' />
-            <Stack.Screen name='product' />
             <Stack.Screen name='(auth)' />
+            <Stack.Screen name='(cart)' />
+            <Stack.Screen name='(order)' />
+            <Stack.Screen name='(product)' />
+            <Stack.Screen name='(profile)' />
+            <Stack.Screen name='(tabs)' />
 
             <Stack.Screen name='+not-found' />
           </Stack>

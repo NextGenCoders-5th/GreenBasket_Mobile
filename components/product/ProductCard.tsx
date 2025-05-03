@@ -42,7 +42,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, style }) => {
         }}
       >
         <Image source={product.image} style={styles.image} />
-        <Link href={'/product'}>
+        <Link href={'/(product)/33'} asChild>
           <Text style={{ ...styles.title, color: colors['gray-800'] }}>
             {product.title}
           </Text>

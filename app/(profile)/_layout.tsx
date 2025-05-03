@@ -3,7 +3,7 @@ import { Stack } from 'expo-router';
 import { useColorTheme } from '@/hooks/useColorTheme';
 import CustomHeader from '@/components/ui/CustomHeader';
 
-export default function _layout() {
+export default function ProfileLayout() {
   const colors = useColorTheme();
   return (
     <Stack screenOptions={{ headerShown: false }}>
