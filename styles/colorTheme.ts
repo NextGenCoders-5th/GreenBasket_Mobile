@@ -1,6 +1,6 @@
 import { DarkTheme, DefaultTheme } from '@react-navigation/native';
 
-import { Colors } from '@/constants/Colors';
+import { Colors } from '@/styles/colors';
 import { CustomTheme } from '@/types/theme';
 
 const lightTheme: CustomTheme = {

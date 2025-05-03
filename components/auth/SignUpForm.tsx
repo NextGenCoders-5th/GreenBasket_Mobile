@@ -12,14 +12,14 @@ import * as yup from 'yup';
 
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useColorTheme } from '@/hooks/useColorTheme';
-import FloatingLabelInput from './FloatingLableInput';
-import { IconButton } from '../IconButton';
-import TextButton from '../TextButton';
-import PhoneNumberInput from './PhoneNumberInput';
+import FloatingLabelInput from '@/components/form/FloatingLableInput';
+import { IconButton } from '../ui/IconButton';
+import TextButton from '../ui/TextButton';
+import PhoneNumberInput from '@/components/form/PhoneNumberInput';
 import parsePhoneNumberFromString from 'libphonenumber-js';
 import { router } from 'expo-router';
-import ErrorMessage from './ErrorMessage';
-import { useSignUpMutation } from '@/redux/apis/authApi';
+import ErrorMessage from '@/components/ui/ErrorMessage';
+import { useSignUpMutation } from '@/redux/api/authApi';
 import Toast from 'react-native-toast-message';
 
 const phoneNumberValidator = yup

@@ -7,7 +7,7 @@ import {
 import Constants from 'expo-constants';
 import { RootState } from '../store'; // Adjust path if needed
 import { logOut } from '../slices/authSlice'; // Adjust path if needed
-import { API_BASE_URL_DEV } from '@/constants/env';
+import { API_BASE_URL_DEV } from '@/config/env';
 
 // --- Configure Base URL ---
 const baseUrl = Constants.expoConfig?.extra?.apiUrl || API_BASE_URL_DEV; // Your base URL with /api/v1/

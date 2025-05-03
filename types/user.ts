@@ -1,4 +1,4 @@
-import { AuthProvider, UserRole, UserStatus } from '@/constants/enums';
+import { AuthProvider, UserRole, UserStatus } from '@/config/enums';
 import { VendorType } from './vendor';
 import { AddressType } from './address';
 import { OrderType } from './order';

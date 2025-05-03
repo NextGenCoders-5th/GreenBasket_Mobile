@@ -1,4 +1,4 @@
-import { CartStatus } from '@/constants/enums';
+import { CartStatus } from '@/config/enums';
 import { CartItemType } from './cartItem';
 import { UserType } from './user';
 

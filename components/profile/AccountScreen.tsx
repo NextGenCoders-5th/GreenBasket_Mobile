@@ -9,8 +9,8 @@ import {
 import React from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { useColorTheme } from '@/hooks/useColorTheme';
-import { IconButton } from '@/components/IconButton';
-import TextButton from '@/components/TextButton';
+import { IconButton } from '@/components/ui/IconButton';
+import TextButton from '@/components/ui/TextButton';
 import { router } from 'expo-router';
 
 export default function AccountScreen() {

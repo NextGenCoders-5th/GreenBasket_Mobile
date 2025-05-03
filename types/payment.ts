@@ -1,4 +1,4 @@
-import { PaymentStatus } from '@/constants/enums';
+import { PaymentStatus } from '@/config/enums';
 import { OrderType } from './order';
 
 export interface PaymentType {

@@ -1,4 +1,4 @@
-import { OrderStatus } from '@/constants/enums';
+import { OrderStatus } from '@/config/enums';
 import { OrderItemType } from './orderItem';
 import { PaymentType } from './payment';
 import { UserType } from './user';

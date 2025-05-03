@@ -1,4 +1,4 @@
-import { CategoryStatus, ProductStatus } from '@/constants/enums';
+import { CategoryStatus, ProductStatus } from '@/config/enums';
 import { VendorType } from './vendor';
 import { OrderItemType } from './orderItem';
 

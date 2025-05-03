@@ -4,9 +4,9 @@ import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Link, router } from 'expo-router';
 
 import { sampleProducts } from '@/data/sampleData';
-import ProductCard from '@/components/ProductCard';
+import ProductCard from '@/components/ui/ProductCard';
 import { useColorTheme } from '@/hooks/useColorTheme';
-import TextButton from '@/components/TextButton';
+import TextButton from '@/components/ui/TextButton';
 
 const HomeScreen = () => {
   const colors = useColorTheme();

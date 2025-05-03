@@ -1,14 +1,14 @@
 import { View, Text, Image, StyleSheet } from 'react-native';
 import React from 'react';
 import { useColorTheme } from '@/hooks/useColorTheme';
-import FloatingLabelInput from './FloatingLableInput';
+import FloatingLabelInput from '@/components/form/FloatingLableInput';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import TextButton from '../TextButton';
+import TextButton from '../ui/TextButton';
 import { router } from 'expo-router';
 import { shadows } from '@/styles/shadows';
-import { useSignInMutation } from '@/redux/apis/authApi';
+import { useSignInMutation } from '@/redux/api/authApi';
 import Toast from 'react-native-toast-message';
 import { ActivityIndicator } from 'react-native';
 

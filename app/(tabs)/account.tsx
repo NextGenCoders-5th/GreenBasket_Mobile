@@ -1,6 +1,6 @@
 import { Dimensions, SafeAreaView } from 'react-native';
 import React from 'react';
-import AccountScreen from '@/screens/AccountScreen';
+import AccountScreen from '@/components/profile/AccountScreen';
 import { useColorTheme } from '@/hooks/useColorTheme';
 
 export default function Account() {

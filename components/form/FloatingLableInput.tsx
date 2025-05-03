@@ -3,8 +3,8 @@ import { Animated, StyleSheet, TextInput, View } from 'react-native';
 import { Control, Controller, FieldValues, Path } from 'react-hook-form';
 import { useColorTheme } from '@/hooks/useColorTheme';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import { IconButton } from '../IconButton';
-import ErrorMessage from './ErrorMessage';
+import { IconButton } from '../ui/IconButton';
+import ErrorMessage from '../ui/ErrorMessage';
 
 type FloatingLabelInputProps<T extends FieldValues> = {
   control: Control<T>;

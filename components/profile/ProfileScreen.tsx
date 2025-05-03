@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 import React from 'react';
 import { useColorTheme } from '@/hooks/useColorTheme';
-import ImageButton from '@/components/ImageButton';
+import ImageButton from '@/components/ui/ImageButton';
 import { router } from 'expo-router';
 
 export default function ProfileScreen() {

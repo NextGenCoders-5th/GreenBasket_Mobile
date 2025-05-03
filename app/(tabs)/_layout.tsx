@@ -2,7 +2,7 @@ import React from 'react';
 import { Tabs } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useColorTheme } from '@/hooks/useColorTheme';
-import CustomHeader from '@/components/CustomHeader';
+import CustomHeader from '@/components/ui/CustomHeader';
 
 export default function TabsLayout() {
   const colors = useColorTheme();

@@ -1,4 +1,4 @@
-import { VendorStatus } from '@/constants/enums';
+import { VendorStatus } from '@/config/enums';
 import { UserType } from './user';
 import { AddressType } from './address';
 import { ProductType } from './product';

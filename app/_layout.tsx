@@ -8,11 +8,11 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 import Toast from 'react-native-toast-message';
 
-import { darkTheme, lightTheme } from '@/hooks/colorTheme';
+import { darkTheme, lightTheme } from '@/styles/colorTheme';
 import { StyleSheet, useColorScheme } from 'react-native';
 import { ColorSchemeProvider } from '@/contexts/ColorSchmeContext';
 import { useColorTheme } from '@/hooks/useColorTheme';
-import CustomHeader from '@/components/CustomHeader';
+import CustomHeader from '@/components/ui/CustomHeader';
 import { Provider } from 'react-redux';
 import { store } from '@/redux/store';
 

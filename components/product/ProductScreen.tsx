@@ -2,9 +2,9 @@ import { View, Text, Image, ScrollView } from 'react-native';
 import React, { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { sampleProducts } from '@/data/sampleData';
-import TextButton from '@/components/TextButton';
+import TextButton from '@/components/ui/TextButton';
 import { useColorTheme } from '@/hooks/useColorTheme';
-import { IconButton } from '@/components/IconButton';
+import { IconButton } from '@/components/ui/IconButton';
 
 export default function ProductScreen() {
   const colors = useColorTheme();
