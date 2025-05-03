@@ -6,6 +6,9 @@ export interface AuthSignUpType {
   password: string;
   passwordConfirm: string;
 }
+export interface SignUpFormType extends AuthSignUpType {
+  agreeToTerms: boolean;
+}
 
 export interface AuthSignUpResponseType {
   data: {
