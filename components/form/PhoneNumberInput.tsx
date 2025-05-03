@@ -1,230 +1,162 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { TextInput, View, Text, Animated } from 'react-native';
-import { Controller, Control, FieldValues, Path } from 'react-hook-form';
-import CountryPicker, {
-  Country,
-  CountryCode as PickerCountryCode,
-  DARK_THEME,
-} from 'react-native-country-picker-modal';
-import {
-  Examples,
-  CountryCode as LibPhoneCountryCode,
-  NationalNumber,
-  getExampleNumber,
-  parsePhoneNumberFromString,
-} from 'libphonenumber-js';
-
+import { Animated, StyleSheet, TextInput, View, Text } from 'react-native';
+import { Control, Controller, FieldValues, Path } from 'react-hook-form';
 import { useColorTheme } from '@/hooks/useColorTheme';
-import examples from '@/utils/examples.mobile.json';
-import { useColorSchemeContext } from '@/contexts/ColorSchmeContext';
+import ErrorMessage from '../ui/ErrorMessage';
 
 type PhoneNumberInputProps<T extends FieldValues> = {
   control: Control<T>;
   name: Path<T>;
   label: string;
+  placeholder: string;
 };
-
-const convertToExamples = (data: Record<string, string>): Examples => {
-  return Object.keys(data).reduce((acc, key) => {
-    acc[key as keyof Examples] = data[key] as NationalNumber;
-    return acc;
-  }, {} as Examples);
-};
-
-const convertedExamples = convertToExamples(examples);
 
 export default function PhoneNumberInput<T extends FieldValues>({
   control,
   name,
   label,
+  placeholder,
 }: PhoneNumberInputProps<T>) {
-  const [countryCode, setCountryCode] = useState<PickerCountryCode>('ET');
-  const [callingCode, setCallingCode] = useState<string>('251');
-  const [placeholder, setPlaceholder] = useState<string>('');
   const [isFocused, setIsFocused] = useState(false);
+
   const position = useRef(
     new Animated.Value(!!control._formValues[name] ? -12 : 15)
   ).current;
 
-  const opacity = useRef(
-    new Animated.Value(!!control._formValues[name] ? 1 : 0)
-  ).current;
-
   const colors = useColorTheme();
-
-  // Handle country selection
-  const handleSelectCountry = (country: Country) => {
-    setCountryCode(country.cca2 as PickerCountryCode);
-    setCallingCode(country.callingCode[0]);
-  };
-
-  const colorScheme = useColorSchemeContext();
-
-  // Update placeholder with sample phone number when country changes
-  useEffect(() => {
-    const exampleNumber = getExampleNumber(
-      countryCode as LibPhoneCountryCode,
-      convertedExamples
-    );
-    if (exampleNumber) {
-      setPlaceholder(exampleNumber.nationalNumber);
-    } else {
-      setPlaceholder('');
-    }
-  }, [countryCode]);
 
   return (
     <Controller
       control={control}
       name={name}
-      render={({ field: { onChange, onBlur, value } }) => {
+      render={({
+        field: { onChange, onBlur, value },
+        fieldState: { error },
+      }) => {
         useEffect(() => {
-          // const shouldShow = isFocused || !!value;
-          const shouldShow =
-            isFocused || value?.replace(`+${callingCode}`, '') !== '';
-
-          Animated.parallel([
-            Animated.timing(position, {
-              toValue: shouldShow ? -12 : 15,
-              duration: 100,
-              useNativeDriver: false,
-            }),
-            Animated.timing(opacity, {
-              toValue: shouldShow ? 1 : 0,
-              duration: 150,
-              useNativeDriver: false,
-            }),
-          ]).start();
+          const shouldMoveUp = isFocused || !!value;
+          Animated.timing(position, {
+            toValue: shouldMoveUp ? 0 : 15,
+            duration: 150,
+            useNativeDriver: false,
+          }).start();
         }, [isFocused, value]);
 
-        // Ensure country code is added to value when callingCode changes
-        useEffect(() => {
-          if (value && !value.startsWith(`+${callingCode}`)) {
-            onChange(`+${callingCode}${value.replace(/^\+?\d+/, '')}`);
-          }
-        }, [callingCode, value, onChange]);
-
-        useEffect(() => {
-          if (placeholder) {
-            onChange('');
-          }
-        }, [placeholder]);
-
-        const handlePhoneNumberChange = (input: string) => {
-          if (input === '') {
-            onChange('');
-            return;
-          }
-
-          const formattedInput = `+${callingCode}${input.replace(
-            new RegExp(`^\\+?${callingCode}`),
-            ''
-          )}`;
-
-          const phoneNumber = parsePhoneNumberFromString(formattedInput);
-
-          if (phoneNumber?.isValid()) {
-            onChange(phoneNumber.formatInternational());
-          } else {
-            onChange(formattedInput);
-          }
+        // Handle phone number change (only allow 9 digits)
+        const handlePhoneChange = (text: string) => {
+          const digitsOnly = text.replace(/\D/g, '');
+          // Limit to 9 digits
+          onChange(digitsOnly.slice(0, 9));
         };
 
         return (
-          <View
-            style={{
-              width: '100%',
-              position: 'relative',
-            }}
-          >
-            {/* Label */}
-            <Animated.Text
-              style={{
-                position: 'absolute',
-                left: 6,
-                top: position,
-                fontFamily: 'Inter',
-                fontSize: 16,
-                color: isFocused || value ? colors.primary : colors['gray-500'],
-                fontWeight: '600',
-                backgroundColor: colors['gray-50'],
-                opacity,
-                zIndex: 1,
-                pointerEvents: 'none',
-              }}
-            >
-              {label}
-            </Animated.Text>
-
+          <View style={{ gap: 2 }}>
             <View
               style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                borderWidth: 1,
-                borderColor: isFocused ? colors.primary : colors['gray-400'],
-                borderRadius: 5,
-                paddingLeft: 8,
-                backgroundColor: colors['gray-50'],
+                ...styles.container,
+                backgroundColor: colors.background,
+                borderColor: error
+                  ? colors.red
+                  : isFocused
+                  ? colors.primary
+                  : colors['gray-400'],
+                borderWidth: isFocused ? 2 : 1,
               }}
             >
-              {/* Country Picker */}
-              <CountryPicker
-                key={colorScheme}
-                withFlag
-                withCallingCode
-                withFilter
-                withAlphaFilter
-                withEmoji
-                onSelect={handleSelectCountry}
-                countryCode={countryCode}
-                containerButtonStyle={{
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  height: 26,
-                  width: 36,
-                  zIndex: 10,
-                }}
-                {...(colorScheme === 'dark' ? { theme: DARK_THEME } : {})}
-              />
-
-              {/* Country Code Display */}
-              <Text
+              {/* Label */}
+              <Animated.Text
                 style={{
-                  color: colors['gray-700'],
-                  fontFamily: 'inter',
-                  fontSize: 16,
-                  fontWeight: '200',
-                  marginRight: 10,
+                  ...styles.label,
+                  top: position,
+                  fontSize: isFocused || value ? 12 : 14,
+                  color: colors['gray-600'],
+                  backgroundColor: colors.background,
+                  display: isFocused || value ? 'flex' : 'none',
                 }}
               >
-                +{callingCode}
-              </Text>
-
-              {/* Input */}
-              <TextInput
+                {label}
+              </Animated.Text>
+              <View
                 style={{
                   flex: 1,
-                  fontFamily: 'Inter',
-                  paddingVertical: 15,
-                  fontSize: 16,
-                  fontWeight: '200',
-                  color: colors['gray-700'],
-                  outline: 'none',
+                  gap: 4,
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  top: isFocused || value ? 5 : 0,
                 }}
-                onBlur={() => {
-                  onBlur();
-                  setIsFocused(false);
-                }}
-                onFocus={() => setIsFocused(true)}
-                onChangeText={handlePhoneNumberChange}
-                value={value?.replace(`+${callingCode}`, '') || ''}
-                placeholder={placeholder}
-                keyboardType='phone-pad'
-              />
+              >
+                {/* Fixed Country Code */}
+                <View style={styles.countryCodeContainer}>
+                  <Text
+                    style={[
+                      styles.countryCodeText,
+                      { color: colors['gray-600'] },
+                    ]}
+                  >
+                    +251
+                  </Text>
+                </View>
+
+                {/* Phone Number Input (9 digits) */}
+                <TextInput
+                  keyboardType='phone-pad'
+                  placeholder={isFocused ? '' : placeholder}
+                  placeholderTextColor={colors['gray-600']}
+                  onBlur={() => {
+                    onBlur();
+                    setIsFocused(false);
+                  }}
+                  onFocus={() => setIsFocused(true)}
+                  onChangeText={handlePhoneChange}
+                  value={value} // Value from react-hook-form (9 digits)
+                  style={{
+                    ...styles.input,
+                    color: colors['gray-800'],
+                    outline: 'none',
+                  }}
+                  maxLength={9} // Enforce 9 digits max
+                />
+              </View>
             </View>
+            {error && <ErrorMessage message={error.message!} />}
           </View>
         );
       }}
     />
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 4,
+    borderRadius: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+  },
+  label: {
+    position: 'absolute',
+    left: 2,
+    fontFamily: 'Inter',
+    fontWeight: '400',
+    paddingHorizontal: 4,
+    zIndex: 1,
+  },
+  input: {
+    flex: 1,
+    paddingVertical: 10,
+    paddingHorizontal: 4,
+    fontFamily: 'Inter',
+    fontSize: 12,
+    fontWeight: '400',
+  },
+  countryCodeContainer: {
+    justifyContent: 'center',
+  },
+  countryCodeText: {
+    fontSize: 12, // Match input font size
+    fontFamily: 'Inter',
+    fontWeight: '400',
+  },
+});

@@ -13,13 +13,7 @@ export const SingInSchema = yup.object({
   password: yup.string().required('Password is required'),
 });
 
-export const phoneNumberValidator = yup
-  .string()
-  .test('is-valid-phone', 'Invalid phone number', (value) => {
-    if (!value) return false;
-    const phoneNumber = parsePhoneNumberFromString(value);
-    return phoneNumber?.isValid() || false;
-  });
+const ethiopianPhoneRegex = /^[79]\d{8}$/;
 
 export const SignUpschema = yup.object({
   email: yup
@@ -31,7 +25,14 @@ export const SignUpschema = yup.object({
       'Invalid email address'
     ),
 
-  phoneNumber: yup.string().required('Phone number is required'),
+  phoneNumber: yup
+    .string()
+    .required('Phone number is required')
+    .length(9, 'Please enter exactly 9 digits')
+    .matches(
+      ethiopianPhoneRegex,
+      'Enter a valid phone number (starting with 9 or 7)'
+    ),
 
   password: yup
     .string()
