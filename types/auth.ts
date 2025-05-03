@@ -34,11 +34,7 @@ export interface AuthSignInResponseType {
     data: {
       accessToken: string;
       refreshToken: string;
-      data: {
-        accessToken: string;
-        refreshToken: string;
-        user: UserType;
-      };
+      user: UserType;
     };
   };
 }
@@ -47,5 +43,14 @@ export interface AuthRefreshTokenResponseType {
   data: {
     accessToken: string;
     refreshToken: string;
+  };
+}
+
+export interface AuthErrorType {
+  status: number;
+  data: {
+    message: string;
+    error: string;
+    statusCode: number;
   };
 }

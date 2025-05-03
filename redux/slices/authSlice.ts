@@ -1,21 +1,23 @@
-// src/redux/slices/authSlice.ts
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import { UserType } from '@/types/user';
 import { RootState } from '@/redux/store';
-import { UserType } from '@/types/user'; // Adjust path
-import { removeToken, storeToken } from '@/utils/tokenStorage'; // Adjust path
 
 interface AuthState {
   user: UserType | null;
-  token: string | null; // This will be the ACCESS token
-  // refreshToken: string | null; // Optional: Store refresh token separately if needed
+  accessToken: string | null;
+  refreshToken: string | null;
   isAuthenticated: boolean;
+  isLoading: boolean;
 }
 
 const initialState: AuthState = {
   user: null,
-  token: null,
-  // refreshToken: null,
+  accessToken: null,
+  refreshToken: null,
   isAuthenticated: false,
+  isLoading: true,
 };
 
 const authSlice = createSlice({
@@ -26,68 +28,68 @@ const authSlice = createSlice({
       state,
       action: PayloadAction<{
         user: UserType;
-        token: string /*; refreshToken?: string*/;
+        accessToken: string;
+        refreshToken: string;
       }>
     ) => {
-      const { user, token /*, refreshToken */ } = action.payload;
+      const { user, accessToken, refreshToken } = action.payload;
       state.user = user;
-      state.token = token;
-      // state.refreshToken = refreshToken ?? state.refreshToken; // Store refresh token if provided
+      state.accessToken = accessToken;
+      state.refreshToken = refreshToken;
       state.isAuthenticated = true;
-      console.log('[AuthSlice] Credentials set, storing token...');
-      storeToken(token); // Store the ACCESS token
-      // Store refresh token separately if needed (e.g., in SecureStore with a different key)
+      state.isLoading = false;
+
+      // Store tokens in AsyncStorage
+      AsyncStorage.setItem('accessToken', accessToken);
+      AsyncStorage.setItem('refreshToken', refreshToken);
+      AsyncStorage.setItem('user', JSON.stringify(user));
     },
-    /**
-     * Updates only the access token in the state. Useful after token refresh.
-     */
-    setToken: (state, action: PayloadAction<{ token: string }>) => {
-      state.token = action.payload.token;
-      state.isAuthenticated = !!state.token; // Ensure auth status reflects token presence
-      console.log('[AuthSlice] Token updated, storing new token...');
-      storeToken(action.payload.token);
+    updateTokens: (
+      state,
+      action: PayloadAction<{
+        accessToken: string;
+        refreshToken: string;
+      }>
+    ) => {
+      const { accessToken, refreshToken } = action.payload;
+      state.accessToken = accessToken;
+      state.refreshToken = refreshToken;
+
+      // Update tokens in AsyncStorage
+      AsyncStorage.setItem('accessToken', accessToken);
+      AsyncStorage.setItem('refreshToken', refreshToken);
     },
-    logOut: (state) => {
-      console.log('[AuthSlice] Logging out, clearing state and token...');
+    clearCredentials: (state) => {
       state.user = null;
-      state.token = null;
-      // state.refreshToken = null;
+      state.accessToken = null;
+      state.refreshToken = null;
       state.isAuthenticated = false;
-      removeToken(); // Remove the ACCESS token
-      // Remove refresh token from storage if applicable
+      state.isLoading = false;
+
+      // Remove tokens from AsyncStorage
+      AsyncStorage.removeItem('accessToken');
+      AsyncStorage.removeItem('refreshToken');
+      AsyncStorage.removeItem('user');
     },
-    loadToken: (state, action: PayloadAction<{ token: string | null }>) => {
-      state.token = action.payload.token; // Load ACCESS token
-      state.isAuthenticated = !!action.payload.token;
-      if (!state.token) {
-        state.user = null;
-      }
-      console.log(
-        '[AuthSlice] Token loaded from storage:',
-        state.isAuthenticated ? 'Found' : 'Not Found'
-      );
-      // Load refresh token from storage if applicable
-    },
-    setUser: (state, action: PayloadAction<{ user: UserType }>) => {
-      state.user = action.payload.user;
-      if (action.payload.user && state.token) {
-        state.isAuthenticated = true;
-      }
+    setAuthLoading: (state, action: PayloadAction<boolean>) => {
+      state.isLoading = action.payload;
     },
   },
 });
 
-// Export all actions
-export const { setCredentials, setToken, logOut, loadToken, setUser } =
-  authSlice.actions;
+export const {
+  setCredentials,
+  updateTokens,
+  clearCredentials,
+  setAuthLoading,
+} = authSlice.actions;
 
 export default authSlice.reducer;
 
-// Selectors remain the same
-export const selectIsAuthenticated = (state: RootState): boolean =>
+// Selectors
+export const selectCurrentUser = (state: RootState) => state.auth.user;
+export const selectIsAuthenticated = (state: RootState) =>
   state.auth.isAuthenticated;
-export const selectCurrentUser = (state: RootState): UserType | null =>
-  state.auth.user;
-export const selectCurrentToken = (state: RootState): string | null =>
-  state.auth.token;
-// export const selectRefreshToken = (state: RootState): string | null => state.auth.refreshToken;
+export const selectIsAuthLoading = (state: RootState) => state.auth.isLoading;
+export const selectAccessToken = (state: RootState) => state.auth.accessToken;
+export const selectRefreshToken = (state: RootState) => state.auth.refreshToken;
