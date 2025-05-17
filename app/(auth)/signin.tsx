@@ -54,7 +54,7 @@ export default function SignInScreen() {
         },
       });
 
-      router.replace('/(tabs)');
+      router.replace('/(tabs)/home');
     } else {
       Toast.show({
         type: 'error',

@@ -5,9 +5,10 @@ import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Link, router } from 'expo-router';
 
 import { sampleProducts } from '@/data/sampleData';
-import ProductCard from '@/components/product/ProductCard';
+import ProductCardV1 from '@/components/product/ProductCard-v1';
 import { useColorTheme } from '@/hooks/useColorTheme';
 import TextButton from '@/components/ui/TextButton';
+import Products from '@/components/product/products';
 
 export default function Home() {
   const colors = useColorTheme();
@@ -139,7 +140,7 @@ export default function Home() {
         </View>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           {sampleProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCardV1 key={product.id} product={product} />
           ))}
         </ScrollView>
       </View>
@@ -186,7 +187,7 @@ export default function Home() {
         </View>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           {sampleProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCardV1 key={product.id} product={product} />
           ))}
         </ScrollView>
 
@@ -195,6 +196,7 @@ export default function Home() {
           onPress={() => router.navigate('/signup')}
         />
       </View>
+      {/* <Products /> */}
     </ScrollView>
   );
 }

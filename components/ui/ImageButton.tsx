@@ -12,7 +12,7 @@ import {
 import { useColorTheme } from '@/hooks/useColorTheme';
 
 interface ImageButtonProps {
-  imageUrl: ImageSourcePropType;
+  imageUrl: ImageSourcePropType | string;
   onPress: () => void;
   label?: string;
   buttonStyle?: ViewStyle;
@@ -31,10 +31,17 @@ const ImageButton: React.FC<ImageButtonProps> = ({
   const colors = useColorTheme();
   return (
     <TouchableOpacity style={[styles.button, buttonStyle]} onPress={onPress}>
-      <Image
-        source={imageUrl}
-        style={[styles.image, imageStyle && (imageStyle as any)]}
-      />
+      {typeof imageUrl === 'string' ? (
+        <Image
+          src={imageUrl}
+          style={[styles.image, imageStyle && (imageStyle as any)]}
+        />
+      ) : (
+        <Image
+          source={imageUrl}
+          style={[styles.image, imageStyle && (imageStyle as any)]}
+        />
+      )}
 
       {label && (
         <Text

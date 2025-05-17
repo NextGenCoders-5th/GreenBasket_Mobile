@@ -74,11 +74,13 @@ export const useAuth = () => {
 
       dispatch(setCredentials({ user, accessToken, refreshToken }));
       return { success: true };
-    } catch (error) {
+    } catch (error: any) {
       let errorMessage = 'An unexpected error occurred. Please try again.';
 
       if (isAuthError(error)) {
         errorMessage = error.data.message;
+      } else if (error.status === 'FETCH_ERROR') {
+        errorMessage = 'Network error. Please check your internet connection.';
       } else if (error instanceof Error) {
         errorMessage = error.message;
       }
@@ -102,9 +104,11 @@ export const useAuth = () => {
       return { success: true, data: result.data };
     } catch (error: any) {
       let errorMessage = 'An unexpected error occurred. Please try again.';
-
+      console.log('Error:', error);
       if (isAuthError(error)) {
         errorMessage = error.data.message;
+      } else if (error.status === 'FETCH_ERROR') {
+        errorMessage = 'Network error. Please check your internet connection.';
       } else if (error instanceof Error) {
         errorMessage = error.message;
       }

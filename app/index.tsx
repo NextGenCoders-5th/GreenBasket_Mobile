@@ -22,7 +22,7 @@ export default function Welcome() {
         Welcome
       </Text>
       <Link
-        href='/(tabs)'
+        href='/(tabs)/home'
         style={{ borderRadius: 10, padding: 10, backgroundColor: 'blue' }}
       >
         <Text

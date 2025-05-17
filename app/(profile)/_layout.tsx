@@ -8,16 +8,6 @@ export default function ProfileLayout() {
   return (
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name='[id]' options={{}} />
-      <Stack.Screen
-        name='accountInfo'
-        options={{
-          headerTitle: 'Account Information',
-          headerTintColor: colors['gray-900'],
-          headerStyle: {
-            backgroundColor: colors['gray-50'],
-          },
-        }}
-      />
     </Stack>
   );
 }
