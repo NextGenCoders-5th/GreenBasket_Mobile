@@ -9,9 +9,23 @@ import React from 'react';
 import { useColorTheme } from '@/hooks/useColorTheme';
 import ImageButton from '@/components/ui/ImageButton';
 import { router } from 'expo-router';
+import { useSelector } from 'react-redux';
+import { selectCurrentUser } from '@/redux/slices/authSlice';
+import ProfileButton from '@/components/profile/ProfileButton';
 
 export default function Profile() {
   const colors = useColorTheme();
+
+  const user = useSelector(selectCurrentUser);
+  const {
+    id,
+    first_name,
+    last_name,
+    email,
+    phone_number,
+    profile_picture: profileUrl,
+  } = user!;
+
   return (
     <View
       style={{
@@ -27,7 +41,7 @@ export default function Profile() {
         }}
       >
         <ImageButton
-          imageUrl={require('@/assets/images/profile-2.png')}
+          imageUrl={profileUrl!}
           onPress={() => {
             alert('update photo');
           }}
@@ -39,135 +53,61 @@ export default function Profile() {
         />
       </View>
 
-      <Pressable
-        onPress={() => {
-          alert('Edit Profile');
-        }}
+      <ProfileButton
+        label='Name'
+        onPress={() => {}}
+        value={`${first_name} ${last_name}`}
+      />
+
+      {/* 
+      <ProfileButton 
+      label='Gender' 
+      onPress={() => {}} 
+      value='Male'
+       />
+      <ProfileButton
+        label='Date of Birth'
+        onPress={() => {}}
+        value='jan 12, 1990'
+      /> */}
+
+      <Text
         style={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          paddingRight: 15,
-          paddingVertical: 5,
+          fontSize: 24,
+          fontFamily: 'Inter',
+          fontWeight: '700',
           marginBottom: 20,
         }}
       >
-        <Text
-          style={{
-            fontFamily: 'Inter',
-            fontSize: 14,
-            fontWeight: '400',
-          }}
-        >
-          Name
-        </Text>
-        <Text
-          style={{
-            fontFamily: 'Inter',
-            fontSize: 12,
-            fontWeight: '300',
-            color: colors.text,
-          }}
-        >
-          John Doe
-        </Text>
-      </Pressable>
-      <Pressable
-        onPress={() => {
-          router.navigate('/(profile)/accountInfo');
-        }}
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          paddingRight: 15,
-          marginBottom: 20,
-        }}
-      >
-        <Text
-          style={{
-            fontFamily: 'Inter',
-            fontSize: 14,
-            fontWeight: '400',
-          }}
-        >
-          Account details
-        </Text>
-        <Text
-          style={{
-            fontFamily: 'Inter',
-            fontSize: 12,
-            fontWeight: '300',
-            color: colors.text,
-          }}
-        >
-          johndoe@gmail.com
-        </Text>
-      </Pressable>
-      <Pressable
-        onPress={() => {
-          alert('Update Gender');
-        }}
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          paddingRight: 15,
-          marginBottom: 20,
-        }}
-      >
-        <Text
-          style={{
-            fontFamily: 'Inter',
-            fontSize: 14,
-            fontWeight: '400',
-          }}
-        >
-          Gender
-        </Text>
-        <Text
-          style={{
-            fontFamily: 'Inter',
-            fontSize: 12,
-            fontWeight: '300',
-            color: colors.text,
-          }}
-        >
-          Male
-        </Text>
-      </Pressable>
-      <Pressable
-        onPress={() => {
-          alert('Update Date of Birth');
-        }}
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          paddingRight: 15,
-          marginBottom: 20,
-        }}
-      >
-        <Text
-          style={{
-            fontFamily: 'Inter',
-            fontSize: 14,
-            fontWeight: '400',
-          }}
-        >
-          Date of Birth
-        </Text>
-        <Text
-          style={{
-            fontFamily: 'Inter',
-            fontSize: 12,
-            fontWeight: '300',
-            color: colors.text,
-          }}
-        >
-          Jan 12, 1990
-        </Text>
-      </Pressable>
+        Account Details
+      </Text>
+
+      <ProfileButton
+        style={{ borderBottomWidth: 1, borderBottomColor: colors['gray-100'] }}
+        label='Member ID'
+        onPress={() => {}}
+        value={`${id}`}
+      />
+      <ProfileButton
+        style={{ borderBottomWidth: 1, borderBottomColor: colors['gray-100'] }}
+        label='Email Address'
+        onPress={() => {}}
+        value={`${email}`}
+      />
+
+      <ProfileButton
+        style={{ borderBottomWidth: 1, borderBottomColor: colors['gray-100'] }}
+        label='Mobile number'
+        onPress={() => {}}
+        value={`${phone_number}`}
+      />
+
+      <ProfileButton
+        style={{ borderBottomWidth: 1, borderBottomColor: colors['gray-100'] }}
+        label='Password'
+        onPress={() => {}}
+        value={`*******************`}
+      />
     </View>
   );
 }

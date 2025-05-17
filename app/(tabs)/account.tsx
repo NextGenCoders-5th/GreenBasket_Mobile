@@ -1,37 +1,74 @@
-import { Dimensions, SafeAreaView } from 'react-native';
+import { ActivityIndicator, Dimensions, SafeAreaView } from 'react-native';
 import React from 'react';
 import { useColorTheme } from '@/hooks/useColorTheme';
-
-// export default function Account() {
-//   const colors = useColorTheme();
-//   return (
-// <SafeAreaView
-//   style={{
-//     backgroundColor: colors.background,
-//     minHeight: Dimensions.get('window').height,
-//   }}
-// >
-//   <AccountScreen />
-// </SafeAreaView>
-//   );
-// }
-
-import {
-  View,
-  Text,
-  ScrollView,
-  Image,
-  StyleSheet,
-  Pressable,
-} from 'react-native';
+import { View, Text, ScrollView, Image, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { IconButton } from '@/components/ui/IconButton';
 import TextButton from '@/components/ui/TextButton';
 import { router } from 'expo-router';
+import { selectCurrentUser } from '@/redux/slices/authSlice';
+import { useSelector } from 'react-redux';
+import AccountButton from '@/components/account/AccountButton';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function AccountScreen() {
-  const profileUrl = require('@/assets/images/profile-2.png');
   const colors = useColorTheme();
+  const { logout, isLoading } = useAuth();
+  const user = useSelector(selectCurrentUser);
+
+  if (isLoading) {
+    return (
+      <View
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          flex: 1,
+        }}
+      >
+        <ActivityIndicator size='large' color={colors['primary']} />;
+      </View>
+    );
+  }
+
+  if (!user)
+    return (
+      <View
+        style={{
+          display: 'flex',
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: 10,
+        }}
+      >
+        <Text
+          style={{
+            fontFamily: 'Inter',
+            fontSize: 24,
+            fontWeight: '600',
+            color: colors['gray-900'],
+          }}
+        >
+          Welcome to <Text style={{ fontWeight: '900' }}>MiniExpress</Text>
+        </Text>
+        <TextButton
+          style={{
+            width: 170,
+          }}
+          title='Sign in / Register'
+          onPress={() => {
+            router.navigate('/(auth)/signin');
+          }}
+        />
+      </View>
+    );
+
+  const { first_name, profile_picture, is_onboarding } = user;
+
+  const handleSignOut = () => {
+    logout();
+  };
 
   return (
     <SafeAreaView
@@ -59,54 +96,57 @@ export default function AccountScreen() {
             paddingVertical: 5,
           }}
         >
-          <View
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'center',
-              gap: 10,
-            }}
-          >
+          {!is_onboarding && (
             <View
               style={{
-                width: 32,
-                height: 32,
-                borderRadius: 16,
-                backgroundColor: colors['primary-200'],
                 display: 'flex',
-                justifyContent: 'center',
+                flexDirection: 'row',
                 alignItems: 'center',
+                gap: 10,
               }}
             >
-              {profileUrl ? (
-                <Image
-                  source={profileUrl}
-                  style={{ width: 40, height: 40, borderRadius: 20 }}
-                />
-              ) : (
-                <Text
-                  style={{
-                    fontFamily: 'Inter',
-                    fontSize: 24,
-                    color: colors.text,
-                    fontWeight: '700',
-                  }}
-                >
-                  J
-                </Text>
-              )}
+              <View
+                style={{
+                  width: 32,
+                  height: 32,
+                  borderRadius: 16,
+                  backgroundColor: colors['primary-200'],
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              >
+                {profile_picture ? (
+                  <Image
+                    src={profile_picture}
+                    style={{ width: 40, height: 40, borderRadius: 20 }}
+                  />
+                ) : (
+                  <Text
+                    style={{
+                      fontFamily: 'Inter',
+                      fontSize: 24,
+                      color: colors.text,
+                      fontWeight: '700',
+                    }}
+                  >
+                    {first_name![0]}
+                  </Text>
+                )}
+              </View>
+              <Text
+                style={{
+                  fontFamily: 'Inter',
+                  fontSize: 24,
+                  fontWeight: '700',
+                  color: colors['gray-900'],
+                }}
+              >
+                {first_name}
+              </Text>
             </View>
-            <Text
-              style={{
-                fontFamily: 'Inter',
-                fontSize: 24,
-                fontWeight: '700',
-                color: colors['gray-900'],
-              }}
-            >
-              John Doe
-            </Text>
-          </View>
+          )}
+
           <View
             style={{
               flex: 1,
@@ -133,36 +173,7 @@ export default function AccountScreen() {
             />
           </View>
         </View>
-        {/* <View
-        style={{
-          width: '90%',
-          paddingTop: 10,
-          marginTop: 10,
-          gap: 10,
-          paddingHorizontal: 10,
-          paddingVertical: 10,
-        }}
-      >
-        <Text
-          style={{
-            fontFamily: 'Inter',
-            fontSize: 24,
-            fontWeight: '600',
-            color: colors['gray-900'],
-          }}
-        >
-          Welcome to <Text style={{ fontWeight: '900' }}>MiniExpress</Text>
-        </Text>
-        <TextButton
-          style={{
-            width: 170,
-          }}
-          title='Sign in / Register'
-          onPress={() => {
-            router.navigate('/(auth)/signin');
-          }}
-        />
-      </View> */}
+
         <View
           style={{
             marginTop: 10,
@@ -234,112 +245,32 @@ export default function AccountScreen() {
             borderRadius: 10,
           }}
         >
-          <Pressable
-            style={{ ...styles.btn, backgroundColor: colors['gray-50'] }}
-            onPress={() => {
-              router.navigate('/(profile)/12');
-            }}
-          >
-            <Text
+          {is_onboarding && (
+            <AccountButton
+              label='Complete Onboarding'
+              onPress={() => {}}
               style={{
-                fontFamily: 'Inter',
-                fontSize: 16,
-                fontWeight: '700',
-                color: colors['gray-900'],
+                backgroundColor: 'transparent',
+                borderBottomWidth: 1,
+                borderBottomColor: colors['gray-100'],
+                paddingVertical: 5,
+                width: '50%',
+                alignSelf: 'center',
+                borderRadius: 20,
               }}
-            >
-              Profile
-            </Text>
-            <Ionicons
-              name='chevron-forward-outline'
-              size={20}
-              color={colors['gray-600']}
+              icon='checkmark-done-circle-outline'
             />
-          </Pressable>
+          )}
+          <AccountButton
+            label='Profile'
+            onPress={() => router.navigate('/(profile)/12')}
+          />
 
-          <Pressable
-            style={{ ...styles.btn, backgroundColor: colors['gray-50'] }}
-            onPress={() => {}}
-          >
-            <Text
-              style={{
-                fontFamily: 'Inter',
-                fontSize: 16,
-                fontWeight: '700',
-                color: colors['gray-900'],
-              }}
-            >
-              Shipping Address
-            </Text>
-            <Ionicons
-              name='chevron-forward-outline'
-              size={20}
-              color={colors['gray-600']}
-            />
-          </Pressable>
+          <AccountButton label='Shipping Address' onPress={() => {}} />
+          <AccountButton label='Order History' onPress={() => {}} />
+          <AccountButton label='Currency' onPress={() => {}} />
+          <AccountButton label='Language' onPress={() => {}} />
 
-          <Pressable
-            style={{ ...styles.btn, backgroundColor: colors['gray-50'] }}
-            onPress={() => {}}
-          >
-            <Text
-              style={{
-                fontFamily: 'Inter',
-                fontSize: 16,
-                fontWeight: '700',
-                color: colors['gray-900'],
-              }}
-            >
-              Order History
-            </Text>
-            <Ionicons
-              name='chevron-forward-outline'
-              size={20}
-              color={colors['gray-600']}
-            />
-          </Pressable>
-
-          <Pressable
-            style={{ ...styles.btn, backgroundColor: colors['gray-50'] }}
-            onPress={() => {}}
-          >
-            <Text
-              style={{
-                fontFamily: 'Inter',
-                fontSize: 16,
-                fontWeight: '700',
-                color: colors['gray-900'],
-              }}
-            >
-              Currency
-            </Text>
-            <Ionicons
-              name='chevron-forward-outline'
-              size={20}
-              color={colors['gray-600']}
-            />
-          </Pressable>
-
-          <Pressable
-            style={{ ...styles.btn, backgroundColor: colors['gray-50'] }}
-            onPress={() => {}}
-          >
-            <Text
-              style={{
-                fontFamily: 'Inter',
-                fontSize: 16,
-                fontWeight: '700',
-                color: colors['gray-900'],
-              }}
-            >
-              Language
-            </Text>
-            <Ionicons
-              name='chevron-forward-outline'
-              size={20}
-              color={colors['gray-600']}
-            />
-          </Pressable>
           <TextButton
             style={{
               ...styles.btn,
@@ -357,7 +288,7 @@ export default function AccountScreen() {
             }}
             titleStyle={{ color: colors['gray-50'] }}
             title='Sign Out'
-            onPress={() => {}}
+            onPress={handleSignOut}
           />
         </View>
       </ScrollView>
