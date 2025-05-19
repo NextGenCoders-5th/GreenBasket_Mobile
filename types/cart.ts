@@ -1,15 +1,42 @@
 import { CartStatus } from '@/config/enums';
-import { CartItemType } from './cartItem';
-import { UserType } from './user';
+import { Product } from './product';
 
-export interface CartType {
+export type Cart = {
   id: string;
-  updatedAt: string;
   createdAt: string;
+  updatedAt: string;
   total_price: number;
   status: CartStatus;
-
-  CartItems: CartItemType[];
-  User: UserType;
   userId: string;
+  CartItems: CartItem[];
+};
+
+export interface CreateCartItemDto {
+  productId: string;
+  quantity: number;
 }
+
+export type ApiResponse<T> = {
+  apiVersion: string;
+  data: {
+    status: 'success' | 'fail' | 'error';
+    message: string;
+    timestamp: string;
+    data: T;
+  };
+};
+
+export type CartItem = {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  price: number;
+  quantity: number;
+  sub_total: number;
+  productId: string;
+  cartId: string;
+  product?: Product;
+};
+
+export type CreateCartItemResponse = ApiResponse<CartItem>;
+export type GetMyCartResponse = ApiResponse<Cart>;

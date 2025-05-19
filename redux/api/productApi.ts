@@ -1,22 +1,25 @@
-import { apiSlice } from './apiSlice';
+// redux/api/productApi.ts
+import { apiSlice } from '@/redux/api/apiSlice';
 import {
+  Product,
   ProductDetailResponse,
   ProductListResponse,
   CreateProductResponse,
+  ProductWithCategories,
+  GetProductsParams,
   CreateProductDto,
   UpdateProductDto,
-  GetProductsParams,
-} from '@/types/product';
+  ApiResponseEnvelope,
+} from '@/types/product'; // Using @ alias
 
 export const productApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    // 1. Find All Products
+    // GET /api/v1/products - Find All Products
     getProducts: builder.query<ProductListResponse, GetProductsParams | void>({
       query: (params) => ({
-        url: '/products',
-        params: params || {}, // Pass params if they exist
+        url: '/products', // Endpoint path from your definition
+        params: params || {},
       }),
-      // Provides a list of 'Product' tags and a general 'LIST' tag.
       providesTags: (result) =>
         result && result.data.data
           ? [
@@ -24,31 +27,30 @@ export const productApi = apiSlice.injectEndpoints({
                 type: 'Product' as const,
                 id,
               })),
-              { type: 'Product', id: 'LIST' },
+              { type: 'Product' as const, id: 'LIST' },
             ]
-          : [{ type: 'Product', id: 'LIST' }],
+          : [{ type: 'Product' as const, id: 'LIST' }],
     }),
 
-    // 2. Find Product by ID
+    // GET /api/v1/products/{id} - Find Product by ID
     getProductById: builder.query<ProductDetailResponse, string>({
       query: (id) => `/products/${id}`,
-      providesTags: (result, error, id) => [{ type: 'Product', id }],
+      providesTags: (result, error, id) => [{ type: 'Product' as const, id }],
     }),
 
-    // 3. Create Product
+    // POST /api/v1/products - Create Product
     createProduct: builder.mutation<CreateProductResponse, CreateProductDto>({
       query: (newProduct) => ({
         url: '/products',
         method: 'POST',
         body: newProduct,
       }),
-      // Invalidates the 'LIST' tag to refetch the product list after creation.
-      invalidatesTags: [{ type: 'Product', id: 'LIST' }],
+      invalidatesTags: [{ type: 'Product' as const, id: 'LIST' }],
     }),
 
-    // 4. Update Product
+    // PATCH /api/v1/products/{id} - Update Product by ID
     updateProduct: builder.mutation<
-      ProductDetailResponse,
+      ProductDetailResponse, // Assuming update returns ProductType (not ProductWithCategories)
       { id: string; body: UpdateProductDto }
     >({
       query: ({ id, body }) => ({
@@ -56,22 +58,24 @@ export const productApi = apiSlice.injectEndpoints({
         method: 'PATCH',
         body,
       }),
-      // Invalidates the specific product tag and the 'LIST' tag.
       invalidatesTags: (result, error, { id }) => [
-        { type: 'Product', id },
-        { type: 'Product', id: 'LIST' },
+        { type: 'Product' as const, id },
+        { type: 'Product' as const, id: 'LIST' },
       ],
     }),
 
-    // 5. Delete Product by ID
-    deleteProduct: builder.mutation<{ message: string }, string>({
+    // DELETE /api/v1/products/{id} - Delete Product by ID
+    deleteProduct: builder.mutation<
+      ApiResponseEnvelope<{ message: string }>, // Assuming a generic success message envelope
+      string
+    >({
       query: (id) => ({
         url: `/products/${id}`,
         method: 'DELETE',
       }),
       invalidatesTags: (result, error, id) => [
-        { type: 'Product', id },
-        { type: 'Product', id: 'LIST' },
+        { type: 'Product' as const, id },
+        { type: 'Product' as const, id: 'LIST' },
       ],
     }),
   }),

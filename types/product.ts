@@ -1,7 +1,7 @@
 import { CategoryStatus, ProductStatus } from '@/config/enums';
 import { OrderItemType } from './orderItem';
 
-export interface CategoryType {
+export interface Category {
   id: string;
   updatedAt: string;
   createdAt: string;
@@ -9,10 +9,10 @@ export interface CategoryType {
   slug: string;
   image_url: string;
   status: CategoryStatus;
-  products?: ProductType[];
+  products?: Product[];
 }
 
-export interface ProductType {
+export interface Product {
   id: string;
   updatedAt: string;
   createdAt: string;
@@ -27,13 +27,11 @@ export interface ProductType {
   is_featured: boolean;
 
   vendorId: string;
-  categories: CategoryType[];
-  OrderItems: OrderItemType[];
 }
 
 // Product with categories
-export interface ProductWithCategories extends ProductType {
-  categories: CategoryType[];
+export interface ProductWithCategories extends Product {
+  categories: Category[];
 }
 
 // Metadata for paginated responses
@@ -103,10 +101,10 @@ export interface UpdateProductDto {
 // ==============================
 
 // Single product response
-export type ProductDetailResponse = ApiResponseEnvelope<ProductType>;
+export type ProductDetailResponse = ApiResponseEnvelope<Product>;
 
 // Multiple products response
-export type ProductListResponse = ApiResponseEnvelope<ProductType[]>;
+export type ProductListResponse = ApiResponseEnvelope<Product[]>;
 
 // Create product response
 export type CreateProductResponse = ApiResponseEnvelope<ProductWithCategories>;

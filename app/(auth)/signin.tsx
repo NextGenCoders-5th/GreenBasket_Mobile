@@ -9,7 +9,7 @@ import { useColorTheme } from '@/hooks/useColorTheme';
 import FloatingLabelInput from '@/components/form/FloatingLableInput';
 import TextButton from '@/components/ui/TextButton';
 import { shadows } from '@/styles/shadows';
-import { AuthSignInType } from '@/types/auth';
+import { AuthSignIn } from '@/types/auth';
 import { SingInSchema } from '@/utils/validators';
 import { useAuth } from '@/hooks/useAuth';
 
@@ -21,7 +21,7 @@ export default function SignInScreen() {
     handleSubmit,
     formState: { errors },
     watch,
-  } = useForm<AuthSignInType>({
+  } = useForm<AuthSignIn>({
     resolver: yupResolver(SingInSchema),
     defaultValues: {
       email: '',
@@ -31,7 +31,7 @@ export default function SignInScreen() {
 
   const { signIn, isLoading } = useAuth();
 
-  const onSubmit = async (formData: AuthSignInType) => {
+  const onSubmit = async (formData: AuthSignIn) => {
     const { success, error } = await signIn(formData);
 
     if (success) {

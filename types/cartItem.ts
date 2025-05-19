@@ -1,4 +1,4 @@
-import { CartType } from './cart';
+import { Cart } from './cart';
 
 export interface CartItemType {
   id: string;
@@ -8,6 +8,6 @@ export interface CartItemType {
   quantity: number;
   sub_total: number;
 
-  Cart: CartType;
+  Cart: Cart;
   cartId: string;
 }

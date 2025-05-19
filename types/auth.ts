@@ -1,16 +1,16 @@
 import { UserType } from './user';
 
-export interface AuthSignUpType {
+export interface AuthSignUp {
   email: string;
   phoneNumber: string;
   password: string;
   passwordConfirm: string;
 }
-export interface SignUpFormType extends AuthSignUpType {
+export interface SignUpFormType extends AuthSignUp {
   agreeToTerms: boolean;
 }
 
-export interface AuthSignUpResponseType {
+export interface AuthSignUpResponse {
   data: {
     status: string;
     message: string;
@@ -20,12 +20,12 @@ export interface AuthSignUpResponseType {
   };
 }
 
-export interface AuthSignInType {
+export interface AuthSignIn {
   email: string;
   password: string;
 }
 
-export interface AuthSignInResponseType {
+export interface AuthSignInResponse {
   data: {
     status: string;
     message: string;
@@ -39,14 +39,14 @@ export interface AuthSignInResponseType {
   };
 }
 
-export interface AuthRefreshTokenResponseType {
+export interface AuthRefreshTokenResponse {
   data: {
     accessToken: string;
     refreshToken: string;
   };
 }
 
-export interface AuthErrorType {
+export interface AuthError {
   status: number;
   data: {
     message: string;

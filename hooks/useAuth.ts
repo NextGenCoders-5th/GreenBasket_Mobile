@@ -16,14 +16,14 @@ import {
   useSignUpMutation,
 } from '@/redux/api/authApi';
 import {
-  AuthErrorType,
-  AuthSignInResponseType,
-  AuthSignInType,
-  AuthSignUpType,
+  AuthError,
+  AuthSignInResponse,
+  AuthSignIn,
+  AuthSignUp,
 } from '@/types/auth';
 import { UserType } from '@/types/user';
 
-function isAuthError(error: any): error is AuthErrorType {
+function isAuthError(error: any): error is AuthError {
   return (
     error &&
     typeof error.status === 'number' &&
@@ -66,9 +66,9 @@ export const useAuth = () => {
     loadAuthState();
   }, [dispatch]);
 
-  const handleSignIn = async (credentials: AuthSignInType) => {
+  const handleSignIn = async (credentials: AuthSignIn) => {
     try {
-      const result: AuthSignInResponseType = await signIn(credentials).unwrap();
+      const result: AuthSignInResponse = await signIn(credentials).unwrap();
       const { accessToken, refreshToken } = result.data.data;
       const user = result.data.data.user;
 
@@ -91,7 +91,7 @@ export const useAuth = () => {
     }
   };
 
-  const handleSignUp = async (credentials: AuthSignUpType) => {
+  const handleSignUp = async (credentials: AuthSignUp) => {
     const { phoneNumber, ...restCredentials } = credentials;
 
     const fullPhoneNumber = `+251${phoneNumber}`;

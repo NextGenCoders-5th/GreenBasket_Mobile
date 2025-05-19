@@ -1,21 +1,21 @@
 import { apiSlice } from './apiSlice';
 import {
-  AuthSignUpType,
-  AuthSignUpResponseType,
-  AuthSignInType,
-  AuthSignInResponseType,
+  AuthSignUp,
+  AuthSignUpResponse,
+  AuthSignIn,
+  AuthSignInResponse,
 } from '../../types/auth';
 
 export const authApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    signUp: builder.mutation<AuthSignUpResponseType, AuthSignUpType>({
+    signUp: builder.mutation<AuthSignUpResponse, AuthSignUp>({
       query: (userData) => ({
         url: '/auth/sign-up',
         method: 'POST',
         body: userData,
       }),
     }),
-    signIn: builder.mutation<AuthSignInResponseType, AuthSignInType>({
+    signIn: builder.mutation<AuthSignInResponse, AuthSignIn>({
       query: (credentials) => ({
         url: '/auth/sign-in',
         method: 'POST',
