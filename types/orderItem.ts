@@ -1,5 +1,5 @@
 import { OrderType } from './order';
-import { ProductType } from './product';
+import { Product } from './product';
 
 export interface OrderItemType {
   id: string;
@@ -11,6 +11,6 @@ export interface OrderItemType {
 
   Order: OrderType;
   orderId: string;
-  Product: ProductType;
+  Product: Product;
   productId: string;
 }

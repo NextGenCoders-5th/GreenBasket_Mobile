@@ -1,4 +1,4 @@
-import { UserType } from './user';
+import { User } from './user';
 
 export interface AuthSignUp {
   email: string;
@@ -16,7 +16,7 @@ export interface AuthSignUpResponse {
     message: string;
     timestamp: string;
 
-    data: UserType;
+    data: User;
   };
 }
 
@@ -34,7 +34,7 @@ export interface AuthSignInResponse {
     data: {
       accessToken: string;
       refreshToken: string;
-      user: UserType;
+      user: User;
     };
   };
 }

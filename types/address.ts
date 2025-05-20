@@ -1,5 +1,5 @@
 import { OrderType } from './order';
-import { UserType } from './user';
+import { User } from './user';
 import { VendorType } from './vendor';
 
 export interface AddressType {
@@ -18,6 +18,6 @@ export interface AddressType {
   vendor?: VendorType | null;
   vendorId?: string | null;
   Order: OrderType[];
-  User?: UserType | null;
+  User?: User | null;
   userId?: string | null;
 }

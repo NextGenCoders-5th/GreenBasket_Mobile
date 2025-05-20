@@ -35,7 +35,7 @@ export type CartItem = {
   sub_total: number;
   productId: string;
   cartId: string;
-  product?: Product;
+  Product?: Product;
 };
 
 export type CreateCartItemResponse = ApiResponse<CartItem>;

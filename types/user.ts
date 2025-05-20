@@ -2,9 +2,9 @@ import { AuthProvider, UserRole, UserStatus } from '@/config/enums';
 import { VendorType } from './vendor';
 import { AddressType } from './address';
 import { OrderType } from './order';
-import { CartType } from './cart';
+import { Cart } from './cart';
 
-export interface UserType {
+export interface User {
   id: string;
   updatedAt: string;
   createdAt: string;
@@ -24,5 +24,5 @@ export interface UserType {
   vendor?: VendorType | null;
   address?: AddressType | null;
   orders: OrderType[];
-  carts: CartType[];
+  carts: Cart[];
 }
