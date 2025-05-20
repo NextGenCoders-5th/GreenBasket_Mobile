@@ -1,30 +1,36 @@
-// app/(tabs)/cart.tsx
-import React, { useCallback } from 'react';
-import { View, Text, FlatList, StyleSheet, RefreshControl } from 'react-native';
+import React, { useCallback, useState } from 'react';
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  ActivityIndicator,
+  RefreshControl,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Stack, router } from 'expo-router';
 import Toast from 'react-native-toast-message';
+import { useSelector } from 'react-redux';
 
+import { selectIsAuthenticated } from '@/redux/slices/authSlice';
 import {
-  useGetMyCartQuery /*, useUpdateCartItemMutation, useRemoveCartItemMutation */,
-} from '@/redux/api/cartApi'; // Assuming you'll add these mutations
+  useGetMyCartQuery,
+  useUpdateCartItemMutation,
+  useDeleteCartItemMutation,
+} from '@/redux/api/cartApi';
 import CartItemCard from '@/components/cart/CartItemCard';
 import { useColorTheme } from '@/hooks/useColorTheme';
 import ErrorMessage from '@/components/ui/ErrorMessage';
 import Button from '@/components/ui/Button';
 import { formatPrice } from '@/utils/formatters';
 import { CartItem } from '@/types/cart';
-import { useAuth } from '@/hooks/useAuth';
 import LoadingError from '@/components/ui/LoadingError';
 import LoadingIndicator from '@/components/ui/LoadingIndicator';
-import TextButton from '@/components/ui/TextButton';
-import { useSelector } from 'react-redux';
-import { selectCurrentUser } from '@/redux/slices/authSlice';
-import SignIn from '@/components/account/SignIn';
 
 export default function CartScreen() {
   const colors = useColorTheme();
-  const user = useSelector(selectCurrentUser);
+  const isAuthenticated = useSelector(selectIsAuthenticated);
+  const [updatingItemId, setUpdatingItemId] = useState<string | null>(null); // To show loading on specific item
 
   const {
     data: cartResponse,
@@ -32,83 +38,84 @@ export default function CartScreen() {
     isLoading: isCartLoading,
     isFetching: isCartFetching,
     refetch: refetchCart,
-  } = useGetMyCartQuery();
+  } = useGetMyCartQuery(undefined, { skip: !isAuthenticated });
 
-  // Placeholder mutations - you'll need to implement these in cartApi.ts
-  // const [updateCartItem, { isLoading: isUpdatingQuantity }] = useUpdateCartItemMutation();
-  // const [removeCartItem, { isLoading: isRemovingItem }] = useRemoveCartItemMutation();
+  const [updateCartItem] = useUpdateCartItemMutation();
+  const [deleteCartItem] = useDeleteCartItemMutation();
 
   const cart = cartResponse?.data?.data;
   const cartItems = cart?.CartItems || [];
 
-  // console.log('user', user);
-  // console.log('Cart', cart);
-  // console.log('Cart Items', cartItems);
+  // console.log('Cart:', cart);
 
-  // if (cartItems.length > 0) {
-  //   console.log('RAW Cart Items from API:', JSON.stringify(cartItems, null, 2));
-  //   // Specifically log the 'product' field of the first item
-  //   console.log(
-  //     'First Cart Item RAW Product Field:',
-  //     JSON.stringify(cartItems[0]?.Product, null, 2)
-  //   );
-  // }
-
-  const handleIncreaseQuantity = useCallback(
-    async (itemId: string) => {
-      const item = cartItems.find((ci) => ci.id === itemId);
-      if (!item) return;
-      console.log(
-        'Increase quantity for item:',
-        itemId,
-        'Current:',
-        item.quantity
-      );
-      // await updateCartItem({ itemId, quantity: item.quantity + 1 }).unwrap();
+  const handleQuantityUpdate = async (itemId: string, newQuantity: number) => {
+    const item = cartItems.find((ci) => ci.id === itemId);
+    if (!item || newQuantity < 1) return;
+    // Optional: Check against product stock if item.Product.stock is available
+    if (item.Product && newQuantity > item.Product.stock) {
       Toast.show({
         type: 'info',
-        text1: 'To be implemented: Increase Quantity',
+        text1: 'Stock Limit Reached',
+        text2: `Only ${item.Product.stock} available.`,
       });
-    },
-    [cartItems /*, updateCartItem */]
-  );
+      return;
+    }
 
-  const handleDecreaseQuantity = useCallback(
-    async (itemId: string) => {
-      const item = cartItems.find((ci) => ci.id === itemId);
-      if (!item || item.quantity <= 1) return;
-      console.log(
-        'Decrease quantity for item:',
+    setUpdatingItemId(itemId);
+    try {
+      await updateCartItem({
         itemId,
-        'Current:',
-        item.quantity
-      );
-      // await updateCartItem({ itemId, quantity: item.quantity - 1 }).unwrap();
+        body: { quantity: newQuantity },
+      }).unwrap();
+      // Refetch or optimistic update handles UI. Toast for success is optional.
+    } catch (err) {
       Toast.show({
-        type: 'info',
-        text1: 'To be implemented: Decrease Quantity',
+        type: 'error',
+        text1: 'Update Failed',
+        text2: 'Could not update item quantity.',
       });
-    },
-    [cartItems /*, updateCartItem */]
-  );
+      console.error('Update quantity error:', err);
+    } finally {
+      setUpdatingItemId(null);
+    }
+  };
 
-  const handleRemoveItem = useCallback(
-    async (itemId: string) => {
-      console.log('Remove item:', itemId);
-      // await removeCartItem(itemId).unwrap();
-      Toast.show({ type: 'success', text1: 'To be implemented: Item Removed' });
-    },
-    [
-      /* removeCartItem */
-    ]
-  );
+  const handleRemoveItem = async (itemId: string) => {
+    console.log('Attempting to remove item with ID:', itemId);
+    setUpdatingItemId(itemId);
+    try {
+      // Since the mutation is now typed as Promise<void> from unwrap()
+      await deleteCartItem(itemId).unwrap(); // This will resolve with 'undefined' on success (204)
+      Toast.show({
+        type: 'success',
+        text1: 'Item Removed',
+        text2: 'The item has been removed from your cart.',
+      });
+      // The invalidatesTags will trigger a refetch of getMyCart
+    } catch (err) {
+      // This catch block will now only be hit for actual network errors or non-2xx HTTP statuses
+      Toast.show({
+        type: 'error',
+        text1: 'Remove Failed',
+        text2: 'Could not remove item from cart.',
+      });
+      console.error('Remove item error:', err);
+    } finally {
+      setUpdatingItemId(null);
+    }
+  };
 
   const renderCartItem = ({ item }: { item: CartItem }) => (
     <CartItemCard
       item={item}
-      onIncreaseQuantity={handleIncreaseQuantity}
-      onDecreaseQuantity={handleDecreaseQuantity}
-      onRemoveItem={handleRemoveItem}
+      onIncreaseQuantity={() =>
+        handleQuantityUpdate(item.id, item.quantity + 1)
+      }
+      onDecreaseQuantity={() =>
+        handleQuantityUpdate(item.id, item.quantity - 1)
+      }
+      onRemoveItem={() => handleRemoveItem(item.id)}
+      isUpdating={updatingItemId === item.id}
     />
   );
 
@@ -119,46 +126,38 @@ export default function CartScreen() {
       </Text>
       <Button
         title='Start Shopping'
-        onPress={() => router.push('/(tabs)/home')} // Navigate to home or products tab
+        onPress={() => router.push('/(tabs)/home')}
         style={{ marginTop: 20, width: '60%' }}
       />
     </View>
   );
 
-  if (!user) return <SignIn />;
-
-  if (user && !cart) {
-    return (
-      <SafeAreaView
-        style={[styles.centered, { backgroundColor: colors.background }]}
-      >
-        <Text
-          style={{
-            fontSize: 18,
-            fontFamily: 'Inter',
-            color: colors['gray-700'],
-            textAlign: 'center',
-            marginBottom: 10,
-          }}
-        >
-          There is no acitve cart. Head over and add to your cart.
-        </Text>
-        <TextButton
-          title='Continue shopping'
-          onPress={() => {
-            router.navigate('/(tabs)/home'); // Navigate to create cart screen
-          }}
-        />
-      </SafeAreaView>
-    );
+  if (!isAuthenticated && !isCartLoading) {
+    // Check isCartLoading to prevent flash during initial auth check
+    // This useEffect was removed as the conditional render handles it.
+    // If you prefer useEffect for navigation, ensure it's correctly placed and dependencies are right.
+    // For now, direct conditional rendering is simpler.
+    if (typeof window !== 'undefined') {
+      // Ensure router is only called on client
+      router.replace({
+        pathname: '/(auth)/signin',
+        params: { redirect: '/(tabs)/cart' },
+      });
+      Toast.show({
+        type: 'info',
+        text1: 'Please Sign In',
+        text2: 'You need to be logged in to view your cart.',
+        visibilityTime: 3000,
+      });
+    }
+    return <LoadingIndicator message='Redirecting to sign in...' />;
   }
 
-  if (isCartLoading) {
-    return <LoadingIndicator message='Loading carts...' />;
+  if (isCartLoading && !cartItems.length) {
+    return <LoadingIndicator message='Loading cart...' />;
   }
 
   if (cartError) {
-    console.error('Error fetching cart:', cartError);
     const errorMessage =
       (cartError as any)?.data?.message || 'Failed to load your cart.';
     return (
@@ -175,24 +174,24 @@ export default function CartScreen() {
       style={[styles.container, { backgroundColor: colors['gray-50'] }]}
     >
       <Stack.Screen options={{ title: 'My Cart' }} />
-
       <FlatList
         data={cartItems}
         renderItem={renderCartItem}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.listContentContainer}
-        ListEmptyComponent={!isCartFetching ? ListEmptyComponent : null} // Show empty only when not fetching
+        ListEmptyComponent={
+          !isCartFetching && isAuthenticated ? ListEmptyComponent : null
+        }
         refreshControl={
           <RefreshControl
-            refreshing={isCartFetching}
+            refreshing={isCartFetching && isAuthenticated}
             onRefresh={refetchCart}
             colors={[colors.primary]}
             tintColor={colors.primary}
           />
         }
       />
-
-      {cartItems.length > 0 && (
+      {isAuthenticated && cartItems.length > 0 && (
         <View
           style={[
             styles.footer,
@@ -213,14 +212,13 @@ export default function CartScreen() {
           <Button
             title='Proceed to Checkout'
             onPress={() => {
-              // router.push('/checkout'); // Navigate to checkout screen
               Toast.show({
                 type: 'info',
                 text1: 'To be implemented: Checkout',
               });
             }}
             style={styles.checkoutButton}
-            // disabled={isUpdatingQuantity || isRemovingItem} // If you implement these
+            disabled={!!updatingItemId} // Disable checkout if any item action is in progress
           />
         </View>
       )}
@@ -241,22 +239,23 @@ const styles = StyleSheet.create({
   listContentContainer: {
     paddingHorizontal: 15,
     paddingVertical: 10,
-    flexGrow: 1, // Important for ListEmptyComponent to center
+    flexGrow: 1,
   },
   emptyCartContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    padding: 20,
   },
   emptyCartText: {
     fontSize: 18,
     fontFamily: 'Inter-Medium',
+    textAlign: 'center',
   },
   footer: {
     paddingVertical: 15,
     paddingHorizontal: 20,
     borderTopWidth: 1,
-    // backgroundColor is set dynamically
   },
   totalContainer: {
     flexDirection: 'row',
@@ -273,7 +272,5 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontFamily: 'Inter-Bold',
   },
-  checkoutButton: {
-    // Button component handles its own styling
-  },
+  checkoutButton: {},
 });

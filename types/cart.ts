@@ -37,6 +37,8 @@ export type CartItem = {
   cartId: string;
   Product?: Product;
 };
-
 export type CreateCartItemResponse = ApiResponse<CartItem>;
+export type UpdateCartItemResponse = ApiResponse<CartItem>;
+export type GetCartItemByIdResponse = ApiResponse<CartItem>;
+export type DeleteCartItemResponse = void;
 export type GetMyCartResponse = ApiResponse<Cart>;

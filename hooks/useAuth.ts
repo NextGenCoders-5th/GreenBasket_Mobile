@@ -52,9 +52,9 @@ export const useAuth = () => {
   // Effect for loading persisted authentication state on app startup
   useEffect(() => {
     const loadAuthState = async () => {
-      console.log(
-        'useAuth EFFECT: Attempting to load auth state from AsyncStorage...'
-      );
+      // console.log(
+      //   'useAuth EFFECT: Attempting to load auth state from AsyncStorage...'
+      // );
       // This effect's purpose is to transition isLoading from true to false
       // by dispatching either setCredentials or clearCredentials.
       try {
@@ -63,22 +63,22 @@ export const useAuth = () => {
         const userString = await AsyncStorage.getItem('user');
 
         if (accessToken && refreshToken && userString) {
-          console.log(
-            'useAuth EFFECT: Found credentials. Dispatching setCredentials.'
-          );
+          // console.log(
+          //   'useAuth EFFECT: Found credentials. Dispatching setCredentials.'
+          // );
           const user = JSON.parse(userString) as User;
           dispatch(setCredentials({ user, accessToken, refreshToken }));
         } else {
-          console.log(
-            'useAuth EFFECT: No credentials found. Dispatching clearCredentials.'
-          );
+          // console.log(
+          //   'useAuth EFFECT: No credentials found. Dispatching clearCredentials.'
+          // );
           dispatch(clearCredentials());
         }
       } catch (error) {
-        console.error(
-          'useAuth EFFECT: Failed to load auth state from AsyncStorage:',
-          error
-        );
+        // console.error(
+        //   'useAuth EFFECT: Failed to load auth state from AsyncStorage:',
+        //   error
+        // );
         dispatch(clearCredentials()); // Clear state on error too
       }
     };
@@ -93,7 +93,7 @@ export const useAuth = () => {
 
   // Handle Sign In
   const handleSignIn = async (credentials: AuthSignIn) => {
-    console.log('useAuth: handleSignIn called');
+    // console.log('useAuth: handleSignIn called');
     try {
       // The actual response type from unwrap might be different from AuthSignInResponse
       // if AuthSignInResponse is the type for the whole { data: { ... } } envelope.
@@ -112,7 +112,7 @@ export const useAuth = () => {
       dispatch(setCredentials({ user, accessToken, refreshToken }));
       return { success: true, user };
     } catch (error: any) {
-      console.error('useAuth: handleSignIn error:', error);
+      // console.error('useAuth: handleSignIn error:', error);
       let errorMessage = 'Login failed. Please try again.';
       if (isAuthError(error)) {
         errorMessage = error.data.message;
@@ -127,7 +127,7 @@ export const useAuth = () => {
 
   // Handle Sign Up
   const handleSignUp = async (credentials: AuthSignUp) => {
-    console.log('useAuth: handleSignUp called');
+    // console.log('useAuth: handleSignUp called');
     const { phoneNumber, ...restCredentials } = credentials;
     const fullPhoneNumber = `+251${phoneNumber}`; // Assuming this transformation is correct
 
@@ -142,7 +142,7 @@ export const useAuth = () => {
       // It might return a success message or the created user (without tokens).
       return { success: true, data: result.data }; // Adjust based on your API's signup response
     } catch (error: any) {
-      console.error('useAuth: handleSignUp error:', error);
+      // console.error('useAuth: handleSignUp error:', error);
       let errorMessage = 'Signup failed. Please try again.';
       if (isAuthError(error)) {
         errorMessage = error.data.message;

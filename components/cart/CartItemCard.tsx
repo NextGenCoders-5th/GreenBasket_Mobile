@@ -1,8 +1,7 @@
-// components/cart/CartItemCard.tsx
 import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
-import { CartItem } from '@/types/cart'; // Assuming Product is nested or fetched separately
-import { Product } from '@/types/product'; // If product details are directly available
+import { CartItem } from '@/types/cart';
+import { Product } from '@/types/product';
 import { useColorTheme } from '@/hooks/useColorTheme';
 import { formatPrice } from '@/utils/formatters';
 import { IconButton } from '@/components/ui/IconButton';
@@ -13,6 +12,7 @@ interface CartItemCardProps {
   onIncreaseQuantity: (itemId: string) => void;
   onDecreaseQuantity: (itemId: string) => void;
   onRemoveItem: (itemId: string) => void;
+  isUpdating?: boolean; // Optional: to show loading on specific item
 }
 
 const CartItemCard: React.FC<CartItemCardProps> = ({
@@ -20,38 +20,44 @@ const CartItemCard: React.FC<CartItemCardProps> = ({
   onIncreaseQuantity,
   onDecreaseQuantity,
   onRemoveItem,
+  isUpdating,
 }) => {
   const colors = useColorTheme();
-  // Assuming 'product' details are populated in the CartItem type from your backend
-  // If not, you might need to fetch product details separately using item.productId
-
-  const productDetails = item.Product as Product; // Assuming product details are directly available in the item
-  // console.log('Product Details:', productDetails);
+  const productDetails = item.Product as Product | undefined; // Changed from item.product
 
   const imageUrl = useTransformImageUrl({
     imageUrl: productDetails?.image_url,
   });
 
   if (!productDetails) {
-    // Handle case where product details might be missing or still loading
     return (
       <View
         style={[
           styles.card,
-          { backgroundColor: colors['gray-50'], padding: 10 },
+          {
+            backgroundColor: colors['gray-50'],
+            padding: 10,
+            justifyContent: 'center',
+            alignItems: 'center',
+          },
         ]}
       >
         <Text
           style={{ fontFamily: 'Inter-Regular', color: colors['gray-600'] }}
         >
-          Loading product details...
+          Product details unavailable
         </Text>
       </View>
     );
   }
 
   return (
-    <View style={[styles.card, { backgroundColor: colors.background }]}>
+    <View
+      style={[
+        styles.card,
+        { backgroundColor: colors.background, opacity: isUpdating ? 0.6 : 1 },
+      ]}
+    >
       <Image
         source={{ uri: imageUrl || 'https://via.placeholder.com/80' }}
         style={styles.image}
@@ -78,7 +84,7 @@ const CartItemCard: React.FC<CartItemCardProps> = ({
             size={26}
             color={colors.primary}
             onPress={() => onDecreaseQuantity(item.id)}
-            disabled={item.quantity <= 1} // Disable if quantity is 1
+            disabled={item.quantity <= 1 || isUpdating}
           />
           <Text style={[styles.quantityText, { color: colors['gray-900'] }]}>
             {item.quantity}
@@ -88,16 +94,22 @@ const CartItemCard: React.FC<CartItemCardProps> = ({
             size={26}
             color={colors.primary}
             onPress={() => onIncreaseQuantity(item.id)}
-            // Optional: disable if quantity reaches product stock
-            // disabled={productDetails.stock <= item.quantity}
+            disabled={
+              isUpdating ||
+              (productDetails.stock !== undefined &&
+                item.quantity >= productDetails.stock)
+            }
           />
         </View>
-        <TouchableOpacity
+
+        <IconButton
+          icon='trash-outline'
+          size={22}
+          color={colors.red}
           onPress={() => onRemoveItem(item.id)}
           style={styles.removeButton}
-        >
-          <IconButton icon='trash-outline' size={22} color={colors.red} />
-        </TouchableOpacity>
+          disabled={isUpdating}
+        />
       </View>
     </View>
   );
@@ -142,13 +154,13 @@ const styles = StyleSheet.create({
   },
   actionsContainer: {
     justifyContent: 'space-between',
-    alignItems: 'flex-end', // Align remove button to the right
+    alignItems: 'flex-end',
     marginLeft: 10,
   },
   quantityControls: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10, // Space between quantity and remove button
+    marginBottom: 10,
   },
   quantityText: {
     fontSize: 16,
@@ -159,7 +171,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   removeButton: {
-    padding: 5, // Make it easier to tap
+    padding: 5,
   },
 });
 
