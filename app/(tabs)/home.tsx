@@ -1,16 +1,15 @@
-import { View, Text } from 'react-native';
+import { ActivityIndicator, SafeAreaView, View } from 'react-native';
 import React from 'react';
-import { TextInput, ScrollView, Image } from 'react-native';
-import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
-import { Link, router } from 'expo-router';
+import { TextInput, ScrollView } from 'react-native';
+import { AntDesign } from '@expo/vector-icons';
 
-import { sampleProducts } from '@/data/sampleData';
-import ProductCardV1 from '@/components/product/ProductCard-v1';
 import { useColorTheme } from '@/hooks/useColorTheme';
+import ProductsList from '@/components/product/productsList';
+import { router } from 'expo-router';
 import TextButton from '@/components/ui/TextButton';
-import Products from '@/components/product/products';
+import { useAuth } from '@/hooks/useAuth';
 
-export default function Home() {
+export default function HomeScreen() {
   const colors = useColorTheme();
 
   return (
@@ -21,39 +20,12 @@ export default function Home() {
         marginBottom: 10,
       }}
     >
-      {/* Location and Search Bar */}
+      {/* Search Bar */}
       <View
         style={{
           marginBottom: 10,
         }}
       >
-        {/* <View
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: 10,
-            gap: 5,
-          }}
-        >
-          <MaterialCommunityIcons
-            name="map-marker"
-            size={24}
-            color={colors.blue}
-          />
-          <Text
-            style={{
-              fontSize: 16,
-              fontFamily: 'SpaceMono',
-              fontWeight: '500',
-              color: colors['gray-600'],
-            }}
-          >
-            Kebele 10, Poli
-          </Text>
-        </View> */}
-
         <View
           style={{
             display: 'flex',
@@ -88,115 +60,16 @@ export default function Home() {
             }}
           />
         </View>
-      </View>
-
-      {/* Banner */}
-      {/* <View>
-        <Image
-          source={require('@/assets/images/products/vegetables.jpg')}
-          style={{ width: 96, height: 96, borderRadius: 12 }}
-        />
-      </View> */}
-
-      {/* Exclusive Offer */}
-      <View
-        style={{
-          marginBottom: 15,
-        }}
-      >
-        <View
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            paddingHorizontal: 10,
-            paddingVertical: 10,
-          }}
-        >
-          <Text
-            style={{
-              fontFamily: 'Inter',
-              fontSize: 22,
-              fontWeight: '700',
-              color: colors['gray-900'],
-            }}
-          >
-            Exclusive Offer
-          </Text>
-          <Link href={'/(product)/20'}>
-            <Text
-              style={{
-                color: colors['primary-600'],
-                textDecorationLine: 'underline',
-                fontFamily: 'Inter',
-                fontWeight: '500',
-                fontSize: 16,
-              }}
-            >
-              See all
-            </Text>
-          </Link>
-        </View>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          {sampleProducts.map((product) => (
-            <ProductCardV1 key={product.id} product={product} />
-          ))}
-        </ScrollView>
-      </View>
-
-      {/* Best Selling */}
-      <View
-        style={{
-          marginBottom: 15,
-        }}
-      >
-        <View
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            paddingHorizontal: 10,
-            paddingVertical: 10,
-          }}
-        >
-          <Text
-            style={{
-              fontFamily: 'Inter',
-              fontSize: 22,
-              fontWeight: '700',
-              color: colors['gray-900'],
-            }}
-          >
-            Best Selling
-          </Text>
-          <Link href={'/(product)/22'}>
-            <Text
-              style={{
-                color: colors['primary-500'],
-                textDecorationLine: 'underline',
-                fontFamily: 'Inter',
-                fontWeight: '500',
-                fontSize: 16,
-              }}
-            >
-              See all
-            </Text>
-          </Link>
-        </View>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          {sampleProducts.map((product) => (
-            <ProductCardV1 key={product.id} product={product} />
-          ))}
-        </ScrollView>
-
         <TextButton
-          title='sign up'
-          onPress={() => router.navigate('/signup')}
+          title='sign in'
+          onPress={() => router.navigate('/signin')}
+          style={{
+            width: '30%',
+          }}
         />
       </View>
-      {/* <Products /> */}
+
+      <ProductsList />
     </ScrollView>
   );
 }
