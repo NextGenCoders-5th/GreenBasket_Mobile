@@ -1,134 +1,108 @@
+import React from 'react';
+import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { router } from 'expo-router';
+
+import { Product } from '@/types/product';
 import { useColorTheme } from '@/hooks/useColorTheme';
-import { shadows } from '@/styles/shadows';
-import { Link } from 'expo-router';
-import React, { useMemo } from 'react';
-import {
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-  StyleSheet,
-  ViewStyle,
-  Platform,
-} from 'react-native';
+import { useTransformImageUrl } from '@/hooks/useTransformImageUrl';
 
 interface ProductCardProps {
-  product: {
-    id: string;
-    title: string;
-    price: string;
-    image: any;
-  };
-  style?: ViewStyle;
+  product: Product;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ product, style }) => {
+const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const colors = useColorTheme();
+  const { id, price, name, discount_price, unit, is_featured, image_url } =
+    product;
+
+  // console.log('product', product);
+
+  const imageUrl = useTransformImageUrl({ imageUrl: image_url });
+  // console.log('imageUrl', imageUrl);
+
+  const handlePress = () => {
+    router.push(`/(product)/${id}`);
+  };
 
   return (
-    <View
-      style={{
-        ...styles.container,
-        borderColor: colors['gray-500'],
-        shadowColor: colors['gray-900'],
-        backgroundColor: colors['gray-50'],
-        ...style,
-      }}
+    <TouchableOpacity
+      style={[styles.card, { backgroundColor: colors.background }]}
+      onPress={handlePress}
     >
-      <View
-        style={{
-          width: '100%',
-          height: '50%',
-        }}
-      >
-        <Image source={product.image} style={styles.image} />
-        <Link href={'/(product)/33'} asChild>
-          <Text style={{ ...styles.title, color: colors['gray-800'] }}>
-            {product.title}
-          </Text>
-        </Link>
-      </View>
-      <View style={styles.subContainer}>
-        <Text style={{ ...styles.price, color: colors['gray-800'] }}>
-          {product.price}/kg
-        </Text>
-        <TouchableOpacity
-          style={{ ...styles.button, backgroundColor: colors['primary'] }}
+      <Image
+        source={{ uri: imageUrl }}
+        // src={imageUrl}
+        style={styles.image}
+        resizeMode='cover'
+      />
+      <View style={styles.infoContainer}>
+        <Text
+          style={[styles.name, { color: colors['gray-800'] }]}
+          numberOfLines={2}
         >
-          <Text style={{ ...styles.buttonIcon, color: colors['white'] }}>
-            +
+          {name}
+        </Text>
+        <View style={styles.priceContainer}>
+          <Text style={[styles.price, { color: colors.primary }]}>
+            {price} ETB/{unit}
           </Text>
-        </TouchableOpacity>
+          {discount_price ? (
+            <Text style={[styles.originalPrice, { color: colors['gray-500'] }]}>
+              {discount_price} ETB/{unit}
+            </Text>
+          ) : null}
+        </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
-export default ProductCard;
-
 const styles = StyleSheet.create({
-  container: {
-    width: 150,
-    height: 180,
-    display: 'flex',
-    alignItems: 'flex-start',
-    justifyContent: 'space-between',
-    paddingBottom: 5,
-    gap: 5,
-    marginRight: 10,
-    borderRadius: 10,
-    borderWidth: 1,
-
-    ...Platform.select({
-      android: {
-        // elevation: 5,
-        boxShadow: shadows['shadow-2'],
-      },
-      ios: {
-        shadowOffset: {
-          width: 0,
-          height: 5,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 5,
-      },
-    }),
+  card: {
+    borderRadius: 8,
+    marginVertical: 8,
+    marginHorizontal: 4, // For spacing in a 2-column layout
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 3,
+    overflow: 'hidden', // Ensures image corners are rounded if image is first child
+    flex: 1, // For 2-column layout
   },
   image: {
     width: '100%',
-    height: '100%',
-    objectFit: 'cover',
-    borderRadius: 10,
+    height: 150,
   },
-  title: {
+  infoContainer: {
+    padding: 12,
+  },
+  name: {
     fontSize: 16,
-    fontFamily: 'Inter',
-    fontWeight: '700',
-    paddingLeft: 5,
+    fontWeight: '600',
+    fontFamily: 'Inter-SemiBold', // Assuming you have these fonts
+    marginBottom: 4,
   },
-  subContainer: {
-    width: '100%',
-    display: 'flex',
+  priceContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 5,
+    marginBottom: 4,
   },
   price: {
-    fontFamily: 'Inter',
-    fontSize: 16,
-    fontWeight: '700',
+    fontSize: 18,
+    fontWeight: 'bold',
+    fontFamily: 'Inter-Bold',
   },
-  button: {
-    width: 30,
-    height: 30,
-    borderRadius: 10,
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
+  originalPrice: {
+    fontSize: 12,
+    textDecorationLine: 'line-through',
+    marginLeft: 8,
+    fontFamily: 'Inter-Regular',
   },
-  buttonIcon: {
-    fontSize: 20,
-    fontWeight: '600',
+  unit: {
+    fontSize: 12,
+    fontFamily: 'Inter-Regular',
   },
 });
+
+export default ProductCard;
