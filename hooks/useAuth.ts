@@ -3,30 +3,33 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect } from 'react';
 
 import {
-  selectCurrentUser,
-  selectIsAuthenticated,
-  selectIsAuthLoading,
   setCredentials,
   clearCredentials,
-  setAuthLoading,
-} from '@/redux/slices/authSlice';
+  selectIsAuthLoading, // Crucial for the useEffect condition
+  selectCurrentUser, // For returning the user
+  selectIsAuthenticated, // For returning isAuthenticated
+} from '@/redux/slices/authSlice'; // Ensure this path is correct
 import {
-  useSignInMutation,
+  useSignInMutation, // Assuming this is your RTK Query hook for login
   useLogoutMutation,
   useSignUpMutation,
-} from '@/redux/api/authApi';
+} from '@/redux/api/authApi'; // Ensure this path is correct
 import {
-  AuthError,
-  AuthSignInResponse,
-  AuthSignIn,
-  AuthSignUp,
-} from '@/types/auth';
-import { UserType } from '@/types/user';
+  AuthError, // Your specific error type from backend
+  AuthSignInResponse, // Your specific sign-in response type
+  AuthSignIn, // Your type for sign-in credentials
+  AuthSignUp, // Your type for sign-up credentials (likely from form)
+  // AuthSignUpType,  // If you have a separate type for the API call after transformation
+  // CreateCartItemResponse, // Example if signup returns something specific
+} from '@/types/auth'; // Ensure this path is correct
+import { User } from '@/types/user'; // Ensure this path is correct
+import { apiSlice } from '@/redux/api/apiSlice';
 
+// Type guard for your specific backend authentication errors
 function isAuthError(error: any): error is AuthError {
   return (
     error &&
-    typeof error.status === 'number' &&
+    typeof error.status === 'number' && // Or error.originalStatus from RTK Query
     error.data &&
     typeof error.data.message === 'string' &&
     typeof error.data.statusCode === 'number'
@@ -35,110 +38,156 @@ function isAuthError(error: any): error is AuthError {
 
 export const useAuth = () => {
   const dispatch = useDispatch();
-  const user = useSelector(selectCurrentUser);
-  const isAuthenticated = useSelector(selectIsAuthenticated);
-  const isLoading = useSelector(selectIsAuthLoading);
 
-  const [signIn, { isLoading: isSignInLoading }] = useSignInMutation();
-  const [signUp, { isLoading: isSignUpLoading }] = useSignUpMutation();
-  const [logout, { isLoading: isLogoutLoading }] = useLogoutMutation();
+  // Selectors to get current auth state from Redux
+  const currentUser = useSelector(selectCurrentUser);
+  const currentIsAuthenticated = useSelector(selectIsAuthenticated);
+  const isLoadingFromState = useSelector(selectIsAuthLoading); // Key for controlling the effect
 
+  // RTK Query mutation hooks
+  const [signInMutation, { isLoading: isSignInLoading }] = useSignInMutation();
+  const [signUpMutation, { isLoading: isSignUpLoading }] = useSignUpMutation();
+  const [logoutMutation, { isLoading: isLogoutLoading }] = useLogoutMutation();
+
+  // Effect for loading persisted authentication state on app startup
   useEffect(() => {
     const loadAuthState = async () => {
+      console.log(
+        'useAuth EFFECT: Attempting to load auth state from AsyncStorage...'
+      );
+      // This effect's purpose is to transition isLoading from true to false
+      // by dispatching either setCredentials or clearCredentials.
       try {
-        dispatch(setAuthLoading(true));
         const accessToken = await AsyncStorage.getItem('accessToken');
         const refreshToken = await AsyncStorage.getItem('refreshToken');
         const userString = await AsyncStorage.getItem('user');
 
         if (accessToken && refreshToken && userString) {
-          const user = JSON.parse(userString) as UserType;
+          console.log(
+            'useAuth EFFECT: Found credentials. Dispatching setCredentials.'
+          );
+          const user = JSON.parse(userString) as User;
           dispatch(setCredentials({ user, accessToken, refreshToken }));
         } else {
-          dispatch(setAuthLoading(false));
+          console.log(
+            'useAuth EFFECT: No credentials found. Dispatching clearCredentials.'
+          );
+          dispatch(clearCredentials());
         }
       } catch (error) {
-        console.error('Failed to load auth state:', error);
-        dispatch(setAuthLoading(false));
+        console.error(
+          'useAuth EFFECT: Failed to load auth state from AsyncStorage:',
+          error
+        );
+        dispatch(clearCredentials()); // Clear state on error too
       }
     };
 
-    loadAuthState();
-  }, [dispatch]);
+    // --- CRITICAL CONDITION TO PREVENT LOOP ---
+    // Only run the loading logic if the Redux state currently indicates it's loading.
+    // Once it's false, this effect won't re-run the async logic even if useAuth re-renders.
+    if (isLoadingFromState) {
+      loadAuthState();
+    }
+  }, [dispatch, isLoadingFromState]); // Dependencies: dispatch (stable) and isLoadingFromState
 
+  // Handle Sign In
   const handleSignIn = async (credentials: AuthSignIn) => {
+    console.log('useAuth: handleSignIn called');
     try {
-      const result: AuthSignInResponse = await signIn(credentials).unwrap();
-      const { accessToken, refreshToken } = result.data.data;
-      const user = result.data.data.user;
+      // The actual response type from unwrap might be different from AuthSignInResponse
+      // if AuthSignInResponse is the type for the whole { data: { ... } } envelope.
+      // Let's assume unwrap gives you the content of result.data.data directly if successful.
+      const unwrappedResult = await signInMutation(credentials).unwrap();
+
+      // Adjust this destructuring based on your ACTUAL unwrapped API response structure
+      // For example, if your AuthSignInResponse is { data: { data: { user, accessToken, refreshToken } } }
+      // then unwrappedResult might be { user, accessToken, refreshToken } if RTK Query handles the nesting.
+      // Or, if unwrap gives AuthSignInResponse, then:
+      // const { user, accessToken, refreshToken } = (unwrappedResult as AuthSignInResponse).data.data.data;
+      const { user, accessToken, refreshToken } = (
+        unwrappedResult as AuthSignInResponse
+      ).data.data;
 
       dispatch(setCredentials({ user, accessToken, refreshToken }));
-      return { success: true };
+      return { success: true, user };
     } catch (error: any) {
-      let errorMessage = 'An unexpected error occurred. Please try again.';
-
+      console.error('useAuth: handleSignIn error:', error);
+      let errorMessage = 'Login failed. Please try again.';
       if (isAuthError(error)) {
         errorMessage = error.data.message;
       } else if (error.status === 'FETCH_ERROR') {
-        errorMessage = 'Network error. Please check your internet connection.';
-      } else if (error instanceof Error) {
+        errorMessage = 'Network error. Please check your connection.';
+      } else if (error.message) {
         errorMessage = error.message;
       }
-      return {
-        success: false,
-        error: errorMessage,
-      };
+      return { success: false, error: errorMessage };
     }
   };
 
+  // Handle Sign Up
   const handleSignUp = async (credentials: AuthSignUp) => {
+    console.log('useAuth: handleSignUp called');
     const { phoneNumber, ...restCredentials } = credentials;
-
-    const fullPhoneNumber = `+251${phoneNumber}`;
+    const fullPhoneNumber = `+251${phoneNumber}`; // Assuming this transformation is correct
 
     try {
-      const result = await signUp({
+      // Assuming signUpMutation expects the transformed credentials
+      // And CreateCartItemResponse was a placeholder, adjust to your actual SignUp response type
+      const result = await signUpMutation({
         ...restCredentials,
         phoneNumber: fullPhoneNumber,
       }).unwrap();
-      return { success: true, data: result.data };
+      // Signup usually doesn't log the user in automatically.
+      // It might return a success message or the created user (without tokens).
+      return { success: true, data: result.data }; // Adjust based on your API's signup response
     } catch (error: any) {
-      let errorMessage = 'An unexpected error occurred. Please try again.';
-      console.log('Error:', error);
+      console.error('useAuth: handleSignUp error:', error);
+      let errorMessage = 'Signup failed. Please try again.';
       if (isAuthError(error)) {
         errorMessage = error.data.message;
       } else if (error.status === 'FETCH_ERROR') {
-        errorMessage = 'Network error. Please check your internet connection.';
-      } else if (error instanceof Error) {
+        errorMessage = 'Network error. Please check your connection.';
+      } else if (error.message) {
         errorMessage = error.message;
       }
-
-      return {
-        success: false,
-        error: errorMessage,
-      };
+      return { success: false, error: errorMessage };
     }
   };
 
+  // Handle Logout
   const handleLogout = async () => {
+    console.log('useAuth: handleLogout called');
     try {
-      await logout().unwrap();
+      await logoutMutation().unwrap(); // Call the API logout endpoint
+    } catch (apiError) {
+      // Log API error but proceed with local logout anyway
+      console.error(
+        'useAuth: Logout API call failed (continuing local logout):',
+        apiError
+      );
+    } finally {
+      // ALWAYS clear credentials from Redux state and AsyncStorage
       dispatch(clearCredentials());
-      return { success: true };
-    } catch (error) {
-      // Even if the API call fails, we still want to log out locally
-      dispatch(clearCredentials());
-      return { success: true };
+      dispatch(apiSlice.util.resetApiState());
     }
+    return { success: true }; // Indicate local logout success
   };
 
   return {
-    user,
-    isAuthenticated,
-    isLoading:
-      isLoading || isSignInLoading || isSignUpLoading || isLogoutLoading,
+    // Current state values from Redux (selected at the top of the hook)
+    user: currentUser,
+    isAuthenticated: currentIsAuthenticated,
+    isLoading: isLoadingFromState, // This is the crucial initial loading state
+
+    // Action trigger functions
     signIn: handleSignIn,
     signUp: handleSignUp,
     logout: handleLogout,
+
+    // Specific loading states for actions (from RTK Query mutations)
+    isSignInLoading,
+    isSignUpLoading,
+    isLogoutLoading,
   };
 };

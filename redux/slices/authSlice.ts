@@ -1,11 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-import { UserType } from '@/types/user';
+import { User } from '@/types/user';
 import { RootState } from '@/redux/store';
 
 interface AuthState {
-  user: UserType | null;
+  user: User | null;
   accessToken: string | null;
   refreshToken: string | null;
   isAuthenticated: boolean;
@@ -17,7 +16,7 @@ const initialState: AuthState = {
   accessToken: null,
   refreshToken: null,
   isAuthenticated: false,
-  isLoading: true,
+  isLoading: true, // Start true
 };
 
 const authSlice = createSlice({
@@ -27,7 +26,7 @@ const authSlice = createSlice({
     setCredentials: (
       state,
       action: PayloadAction<{
-        user: UserType;
+        user: User;
         accessToken: string;
         refreshToken: string;
       }>
@@ -37,51 +36,56 @@ const authSlice = createSlice({
       state.accessToken = accessToken;
       state.refreshToken = refreshToken;
       state.isAuthenticated = true;
-      state.isLoading = false;
+      state.isLoading = false; // SET TO FALSE
 
-      // Store tokens in AsyncStorage
       AsyncStorage.setItem('accessToken', accessToken);
       AsyncStorage.setItem('refreshToken', refreshToken);
       AsyncStorage.setItem('user', JSON.stringify(user));
+      console.log('AuthSlice: Credentials SET. isLoading: false');
     },
     updateTokens: (
       state,
       action: PayloadAction<{
         accessToken: string;
-        refreshToken: string;
+        refreshToken: string; // Or make refreshToken optional if it's not always updated
       }>
     ) => {
       const { accessToken, refreshToken } = action.payload;
       state.accessToken = accessToken;
-      state.refreshToken = refreshToken;
+      state.refreshToken = refreshToken; // Only update if provided
 
-      // Update tokens in AsyncStorage
       AsyncStorage.setItem('accessToken', accessToken);
-      AsyncStorage.setItem('refreshToken', refreshToken);
+      if (refreshToken) {
+        // Only set if refreshToken is part of the payload
+        AsyncStorage.setItem('refreshToken', refreshToken);
+      }
+      console.log('AuthSlice: Tokens UPDATED.');
     },
     clearCredentials: (state) => {
       state.user = null;
       state.accessToken = null;
       state.refreshToken = null;
       state.isAuthenticated = false;
-      state.isLoading = false;
+      state.isLoading = false; // SET TO FALSE
 
-      // Remove tokens from AsyncStorage
       AsyncStorage.removeItem('accessToken');
       AsyncStorage.removeItem('refreshToken');
       AsyncStorage.removeItem('user');
+      console.log('AuthSlice: Credentials CLEARED. isLoading: false');
     },
-    setAuthLoading: (state, action: PayloadAction<boolean>) => {
-      state.isLoading = action.payload;
-    },
+    // This action is generally for specific manual control, not the primary mechanism for initial load.
+    // setAuthLoading: (state, action: PayloadAction<boolean>) => {
+    //   state.isLoading = action.payload;
+    // },
   },
 });
 
+// Only export setAuthLoading if you have a clear, non-looping use case for it.
 export const {
   setCredentials,
   updateTokens,
   clearCredentials,
-  setAuthLoading,
+  // setAuthLoading,
 } = authSlice.actions;
 
 export default authSlice.reducer;
