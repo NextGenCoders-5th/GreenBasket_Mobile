@@ -10,6 +10,7 @@ import { selectCurrentUser } from '@/redux/slices/authSlice';
 import { useSelector } from 'react-redux';
 import AccountButton from '@/components/account/AccountButton';
 import { useAuth } from '@/hooks/useAuth';
+import SignIn from '@/components/account/SignIn';
 
 export default function AccountScreen() {
   const colors = useColorTheme();
@@ -31,38 +32,7 @@ export default function AccountScreen() {
     );
   }
 
-  if (!user)
-    return (
-      <View
-        style={{
-          display: 'flex',
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-          gap: 10,
-        }}
-      >
-        <Text
-          style={{
-            fontFamily: 'Inter',
-            fontSize: 24,
-            fontWeight: '600',
-            color: colors['gray-900'],
-          }}
-        >
-          Welcome to <Text style={{ fontWeight: '900' }}>MiniExpress</Text>
-        </Text>
-        <TextButton
-          style={{
-            width: 170,
-          }}
-          title='Sign in / Register'
-          onPress={() => {
-            router.navigate('/(auth)/signin');
-          }}
-        />
-      </View>
-    );
+  if (!user) return <SignIn />;
 
   const { first_name, profile_picture, is_onboarding } = user;
 
