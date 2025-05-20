@@ -1,4 +1,5 @@
 import { useColorTheme } from '@/hooks/useColorTheme';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useMemo } from 'react';
 import {
   Text,
@@ -9,7 +10,11 @@ import {
   ActivityIndicator,
 } from 'react-native';
 
-interface TextButtonProps extends TouchableOpacityProps {
+interface ButtonProps extends TouchableOpacityProps {
+  icon?:
+    | keyof typeof Ionicons.glyphMap
+    | keyof typeof MaterialCommunityIcons.glyphMap;
+  size?: number;
   title: string;
   titleStyle?: TextStyle;
   isLoading?: boolean;
@@ -17,7 +22,9 @@ interface TextButtonProps extends TouchableOpacityProps {
   onPress: () => void;
 }
 
-const TextButton: React.FC<TextButtonProps> = ({
+const Button: React.FC<ButtonProps> = ({
+  icon,
+  size = 24,
   title,
   titleStyle,
   onPress,
@@ -27,6 +34,8 @@ const TextButton: React.FC<TextButtonProps> = ({
   ...props
 }) => {
   const colors = useColorTheme();
+  const isIonicons = icon && icon in Ionicons.glyphMap;
+  const IconLibrary = isIonicons ? Ionicons : MaterialCommunityIcons;
 
   const styles = useMemo(
     () =>
@@ -40,6 +49,7 @@ const TextButton: React.FC<TextButtonProps> = ({
           alignItems: 'center',
           justifyContent: 'center',
           backgroundColor: colors.primary,
+          gap: 10,
         },
         title: {
           fontWeight: '700',
@@ -55,14 +65,18 @@ const TextButton: React.FC<TextButtonProps> = ({
       onPress={onPress}
       style={[styles.button, style]}
       {...props}
+      activeOpacity={0.7}
     >
       {isLoading ? (
         <ActivityIndicator color={loadingColor} size='small' />
       ) : (
-        <Text style={[styles.title, titleStyle]}>{title}</Text>
+        <>
+          <IconLibrary name={icon as any} size={size} color={colors.white} />
+          <Text style={[styles.title, titleStyle]}>{title}</Text>
+        </>
       )}
     </TouchableOpacity>
   );
 };
 
-export default TextButton;
+export default Button;

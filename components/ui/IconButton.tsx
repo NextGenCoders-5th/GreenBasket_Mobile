@@ -1,9 +1,15 @@
 import React from 'react';
-import { Pressable, StyleSheet, ViewStyle } from 'react-native';
+import {
+  Pressable,
+  StyleSheet,
+  TouchableOpacity,
+  TouchableOpacityProps,
+  ViewStyle,
+} from 'react-native';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useColorTheme } from '@/hooks/useColorTheme';
 
-interface IconButtonProps {
+interface IconButtonProps extends TouchableOpacityProps {
   icon:
     | keyof typeof Ionicons.glyphMap
     | keyof typeof MaterialCommunityIcons.glyphMap;
@@ -26,13 +32,13 @@ export const IconButton = ({
   const IconLibrary = isIonicons ? Ionicons : MaterialCommunityIcons;
 
   return (
-    <Pressable onPress={onPress} style={[styles.button, style]}>
+    <TouchableOpacity onPress={onPress} style={[styles.button, style]}>
       <IconLibrary
         name={icon as any}
         size={size}
         color={color || colors.primary}
       />
-    </Pressable>
+    </TouchableOpacity>
   );
 };
 
