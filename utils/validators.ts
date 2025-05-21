@@ -1,4 +1,5 @@
-import parsePhoneNumberFromString from 'libphonenumber-js';
+import { Gender } from '@/config/enums';
+import { isValid as isValidDateFns, parseISO } from 'date-fns';
 import * as yup from 'yup';
 
 export const SingInSchema = yup.object({
@@ -48,4 +49,61 @@ export const SignUpschema = yup.object({
     .boolean()
     .oneOf([true], 'You must accept the terms and conditions')
     .required(),
+});
+
+const GENDER_OPTIONS: Gender[] = [Gender.MALE, Gender.FEMALE];
+const pickedImageObjectSchema = yup
+  .object()
+  .shape({
+    uri: yup.string().required('Please select an image file.'),
+    type: yup.string().optional(),
+    name: yup.string().optional(),
+  })
+  .nonNullable();
+
+export const OnboardingSchema = yup.object({
+  first_name: yup
+    .string()
+    .required('First name is required')
+    .min(2, 'First name must be at least 2 characters'),
+  last_name: yup
+    .string()
+    .required('Last name is required')
+    .min(2, 'Last name must be at least 2 characters'),
+  date_of_birth: yup
+    .string()
+    .required('Date of birth is required')
+    .test(
+      'is-iso-date',
+      'Invalid date format. Please select a valid date.',
+      (value) => {
+        if (!value) return false;
+        const date = parseISO(value);
+        return isValidDateFns(date);
+      }
+    )
+    .test(
+      'is-not-future-date',
+      'Date of birth cannot be in the future.',
+      (value) => {
+        if (!value) return true;
+        const date = parseISO(value);
+        if (!isValidDateFns(date)) return true;
+        return date <= new Date();
+      }
+    ),
+  gender: yup
+    .mixed<Gender>()
+    .oneOf(GENDER_OPTIONS, 'Invalid gender selection')
+    .required('Gender is required'),
+
+  profile_picture: pickedImageObjectSchema.required(
+    'Profile picture is required.'
+  ),
+  idPhoto_front: pickedImageObjectSchema.required(
+    'Front of ID photo is required.'
+  ),
+  idPhoto_back: pickedImageObjectSchema.required(
+    'Back of ID photo is required.'
+  ),
 });
