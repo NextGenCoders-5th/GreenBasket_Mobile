@@ -11,9 +11,21 @@ export enum UserStatus {
   DELETED = 'DELETED',
 }
 
+export enum UserVerifyStatus {
+  UNVERIFIED = 'UNVERIFIED',
+  VERIFIED = 'VERIFIED',
+  REQUESTED = 'REQUESTED',
+  DECLINED = 'DECLINED',
+}
+
 export enum AuthProvider {
   EMAIL = 'EMAIL',
   GOOGLE = 'GOOGLE',
+}
+
+export enum Gender {
+  MALE = 'male',
+  FEMALE = 'female',
 }
 
 export enum VendorStatus {
