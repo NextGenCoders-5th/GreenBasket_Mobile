@@ -24,8 +24,8 @@ export default function SignInScreen() {
   } = useForm<AuthSignIn>({
     resolver: yupResolver(SingInSchema),
     defaultValues: {
-      email: '',
-      password: '',
+      email: 'tewodros@test.com',
+      password: 'test1234',
     },
   });
 
@@ -39,7 +39,7 @@ export default function SignInScreen() {
         type: 'success',
         position: 'top',
         text1: 'Welcome👋',
-        text2: 'You have successfully logged in',
+        text2: 'You logged in successfully ',
         text1Style: {
           color: colors.primary,
           fontFamily: 'Inter',

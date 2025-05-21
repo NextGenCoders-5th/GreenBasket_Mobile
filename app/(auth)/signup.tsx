@@ -34,11 +34,11 @@ export default function SignUpScreen() {
   } = useForm<SignUpFormType>({
     resolver: yupResolver(SignUpschema),
     defaultValues: {
-      email: '',
-      phoneNumber: '',
-      password: '',
-      passwordConfirm: '',
-      agreeToTerms: false,
+      email: 'test@test.com',
+      phoneNumber: '912345678',
+      password: 'test1234',
+      passwordConfirm: 'test1234',
+      agreeToTerms: true,
     },
   });
 
