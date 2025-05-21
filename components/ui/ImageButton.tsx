@@ -5,14 +5,13 @@ import {
   StyleSheet,
   ViewStyle,
   TextStyle,
-  ImageSourcePropType,
   Image,
   ImageStyle,
 } from 'react-native';
 import { useColorTheme } from '@/hooks/useColorTheme';
 
 interface ImageButtonProps {
-  imageUrl: ImageSourcePropType | string;
+  imageUrl: string;
   onPress: () => void;
   label?: string;
   buttonStyle?: ViewStyle;
@@ -31,17 +30,10 @@ const ImageButton: React.FC<ImageButtonProps> = ({
   const colors = useColorTheme();
   return (
     <TouchableOpacity style={[styles.button, buttonStyle]} onPress={onPress}>
-      {typeof imageUrl === 'string' ? (
-        <Image
-          src={imageUrl}
-          style={[styles.image, imageStyle && (imageStyle as any)]}
-        />
-      ) : (
-        <Image
-          source={imageUrl}
-          style={[styles.image, imageStyle && (imageStyle as any)]}
-        />
-      )}
+      <Image
+        source={{ uri: imageUrl }}
+        style={[styles.image, imageStyle && (imageStyle as any)]}
+      />
 
       {label && (
         <Text

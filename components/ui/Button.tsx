@@ -15,6 +15,7 @@ interface ButtonProps extends TouchableOpacityProps {
     | keyof typeof Ionicons.glyphMap
     | keyof typeof MaterialCommunityIcons.glyphMap;
   size?: number;
+  iconColor?: string;
   title: string;
   titleStyle?: TextStyle;
   isLoading?: boolean;
@@ -25,6 +26,7 @@ interface ButtonProps extends TouchableOpacityProps {
 const Button: React.FC<ButtonProps> = ({
   icon,
   size = 24,
+  iconColor = '#fff',
   title,
   titleStyle,
   onPress,
@@ -71,7 +73,7 @@ const Button: React.FC<ButtonProps> = ({
         <ActivityIndicator color={loadingColor} size='small' />
       ) : (
         <>
-          <IconLibrary name={icon as any} size={size} color={colors.white} />
+          <IconLibrary name={icon as any} size={size} color={iconColor} />
           <Text style={[styles.title, titleStyle]}>{title}</Text>
         </>
       )}

@@ -1,20 +1,30 @@
 import React from 'react';
-import { Pressable, Text, StyleSheet, ViewStyle } from 'react-native';
+import {
+  Pressable,
+  Text,
+  StyleSheet,
+  ViewStyle,
+  TextStyle,
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 import { useColorTheme } from '@/hooks/useColorTheme';
 
 interface AccountButtonProps {
   label: string;
+  labelStyle?: TextStyle;
   onPress: () => void;
   icon?: keyof typeof Ionicons.glyphMap;
+  iconColor?: string;
   style?: ViewStyle;
 }
 
 const AccountButton: React.FC<AccountButtonProps> = ({
   label,
+  labelStyle,
   onPress,
   icon = 'chevron-forward-outline',
+  iconColor = '#656766',
   style,
 }) => {
   const colors = useColorTheme();
@@ -28,10 +38,12 @@ const AccountButton: React.FC<AccountButtonProps> = ({
       ]}
       onPress={onPress}
     >
-      <Text style={{ ...styles.label, color: colors['primary-800'] }}>
+      <Ionicons name={icon} size={20} color={iconColor} />
+      <Text
+        style={{ ...styles.label, color: colors['primary-800'], ...labelStyle }}
+      >
         {label}
       </Text>
-      <Ionicons name={icon} size={20} color={colors['gray-600']} />
     </Pressable>
   );
 };
@@ -41,11 +53,10 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
     paddingVertical: 15,
-    paddingHorizontal: 10,
     marginBottom: 5,
     borderBottomWidth: 1,
+    gap: 10,
   },
   label: {
     fontFamily: 'Inter',

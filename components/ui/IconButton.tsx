@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  Pressable,
   StyleSheet,
   TouchableOpacity,
   TouchableOpacityProps,
