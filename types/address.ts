@@ -1,8 +1,8 @@
-import { OrderType } from './order';
+import { Order } from './order';
 import { User } from './user';
-import { VendorType } from './vendor';
+import { Vendor } from './vendor';
 
-export interface AddressType {
+export interface Address {
   id: string;
   updatedAt: string;
   createdAt: string;
@@ -15,9 +15,9 @@ export interface AddressType {
   longitude?: number | null;
   is_default: boolean;
 
-  vendor?: VendorType | null;
+  vendor?: Vendor | null;
   vendorId?: string | null;
-  Order: OrderType[];
+  Order: Order[];
   User?: User | null;
   userId?: string | null;
 }

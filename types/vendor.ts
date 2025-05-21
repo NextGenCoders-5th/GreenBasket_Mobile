@@ -1,10 +1,10 @@
 import { VendorStatus } from '@/config/enums';
 import { User } from './user';
-import { AddressType } from './address';
+import { Address } from './address';
 import { Product } from './product';
-import { OrderType } from './order';
+import { Order } from './order';
 
-export interface VendorType {
+export interface Vendor {
   id: string;
   updatedAt: string;
   createdAt: string;
@@ -16,7 +16,7 @@ export interface VendorType {
 
   user: User;
   userId: string;
-  address: AddressType[];
+  address: Address[];
   products: Product[];
-  orders: OrderType[];
+  orders: Order[];
 }

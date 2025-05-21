@@ -1,5 +1,5 @@
 import { PaymentStatus } from '@/config/enums';
-import { OrderType } from './order';
+import { Order } from './order';
 
 export interface PaymentType {
   id: string;
@@ -8,6 +8,6 @@ export interface PaymentType {
   amount: string;
   status: PaymentStatus;
 
-  Order: OrderType;
+  Order: Order;
   orderId: string;
 }

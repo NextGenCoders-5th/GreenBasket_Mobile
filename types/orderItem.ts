@@ -1,4 +1,4 @@
-import { OrderType } from './order';
+import { Order } from './order';
 import { Product } from './product';
 
 export interface OrderItemType {
@@ -9,7 +9,7 @@ export interface OrderItemType {
   quantity: number;
   sub_total: number;
 
-  Order: OrderType;
+  Order: Order;
   orderId: string;
   Product: Product;
   productId: string;

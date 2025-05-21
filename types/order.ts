@@ -2,10 +2,10 @@ import { OrderStatus } from '@/config/enums';
 import { OrderItemType } from './orderItem';
 import { PaymentType } from './payment';
 import { User } from './user';
-import { VendorType } from './vendor';
-import { AddressType } from './address';
+import { Vendor } from './vendor';
+import { Address } from './address';
 
-export interface OrderType {
+export interface Order {
   id: string;
   updatedAt: string;
   createdAt: string;
@@ -16,8 +16,8 @@ export interface OrderType {
   Payment?: PaymentType | null;
   User: User;
   userId: string;
-  Vendor: VendorType;
+  Vendor: Vendor;
   vendorId: string;
-  Adress: AddressType;
+  Adress: Address;
   addressId: string;
 }
