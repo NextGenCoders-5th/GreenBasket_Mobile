@@ -1,264 +1,250 @@
-import { ActivityIndicator, Dimensions, SafeAreaView } from 'react-native';
+import {
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
 import React from 'react';
 import { useColorTheme } from '@/hooks/useColorTheme';
-import { View, Text, ScrollView, Image, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { IconButton } from '@/components/ui/IconButton';
 import TextButton from '@/components/ui/TextButton';
-import { router } from 'expo-router';
-import { selectCurrentUser } from '@/redux/slices/authSlice';
+import { router, Stack } from 'expo-router';
+import {
+  selectCurrentUser,
+  selectIsAuthenticated,
+} from '@/redux/slices/authSlice';
 import { useSelector } from 'react-redux';
 import AccountButton from '@/components/account/AccountButton';
 import { useAuth } from '@/hooks/useAuth';
 import SignIn from '@/components/account/SignIn';
+import LoadingIndicator from '@/components/ui/LoadingIndicator';
+import { useTransformImageUrl } from '@/hooks/useTransformImageUrl';
+// Import useGetCurrentUserQuery if you are using it to get the freshest user data
+// import { useGetCurrentUserQuery } from '@/redux/api/userApi';
 
 export default function AccountScreen() {
   const colors = useColorTheme();
-  const { logout, isLoading } = useAuth();
-  const user = useSelector(selectCurrentUser);
+
+  const { logout, isLoading: isInitialAuthLoading } = useAuth();
+  const userFromAuthSlice = useSelector(selectCurrentUser);
+  const isAuthenticated = useSelector(selectIsAuthenticated);
+
+  // OPTION A: Use RTK Query for the most up-to-date user profile data
+  // const { data: currentUserResponse, isLoading: isUserQueryLoading, refetch: refetchCurrentUser } =
+  //   useGetCurrentUserQuery(undefined, { skip: !isAuthenticated });
+  // const user = currentUserResponse?.data?.data || userFromAuthSlice;
+  // const isLoading = isInitialAuthLoading || (isAuthenticated && isUserQueryLoading);
+
+  // OPTION B: Rely on userFromAuthSlice (simpler if useAuth updates it sufficiently)
+  const user = userFromAuthSlice;
+  const isLoading = isInitialAuthLoading;
 
   if (isLoading) {
-    return (
-      <View
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          flex: 1,
-        }}
-      >
-        <ActivityIndicator size='large' color={colors['primary']} />;
-      </View>
-    );
+    return <LoadingIndicator message='Loading account...' />;
   }
 
-  if (!user) return <SignIn />;
+  if (!isAuthenticated || !user) {
+    // Check isAuthenticated first, then user
+    return <SignIn message='Please sign in to access your account.' />;
+  }
 
-  const { first_name, profile_picture, is_onboarding } = user;
+  // User is authenticated and user object exists
+  const {
+    email,
+    first_name,
+    profile_picture,
+    is_onboarding,
+    id: userId,
+  } = user;
+  const profileImageUrl = useTransformImageUrl({ imageUrl: profile_picture });
 
-  const handleSignOut = () => {
-    logout();
+  const handleSignOut = async () => {
+    await logout();
+    // Navigation will happen automatically when `user` becomes null due to re-render
   };
 
   return (
     <SafeAreaView
       style={{
         backgroundColor: colors.background,
-        minHeight: Dimensions.get('window').height,
+        flex: 1,
       }}
     >
+      <Stack.Screen options={{ title: 'My Account' }} />
       <ScrollView
-        contentContainerStyle={{
-          // flex: 1,
-          paddingHorizontal: 5,
-          paddingVertical: 5,
-          width: '100%',
-          backgroundColor: colors.background,
-        }}
+        contentContainerStyle={styles.scrollContentContainer}
+        showsVerticalScrollIndicator={false}
       >
-        <View
-          style={{
-            width: '100%',
-            height: 40,
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            paddingVertical: 5,
-          }}
-        >
-          {!is_onboarding && (
-            <View
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: 10,
-              }}
-            >
+        {/* User Info Header */}
+        <View style={styles.userInfoHeader}>
+          <View style={styles.avatarContainer}>
+            {profileImageUrl ? (
+              <Image
+                source={{ uri: profileImageUrl }}
+                style={styles.profileImage}
+              />
+            ) : (
               <View
-                style={{
-                  width: 32,
-                  height: 32,
-                  borderRadius: 16,
-                  backgroundColor: colors['primary-200'],
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
+                style={[
+                  styles.initialsCircle,
+                  { backgroundColor: colors['primary-200'] },
+                ]}
               >
-                {profile_picture ? (
-                  <Image
-                    src={profile_picture}
-                    style={{ width: 40, height: 40, borderRadius: 20 }}
-                  />
-                ) : (
-                  <Text
-                    style={{
-                      fontFamily: 'Inter',
-                      fontSize: 24,
-                      color: colors.text,
-                      fontWeight: '700',
-                    }}
-                  >
-                    {first_name![0]}
-                  </Text>
-                )}
+                <Text
+                  style={[
+                    styles.initialsText,
+                    { color: colors['primary-700'] },
+                  ]}
+                >
+                  {email ? email[0].toUpperCase() : 'U'}
+                </Text>
               </View>
-              <Text
-                style={{
-                  fontFamily: 'Inter',
-                  fontSize: 24,
-                  fontWeight: '700',
-                  color: colors['gray-900'],
-                }}
-              >
-                {first_name}
-              </Text>
-            </View>
-          )}
+            )}
+            <Text
+              style={[styles.userName, { color: colors['gray-900'] }]}
+              numberOfLines={1}
+            >
+              {email}
+            </Text>
+          </View>
 
-          <View
-            style={{
-              flex: 1,
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'flex-end',
-              gap: 6,
-              paddingRight: 5,
-            }}
-          >
+          <View style={styles.headerIcons}>
             <IconButton
-              icon='settings'
-              onPress={() => {
-                alert('settings');
-              }}
-              color={colors['gray-900']}
+              icon='settings-outline'
+              onPress={() => alert('Settings (To be implemented)')}
+              color={colors['gray-700']}
+              size={24}
             />
             <IconButton
               icon='notifications-outline'
-              onPress={() => {
-                alert('notifications');
-              }}
-              color={colors['gray-900']}
+              onPress={() => alert('Notifications (To be implemented)')}
+              color={colors['gray-700']}
+              size={24}
             />
           </View>
         </View>
 
-        <View
-          style={{
-            marginTop: 10,
-            borderBottomWidth: 1,
-            borderColor: colors['gray-100'],
-            display: 'flex',
-            flexDirection: 'row',
-            gap: 10,
-          }}
-        >
+        {/* Quick Actions - Conditionally render or adjust if in onboarding */}
+        {!is_onboarding && (
           <View
-            style={{
-              display: 'flex',
-              // width: 60,
-              alignSelf: 'flex-start',
-              padding: 5,
-              alignItems: 'center',
-            }}
+            style={[
+              styles.quickActionsContainer,
+              { borderBottomColor: colors['gray-200'] },
+            ]}
           >
-            <Ionicons
-              style={{}}
-              name='heart-outline'
-              size={20}
-              color={colors['gray-600']}
-            />
-            <Text
-              style={{
-                fontFamily: 'Inter',
-                fontSize: 12,
-                fontWeight: '500',
-              }}
+            <TouchableOpacity
+              style={styles.quickActionItem}
+              onPress={() => router.push('/wishlist')}
             >
-              Wishlists
-            </Text>
-          </View>
-          <View
-            style={{
-              display: 'flex',
-              // width: 60,
-              alignSelf: 'flex-start',
-              padding: 5,
-              alignItems: 'center',
-            }}
-          >
-            <Ionicons
-              style={{}}
-              name='cart'
-              size={20}
-              color={colors['gray-600']}
-            />
-            <Text
-              style={{
-                fontFamily: 'Inter',
-                fontSize: 12,
-                fontWeight: '500',
-              }}
+              <Ionicons
+                name='heart-outline'
+                size={22}
+                color={colors['gray-700']}
+              />
+              <Text
+                style={[styles.quickActionText, { color: colors['gray-700'] }]}
+              >
+                Wishlist
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.quickActionItem}
+              onPress={() => router.push('/(tabs)/cart')}
             >
-              Cart
-            </Text>
+              <Ionicons
+                name='cart-outline'
+                size={22}
+                color={colors['gray-700']}
+              />
+              <Text
+                style={[styles.quickActionText, { color: colors['gray-700'] }]}
+              >
+                Cart
+              </Text>
+            </TouchableOpacity>
           </View>
-        </View>
-        <View
-          style={{
-            width: '100%',
-            marginTop: 10,
-            // gap: 15,
-            paddingVertical: 10,
-            backgroundColor: colors.background,
-            borderRadius: 10,
-          }}
-        >
+        )}
+
+        {/* Account Options */}
+        <View style={styles.accountOptionsContainer}>
+          {is_onboarding && (
+            <View style={styles.onboardingPromptHeader}>
+              <Text
+                style={[
+                  styles.onboardingPromptText,
+                  { color: colors['gray-900'] },
+                ]}
+              >
+                Welcome!
+              </Text>
+            </View>
+          )}
           {is_onboarding && (
             <AccountButton
-              label='Complete Onboarding'
-              onPress={() => {}}
-              style={{
-                backgroundColor: 'transparent',
-                borderBottomWidth: 1,
-                borderBottomColor: colors['gray-100'],
-                paddingVertical: 5,
-                width: '50%',
-                alignSelf: 'center',
-                borderRadius: 20,
+              label='Complete Your Profile'
+              labelStyle={{
+                color: colors.primary,
+                fontFamily: 'Inter-SemiBold',
               }}
+              onPress={() => router.push('/(profile)/complete-onboarding')}
+              style={styles.completeOnboardingButton}
               icon='checkmark-done-circle-outline'
+              iconColor={colors.primary}
             />
           )}
+
           <AccountButton
-            label='Profile'
-            onPress={() => router.navigate('/(profile)/12')}
+            label='Edit Profile'
+            icon='person-circle-outline'
+            onPress={() => router.navigate(`/(profile)/edit`)} // Assuming an edit screen
           />
+          <AccountButton
+            label='Shipping Addresses'
+            icon='location-outline'
+            onPress={() => router.navigate('/(profile)/addresses')} // Example route
+          />
+          <AccountButton
+            label='Order History'
+            icon='receipt-outline'
+            onPress={() => router.navigate('/(order)')} // Navigate to order history group
+          />
+          <AccountButton
+            label='Change Password'
+            icon='lock-closed-outline'
+            onPress={() => router.navigate('/(profile)/change-password')} // Example route
+          />
+          <AccountButton
+            label='Language'
+            icon='language-outline'
+            onPress={() => alert('Language Settings (To be implemented)')}
+          />
+        </View>
 
-          <AccountButton label='Shipping Address' onPress={() => {}} />
-          <AccountButton label='Order History' onPress={() => {}} />
-          <AccountButton label='Currency' onPress={() => {}} />
-          <AccountButton label='Language' onPress={() => {}} />
-
+        {/* Action Buttons */}
+        <View style={styles.actionButtonsContainer}>
           <TextButton
-            style={{
-              ...styles.btn,
-              backgroundColor: colors['gray-50'],
-              marginBottom: 20,
-            }}
+            style={[
+              styles.actionButtonBase,
+              {
+                backgroundColor: colors.background,
+                borderColor: colors.red,
+                borderWidth: 1,
+              },
+            ]}
             titleStyle={{ color: colors.red }}
             title='Delete Account'
-            onPress={() => {}}
+            onPress={() => alert('Delete Account (To be implemented)')}
           />
-
           <TextButton
-            style={{
-              backgroundColor: colors.red,
-            }}
-            titleStyle={{ color: colors['gray-50'] }}
+            style={[styles.actionButtonBase, { backgroundColor: colors.red }]}
+            titleStyle={{ color: colors.white }}
             title='Sign Out'
             onPress={handleSignOut}
+            disabled={isLoading}
           />
         </View>
       </ScrollView>
@@ -267,23 +253,101 @@ export default function AccountScreen() {
 }
 
 const styles = StyleSheet.create({
-  btnContainer: {
-    width: 180,
-    display: 'flex',
-    flexDirection: 'row',
+  centered: {
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
-    justifyContent: 'space-between',
   },
-  btn: {
-    width: '100%',
-    display: 'flex',
+  scrollContentContainer: {
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    flexGrow: 1,
+  },
+  userInfoHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 15,
+    marginBottom: 10,
+  },
+  onboardingPromptHeader: {
+    flex: 1,
+    marginVertical: 10,
+  },
+  onboardingPromptText: {
+    fontFamily: 'Inter-SemiBold',
+    fontSize: 18,
+  },
+  avatarContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 10,
-    paddingHorizontal: 10,
-    marginBottom: 5,
-    borderBottomWidth: 0,
-    borderRadius: 10,
+    gap: 12,
+    flex: 1,
+    marginRight: 10,
+  },
+  profileImage: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+  },
+  initialsCircle: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  initialsText: {
+    fontFamily: 'Inter-Bold',
+    fontSize: 20,
+  },
+  userName: {
+    fontFamily: 'Inter-SemiBold',
+    fontSize: 20,
+    flexShrink: 1,
+  },
+  headerIcons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  quickActionsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingVertical: 15,
+    borderBottomWidth: 1,
+    marginBottom: 15,
+  },
+  quickActionItem: {
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 10, // Add some padding for touchability
+  },
+  quickActionText: {
+    fontFamily: 'Inter-Medium',
+    fontSize: 13,
+  },
+  accountOptionsContainer: {
+    marginBottom: 'auto',
+    flexGrow: 1,
+  },
+  completeOnboardingButton: {
+    backgroundColor: 'transparent',
+    borderBottomWidth: 1,
+    paddingHorizontal: 0,
+    paddingVertical: 5,
+    marginBottom: 20,
+  },
+  actionButtonsContainer: {
+    gap: 15,
+    paddingTop: 20,
+    marginBottom: 10,
+  },
+  actionButtonBase: {
+    width: '100%',
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

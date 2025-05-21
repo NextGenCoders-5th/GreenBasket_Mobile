@@ -6,8 +6,9 @@ import CustomHeader from '@/components/ui/CustomHeader';
 export default function ProfileLayout() {
   const colors = useColorTheme();
   return (
-    <Stack screenOptions={{ headerShown: false }}>
+    <Stack screenOptions={{}}>
       <Stack.Screen name='[id]' options={{}} />
+      <Stack.Screen name='complete-onboarding' options={{}} />
     </Stack>
   );
 }
