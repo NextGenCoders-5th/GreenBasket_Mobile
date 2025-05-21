@@ -48,6 +48,10 @@ export type UpdateUserPasswordDto = {
   passwordConfirm: string;
 };
 
+export interface UpdateProfilePictureDto {
+  profile_picture: PickedImage;
+}
+
 export type CompleteOnboardingDto = {
   first_name: string;
   last_name: string;

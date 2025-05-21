@@ -23,8 +23,7 @@ import { useAuth } from '@/hooks/useAuth';
 import SignIn from '@/components/account/SignIn';
 import LoadingIndicator from '@/components/ui/LoadingIndicator';
 import { useTransformImageUrl } from '@/hooks/useTransformImageUrl';
-// Import useGetCurrentUserQuery if you are using it to get the freshest user data
-// import { useGetCurrentUserQuery } from '@/redux/api/userApi';
+import { useGetCurrentUserQuery } from '@/redux/api/userApi';
 
 export default function AccountScreen() {
   const colors = useColorTheme();
@@ -34,14 +33,18 @@ export default function AccountScreen() {
   const isAuthenticated = useSelector(selectIsAuthenticated);
 
   // OPTION A: Use RTK Query for the most up-to-date user profile data
-  // const { data: currentUserResponse, isLoading: isUserQueryLoading, refetch: refetchCurrentUser } =
-  //   useGetCurrentUserQuery(undefined, { skip: !isAuthenticated });
-  // const user = currentUserResponse?.data?.data || userFromAuthSlice;
-  // const isLoading = isInitialAuthLoading || (isAuthenticated && isUserQueryLoading);
+  const {
+    data: currentUserResponse,
+    isLoading: isUserQueryLoading,
+    refetch: refetchCurrentUser,
+  } = useGetCurrentUserQuery(undefined, { skip: !isAuthenticated });
+  const user = currentUserResponse?.data?.data || userFromAuthSlice;
+  const isLoading =
+    isInitialAuthLoading || (isAuthenticated && isUserQueryLoading);
 
-  // OPTION B: Rely on userFromAuthSlice (simpler if useAuth updates it sufficiently)
-  const user = userFromAuthSlice;
-  const isLoading = isInitialAuthLoading;
+  // // OPTION B: Rely on userFromAuthSlice (simpler if useAuth updates it sufficiently)
+  // const user = userFromAuthSlice;
+  // const isLoading = isInitialAuthLoading;
 
   if (isLoading) {
     return <LoadingIndicator message='Loading account...' />;
@@ -114,14 +117,14 @@ export default function AccountScreen() {
 
           <View style={styles.headerIcons}>
             <IconButton
-              icon='settings-outline'
-              onPress={() => alert('Settings (To be implemented)')}
+              icon='moon'
+              onPress={() => {}}
               color={colors['gray-700']}
               size={24}
             />
             <IconButton
               icon='notifications-outline'
-              onPress={() => alert('Notifications (To be implemented)')}
+              onPress={() => {}}
               color={colors['gray-700']}
               size={24}
             />
@@ -200,7 +203,7 @@ export default function AccountScreen() {
           <AccountButton
             label='Edit Profile'
             icon='person-circle-outline'
-            onPress={() => router.navigate(`/(profile)/edit`)} // Assuming an edit screen
+            onPress={() => router.navigate(`/(profile)/${user.id}`)} // Assuming an edit screen
           />
           <AccountButton
             label='Shipping Addresses'

@@ -9,11 +9,8 @@ import {
   RequestAccountVerificationResponse,
   UpdateUserPasswordDto,
   CompleteOnboardingDto,
+  UpdateProfilePictureDto,
 } from '@/types/user';
-
-export interface UpdateProfilePictureDto {
-  profile_picture: string;
-}
 
 export const userApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -30,13 +27,54 @@ export const userApi = apiSlice.injectEndpoints({
 
     updateProfilePicture: builder.mutation<
       UpdateProfilePictureResponse,
-      UpdateProfilePictureDto // Or FormData if uploading a file
+      UpdateProfilePictureDto // Use the frontend DTO type
     >({
-      query: (body) => {
+      query: (data) => {
+        const formData = new FormData();
+        const pickedImage = data.profile_picture;
+
+        if (pickedImage && pickedImage.uri) {
+          const { uri, name, type } = pickedImage;
+
+          const uriParts = uri.split('.');
+          const fileTypeExtension =
+            uriParts.length > 1 ? uriParts.pop() : 'jpeg';
+
+          const fileName = name || `profile_${Date.now()}.${fileTypeExtension}`;
+          const mimeType = type || `image/${fileTypeExtension}`;
+
+          // Create a clean file object with only the necessary properties
+          const fileData: any = {
+            // Explicitly type as any for RN compatibility
+            uri: uri,
+            name: fileName,
+            type: mimeType,
+          };
+
+          console.log(
+            'Constructed fileData object for FormData (in updateProfilePicture):',
+            fileData
+          );
+          console.log('Appending file with key:', 'profilePicture');
+
+          // --- Use the clean fileData object ---
+          formData.append('profilePicture', fileData); // Match backend's FileInterceptor key
+
+          console.log(
+            'FormData keys after appending file (in updateProfilePicture):',
+            Array.from(formData.keys())
+          );
+        } else {
+          console.error(
+            'updateProfilePicture mutation called without a valid profile picture URI.'
+          );
+        }
+
         return {
           url: '/users/account/profile-picture',
           method: 'PATCH',
-          body: body,
+          body: formData,
+          formData: true,
         };
       },
       invalidatesTags: (result) =>
@@ -46,24 +84,29 @@ export const userApi = apiSlice.injectEndpoints({
               { type: 'User' as const, id: 'ME' },
             ]
           : [{ type: 'User' as const, id: 'ME' }],
-      // Optimistic update could update the user object in cache immediately
-      async onQueryStarted(
-        { profile_picture },
-        { dispatch, queryFulfilled, getState }
-      ) {
-        // Example optimistic update for profile picture URL
-        const patchResult = dispatch(
-          userApi.util.updateQueryData('getCurrentUser', undefined, (draft) => {
-            if (draft.data.data && typeof profile_picture === 'string') {
-              // Check if it's a string URL
-              draft.data.data.profile_picture = profile_picture;
-            }
-          })
-        );
+      async onQueryStarted(args, { dispatch, queryFulfilled, getState }) {
         try {
-          await queryFulfilled;
-        } catch {
-          patchResult.undo();
+          const { data: responseData } = await queryFulfilled;
+          if (responseData && responseData.data && responseData.data.data) {
+            const updatedUserFromServer = responseData.data.data as User;
+            dispatch(
+              userApi.util.updateQueryData(
+                'getCurrentUser',
+                undefined,
+                (draft) => {
+                  if (draft.data.data) {
+                    draft.data.data.profile_picture =
+                      updatedUserFromServer.profile_picture;
+                  }
+                }
+              )
+            );
+          }
+        } catch (err) {
+          console.error(
+            'Optimistic update for profile picture failed or API call failed:',
+            err
+          );
         }
       },
     }),
