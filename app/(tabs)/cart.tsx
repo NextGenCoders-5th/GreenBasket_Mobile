@@ -1,18 +1,14 @@
 import React, { useCallback, useState } from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  StyleSheet,
-  ActivityIndicator,
-  RefreshControl,
-} from 'react-native';
+import { View, Text, FlatList, StyleSheet, RefreshControl } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Stack, router } from 'expo-router';
 import Toast from 'react-native-toast-message';
 import { useSelector } from 'react-redux';
 
-import { selectIsAuthenticated } from '@/redux/slices/authSlice';
+import {
+  selectCurrentUser,
+  selectIsAuthenticated,
+} from '@/redux/slices/authSlice';
 import {
   useGetMyCartQuery,
   useUpdateCartItemMutation,
@@ -26,10 +22,13 @@ import { formatPrice } from '@/utils/formatters';
 import { CartItem } from '@/types/cart';
 import LoadingError from '@/components/ui/LoadingError';
 import LoadingIndicator from '@/components/ui/LoadingIndicator';
+import SignIn from '@/components/account/SignIn';
+import TextButton from '@/components/ui/TextButton';
 
 export default function CartScreen() {
   const colors = useColorTheme();
   const isAuthenticated = useSelector(selectIsAuthenticated);
+  const user = useSelector(selectCurrentUser);
   const [updatingItemId, setUpdatingItemId] = useState<string | null>(null); // To show loading on specific item
 
   const {
@@ -67,7 +66,6 @@ export default function CartScreen() {
         itemId,
         body: { quantity: newQuantity },
       }).unwrap();
-      // Refetch or optimistic update handles UI. Toast for success is optional.
     } catch (err) {
       Toast.show({
         type: 'error',
@@ -132,34 +130,44 @@ export default function CartScreen() {
     </View>
   );
 
-  if (!isAuthenticated && !isCartLoading) {
-    // Check isCartLoading to prevent flash during initial auth check
-    // This useEffect was removed as the conditional render handles it.
-    // If you prefer useEffect for navigation, ensure it's correctly placed and dependencies are right.
-    // For now, direct conditional rendering is simpler.
-    if (typeof window !== 'undefined') {
-      // Ensure router is only called on client
-      router.replace({
-        pathname: '/(auth)/signin',
-        params: { redirect: '/(tabs)/cart' },
-      });
-      Toast.show({
-        type: 'info',
-        text1: 'Please Sign In',
-        text2: 'You need to be logged in to view your cart.',
-        visibilityTime: 3000,
-      });
-    }
-    return <LoadingIndicator message='Redirecting to sign in...' />;
+  if (!isAuthenticated || !user) {
+    // Check isAuthenticated first, then user
+    return <SignIn message='Please sign in to access your account.' />;
   }
 
   if (isCartLoading && !cartItems.length) {
     return <LoadingIndicator message='Loading cart...' />;
   }
 
+  if ((cartError as any)?.data?.message) {
+    return (
+      <SafeAreaView
+        style={[styles.centered, { backgroundColor: colors.background }]}
+      >
+        <View>
+          <Text
+            style={{
+              fontWeight: 700,
+              fontSize: 20,
+              color: colors['gray-700'],
+              marginBottom: 10,
+            }}
+          >
+            You don't have items in your cart
+          </Text>
+        </View>
+        <TextButton
+          title='Start Shopping'
+          onPress={() => {
+            router.navigate('/(tabs)/explore');
+          }}
+        />
+      </SafeAreaView>
+    );
+  }
+
   if (cartError) {
-    const errorMessage =
-      (cartError as any)?.data?.message || 'Failed to load your cart.';
+    const errorMessage = 'Failed to load your cart. Check your connection.';
     return (
       <SafeAreaView
         style={[styles.centered, { backgroundColor: colors.background }]}
@@ -210,12 +218,9 @@ export default function CartScreen() {
             </Text>
           </View>
           <Button
-            title='Proceed to Checkout'
+            title='Place Order'
             onPress={() => {
-              Toast.show({
-                type: 'info',
-                text1: 'To be implemented: Checkout',
-              });
+              router.navigate('/(order)/place-order');
             }}
             style={styles.checkoutButton}
             disabled={!!updatingItemId} // Disable checkout if any item action is in progress

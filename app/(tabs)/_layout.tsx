@@ -12,6 +12,10 @@ export default function TabsLayout() {
         headerShown: false,
         // header: () => <CustomHeader />,
         tabBarActiveTintColor: colors.primary,
+        tabBarStyle: {
+          backgroundColor: colors['primary-100'],
+        },
+        tabBarLabelPosition: 'below-icon',
       }}
     >
       <Tabs.Screen
@@ -21,6 +25,20 @@ export default function TabsLayout() {
           tabBarLabel: 'Home',
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons name='home' size={24} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name='explore'
+        options={{
+          headerTitle: '',
+          tabBarLabel: 'Explore',
+          tabBarIcon: ({ color }) => (
+            <MaterialCommunityIcons
+              name='shopping-search'
+              size={24}
+              color={color}
+            />
           ),
         }}
       />
