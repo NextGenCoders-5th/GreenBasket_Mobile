@@ -6,7 +6,7 @@ import { router, Stack, useLocalSearchParams } from 'expo-router';
 import Toast from 'react-native-toast-message';
 
 import { selectCurrentUser } from '@/redux/slices/authSlice';
-import ProfileButton from '@/components/profile/ProfileButton';
+import ProfileData from '@/components/profile/ProfileData';
 import { useColorTheme } from '@/hooks/useColorTheme';
 import ImageButton from '@/components/ui/ImageButton';
 import { useTransformImageUrl } from '@/hooks/useTransformImageUrl';
@@ -83,7 +83,7 @@ export default function UserProfileScreen() {
       quality: 0.7,
     });
 
-    console.log('Picker result:', pickerResult);
+    // console.log('Picker result:', pickerResult);
 
     if (
       pickerResult.canceled ||
@@ -102,7 +102,7 @@ export default function UserProfileScreen() {
         `profile_${id}.${selectedAsset.uri.split('.').pop()}`,
     };
 
-    console.log('Prepared image data:', pickedImage);
+    // console.log('Prepared image data:', pickedImage);
 
     try {
       Toast.show({
@@ -116,7 +116,7 @@ export default function UserProfileScreen() {
         profile_picture: pickedImage,
       }).unwrap();
 
-      console.log('Profile update result:', result);
+      // console.log('Profile update result:', result);
 
       // Force a refetch of the current user data to get the latest profile picture
       await refetchUser();
@@ -130,7 +130,7 @@ export default function UserProfileScreen() {
         text2: 'Profile picture updated.',
       });
     } catch (err: any) {
-      console.error('Failed to update profile picture:', err);
+      // console.error('Failed to update profile picture:', err);
       const message = err?.data?.message || 'Could not update profile picture.';
       Toast.show({
         type: 'error',
@@ -170,47 +170,29 @@ export default function UserProfileScreen() {
           <Text style={[styles.sectionTitle, { color: colors['gray-700'] }]}>
             Personal Information
           </Text>
-          <ProfileButton
+          <ProfileData
             label='Full Name'
-            value={`${first_name || 'Not set'} ${last_name || ''}`}
-            onPress={() => router.navigate('/(profile)/edit-name')}
+            value1={first_name}
+            value2={last_name}
           />
-          <ProfileButton
+
+          <ProfileData
             label='Date of Birth'
-            value={
-              date_of_birth
-                ? new Date(date_of_birth).toLocaleDateString()
-                : 'Not set'
-            } // Format date
-            onPress={() => router.navigate('/(profile)/edit-dob')}
+            value1={
+              date_of_birth ? new Date(date_of_birth).toLocaleDateString() : ''
+            }
           />
-          <ProfileButton
-            label='Gender'
-            value={gender || 'Not set'}
-            onPress={() => router.navigate('/(profile)/edit-gender')}
-          />
+          <ProfileData label='Gender' value1={gender} />
         </View>
 
         <View style={styles.section}>
           <Text style={[styles.sectionTitle, { color: colors['gray-700'] }]}>
             Account Details
           </Text>
-          <ProfileButton label='Member ID' value={id} onPress={() => {}} />
-          <ProfileButton
-            label='Email Address'
-            value={email}
-            onPress={() => router.navigate('/(profile)/edit-email')}
-          />
-          <ProfileButton
-            label='Mobile Number'
-            value={phone_number}
-            onPress={() => router.navigate('/(profile)/edit-phone')}
-          />
-          <ProfileButton
-            label='Password'
-            value='*************'
-            onPress={() => router.navigate('/(profile)/change-password')}
-          />
+          <ProfileData label='Member ID' value1={id} />
+          <ProfileData label='Email Address' value1={email} />
+          <ProfileData label='Mobile Number' value1={phone_number} />
+          <ProfileData label='Password' value1='*************' />
         </View>
       </View>
     </ScrollView>
@@ -266,5 +248,24 @@ const styles = StyleSheet.create({
   initialsText: {
     fontFamily: 'Inter-Bold',
     fontSize: 20,
+  },
+  profileContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingRight: 15,
+    paddingVertical: 5,
+    marginBottom: 20,
+    borderBottomWidth: 1,
+  },
+  profileLabel: {
+    fontFamily: 'Inter',
+    fontSize: 14,
+    fontWeight: '400',
+  },
+  profileValue: {
+    fontFamily: 'Inter',
+    fontSize: 12,
+    fontWeight: '300',
   },
 });

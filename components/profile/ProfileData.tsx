@@ -1,33 +1,34 @@
 import { useColorTheme } from '@/hooks/useColorTheme';
 import React from 'react';
-import { Pressable, Text, StyleSheet, ViewStyle } from 'react-native';
+import { Text, StyleSheet, ViewStyle, View } from 'react-native';
 
-interface ProfileButtonProps {
+interface ProfileDataProps {
   label?: string;
-  value: string;
-  onPress: () => void;
+  value1?: string;
+  value2?: string;
   style?: ViewStyle;
 }
 
-const ProfileButton: React.FC<ProfileButtonProps> = ({
+const ProfileData: React.FC<ProfileDataProps> = ({
   label,
-  value,
-  onPress,
+  value1,
+  value2,
   style,
 }) => {
   const colors = useColorTheme();
   return (
-    <Pressable
+    <View
       style={[
         styles.container,
         { borderBottomColor: colors['gray-200'] },
         style,
       ]}
-      onPress={onPress}
     >
       <Text style={styles.label}>{label}</Text>
-      <Text style={{ ...styles.value, color: colors.text }}>{value}</Text>
-    </Pressable>
+      <Text style={{ ...styles.value, color: colors.text }}>
+        {`${value1 || 'Not set'} ${value2 || ''}`}
+      </Text>
+    </View>
   );
 };
 
@@ -53,4 +54,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ProfileButton;
+export default ProfileData;
