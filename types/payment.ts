@@ -1,13 +1,14 @@
-import { PaymentStatus } from '@/config/enums';
-import { Order } from './order';
-
-export interface PaymentType {
-  id: string;
-  updatedAt: string;
-  createdAt: string;
-  amount: string;
-  status: PaymentStatus;
-
-  Order: Order;
+export type InitializePaymentDto = {
   orderId: string;
-}
+};
+
+export type InitializePaymentResponse = {
+  apiVersion: string;
+  data: {
+    status: string;
+    message: string;
+    data: {
+      checkout_url: string;
+    };
+  };
+};
