@@ -107,12 +107,21 @@ export default function AccountScreen() {
                 </Text>
               </View>
             )}
-            <Text
-              style={[styles.userName, { color: colors['gray-900'] }]}
-              numberOfLines={1}
-            >
-              {email}
-            </Text>
+            {is_onboarding ? (
+              <Text
+                style={[styles.userName, { color: colors['gray-900'] }]}
+                numberOfLines={1}
+              >
+                {email}
+              </Text>
+            ) : (
+              <Text
+                style={[styles.userName, { color: colors['gray-900'] }]}
+                numberOfLines={1}
+              >
+                {first_name}
+              </Text>
+            )}
           </View>
 
           <View style={styles.headerIcons}>
@@ -208,7 +217,7 @@ export default function AccountScreen() {
           <AccountButton
             label='Shipping Addresses'
             icon='location-outline'
-            onPress={() => router.navigate('/(profile)/addresses')} // Example route
+            onPress={() => router.navigate('/(address)/address')} // Example route
           />
           <AccountButton
             label='Order History'
