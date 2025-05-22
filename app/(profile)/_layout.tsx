@@ -1,14 +1,27 @@
 import React from 'react';
 import { Stack } from 'expo-router';
 import { useColorTheme } from '@/hooks/useColorTheme';
-import CustomHeader from '@/components/ui/CustomHeader';
 
 export default function ProfileLayout() {
   const colors = useColorTheme();
+
   return (
     <Stack screenOptions={{}}>
-      <Stack.Screen name='[id]' options={{}} />
-      <Stack.Screen name='complete-onboarding' options={{}} />
+      {/* The profile screen itself */}
+      <Stack.Screen
+        name='[id]'
+        options={{
+          headerTitle: 'Profile', // Or the user's name dynamically
+        }}
+      />
+
+      {/* Add the address list screen */}
+      <Stack.Screen
+        name='complete-onboarding'
+        options={{
+          headerTitle: 'Complete Your profile information',
+        }}
+      />
     </Stack>
   );
 }
