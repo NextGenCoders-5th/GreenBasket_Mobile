@@ -2,7 +2,7 @@ import { VendorStatus } from '@/config/enums';
 import { User } from './user';
 import { Address } from './address';
 import { Product } from './product';
-import { Order } from './order';
+import Order from './order';
 
 export interface Vendor {
   id: string;

@@ -107,3 +107,15 @@ export const OnboardingSchema = yup.object({
     'Back of ID photo is required.'
   ),
 });
+
+export const AddressSchema = yup.object({
+  country: yup.string().required('Country is required'),
+  city: yup.string().required('City is required'),
+  sub_city: yup.string().required('Sub City is required'),
+  street: yup.string().required('Street address is required'),
+  zip_code: yup.string().required('Zip Code is required'),
+  latitude: yup.number().optional().nullable(),
+  longitude: yup.number().optional().nullable(),
+});
+
+export type AddressFormData = yup.InferType<typeof AddressSchema>;

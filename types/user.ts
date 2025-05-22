@@ -7,9 +7,10 @@ import {
 } from '@/config/enums';
 import { Vendor } from './vendor';
 import { Address } from './address';
-import { Order } from './order';
 import { Cart } from './cart';
 import { PickedImage } from '@/components/form/ImagePickerButton';
+import { Review } from './Review';
+import { Order } from './order';
 
 export type User = {
   id: string;
@@ -31,7 +32,8 @@ export type User = {
   vendor?: Vendor;
   address?: Address;
   orders?: Order[];
-  carts: Cart[];
+  cart: Cart[];
+  Review?: Review[];
 
   date_of_birth?: string;
   gender?: string;
@@ -55,9 +57,9 @@ export interface UpdateProfilePictureDto {
 export type CompleteOnboardingDto = {
   first_name: string;
   last_name: string;
-  date_of_birth: string; // YYYY-MM-DD
+  date_of_birth: string;
   gender: Gender;
-  profile_picture: PickedImage; // Will hold the picked image asset info
+  profile_picture: PickedImage;
   idPhoto_front: PickedImage;
   idPhoto_back: PickedImage;
 };

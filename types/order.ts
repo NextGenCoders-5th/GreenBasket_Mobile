@@ -1,9 +1,19 @@
 import { OrderStatus } from '@/config/enums';
-import { OrderItemType } from './orderItem';
-import { PaymentType } from './payment';
-import { User } from './user';
-import { Vendor } from './vendor';
 import { Address } from './address';
+import { Product } from './product';
+
+export type OrderItem = {
+  id: string;
+  updatedAt: string;
+  createdAt: string;
+  price: number;
+  quantity: number;
+  sub_total: number;
+  reviewed: boolean;
+  orderId: string;
+  productId: string;
+  Product?: Product;
+};
 
 export interface Order {
   id: string;
@@ -11,13 +21,34 @@ export interface Order {
   createdAt: string;
   total_price: number;
   status: OrderStatus;
-
-  OrderItems: OrderItemType[];
-  Payment?: PaymentType | null;
-  User: User;
+  shippedAt: string | null;
+  deliveredAt: string | null;
+  receivedAt: string | null;
+  cartId: string;
   userId: string;
-  Vendor: Vendor;
   vendorId: string;
-  Adress: Address;
   addressId: string;
+  Adress: Address;
+  OrderItems: OrderItem[];
 }
+
+export interface CheckoutDto {
+  addressId: string;
+  cartId: string;
+}
+
+export interface ApiResponse<T> {
+  apiVersion: string;
+  data: {
+    status: string;
+    message: string;
+    timestamp: string;
+    data: T;
+  };
+}
+
+export type CreateOrderResponse = ApiResponse<Order[]>;
+
+export type GetMyOrdersResponse = ApiResponse<Order[]>;
+
+export type GetMyOrderByIdResponse = ApiResponse<Order>;
