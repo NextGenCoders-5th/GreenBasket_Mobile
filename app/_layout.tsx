@@ -92,6 +92,7 @@ function RootLayoutContent() {
                 header: () => <CustomHeader />,
               }}
             >
+              <Stack.Screen name='(address)' />
               <Stack.Screen name='(auth)' />
               <Stack.Screen name='(tabs)' />
               <Stack.Screen name='(cart)' />

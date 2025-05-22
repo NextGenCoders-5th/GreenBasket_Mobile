@@ -230,6 +230,7 @@ export const userApi = apiSlice.injectEndpoints({
       invalidatesTags: [{ type: 'User' as const, id: 'ME' }],
     }),
   }),
+  overrideExisting: true,
 });
 
 export const {
@@ -238,5 +239,4 @@ export const {
   useUpdateUserPasswordMutation,
   useCompleteOnboardingMutation,
   useRequestAccountVerificationMutation,
-  // useUpdateUserProfileMutation, // If you add the general update
 } = userApi;
