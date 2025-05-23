@@ -8,61 +8,56 @@ import 'react-native-reanimated';
 import Toast from 'react-native-toast-message';
 import {
   StyleSheet,
-  useColorScheme,
+  // Removed useColorScheme from react-native
   View,
   ActivityIndicator,
   Text,
-} from 'react-native'; // Added Text
+} from 'react-native';
 import { Provider, useSelector } from 'react-redux';
 
 import { darkTheme, lightTheme } from '@/styles/colorTheme';
-import { ColorSchemeProvider } from '@/contexts/ColorSchmeContext';
+// Import useColorScheme hook and ColorSchemeProvider
+import {
+  ColorSchemeProvider,
+  useColorScheme,
+} from '@/contexts/ColorSchmeContext';
 import CustomHeader from '@/components/ui/CustomHeader';
 import { store } from '@/redux/store';
-import { useAuth } from '@/hooks/useAuth'; // <-- IMPORT useAuth
-import { selectIsAuthLoading } from '@/redux/slices/authSlice'; // <-- IMPORT selector
+import { useAuth } from '@/hooks/useAuth';
+import { selectIsAuthLoading } from '@/redux/slices/authSlice';
 
 SplashScreen.preventAutoHideAsync();
 
 function AuthStateGate({ children }: { children: React.ReactNode }) {
-  useAuth();
+  useAuth(); // This hook is responsible for loading initial auth state and dispatching
   const isAuthLoading = useSelector(selectIsAuthLoading);
-  const currentColorScheme = useColorScheme(); // For theming the loader
+  // Use the color scheme context hook
+  const { colorScheme: activeColorScheme, isLoaded: isColorSchemeLoaded } =
+    useColorScheme();
 
-  console.log('_layout.tsx AuthStateGate: isAuthLoading =', isAuthLoading);
-
-  if (isAuthLoading) {
+  // Show loading indicator while initial auth is loading OR color scheme preference is loading
+  if (isAuthLoading || !isColorSchemeLoaded) {
+    // Use colors based on the determined activeColorScheme
+    const themeColors =
+      activeColorScheme === 'dark' ? darkTheme.colors : lightTheme.colors;
     return (
       <View
         style={[
           styles.loadingContainer,
           {
-            backgroundColor:
-              currentColorScheme === 'dark'
-                ? darkTheme.colors.background
-                : lightTheme.colors.background,
+            backgroundColor: themeColors.background,
           },
         ]}
       >
-        <ActivityIndicator
-          size='large'
-          color={
-            currentColorScheme === 'dark'
-              ? darkTheme.colors.primary
-              : lightTheme.colors.primary
-          }
-        />
+        <ActivityIndicator size='large' color={themeColors.primary} />
         <Text
           style={{
             marginTop: 10,
-            color:
-              currentColorScheme === 'dark'
-                ? darkTheme.colors.text
-                : lightTheme.colors.text,
+            color: themeColors.text,
             fontFamily: 'Inter-Regular',
           }}
         >
-          Loading session...
+          Loading session and theme...
         </Text>
       </View>
     );
@@ -72,41 +67,43 @@ function AuthStateGate({ children }: { children: React.ReactNode }) {
 }
 
 function RootLayoutContent() {
-  const colorScheme = useColorScheme();
+  // Get the active color scheme from the context
+  const { colorScheme: activeColorScheme } = useColorScheme();
 
   useEffect(() => {
     // This hides the splash screen. It's called after fonts are loaded
-    // AND after AuthStateGate has determined the auth loading is complete.
+    // AND after AuthStateGate (which includes auth loading and color scheme loading) is complete.
     SplashScreen.hideAsync();
-  }, []); // Runs once when RootLayoutContent mounts
+  }, []);
 
   return (
-    <ColorSchemeProvider>
-      <Provider store={store}>
-        {/* <ThemeProvider value={colorScheme === 'dark' ? darkTheme : lightTheme}> */}
-        <ThemeProvider value={lightTheme}>
-          <AuthStateGate>
-            {/* AuthStateGate ensures auth is checked before Stack renders */}
-            <Stack
-              screenOptions={{
-                header: () => <CustomHeader />,
-              }}
-            >
-              <Stack.Screen name='(address)' />
-              <Stack.Screen name='(auth)' />
-              <Stack.Screen name='(tabs)' />
-              <Stack.Screen name='(cart)' />
-              <Stack.Screen name='(order)' />
-              <Stack.Screen name='(product)' />
-              <Stack.Screen name='(profile)' />
-              <Stack.Screen name='+not-found' />
-            </Stack>
-          </AuthStateGate>
-          <StatusBar style='auto' />
-          <Toast /* ...props... */ />
-        </ThemeProvider>
-      </Provider>
-    </ColorSchemeProvider>
+    <Provider store={store}>
+      {/* Use the activeColorScheme from context to select the theme object */}
+      <ThemeProvider
+        value={activeColorScheme === 'dark' ? darkTheme : lightTheme}
+      >
+        <AuthStateGate>
+          {/* AuthStateGate ensures auth and theme are loaded before Stack renders */}
+          <Stack
+            screenOptions={{
+              header: () => <CustomHeader />,
+            }}
+          >
+            <Stack.Screen name='(address)' />
+            <Stack.Screen name='(auth)' />
+            <Stack.Screen name='(tabs)' />
+            <Stack.Screen name='(cart)' />
+            <Stack.Screen name='(order)' />
+            <Stack.Screen name='(product)' />
+            <Stack.Screen name='(profile)' />
+            <Stack.Screen name='+not-found' />
+          </Stack>
+        </AuthStateGate>
+        {/* Adjust StatusBar style based on active color scheme if needed */}
+        <StatusBar style={activeColorScheme === 'dark' ? 'light' : 'dark'} />
+        <Toast /* ...props... */ />
+      </ThemeProvider>
+    </Provider>
   );
 }
 
@@ -118,13 +115,9 @@ export default function RootLayout() {
     InterItalic: require('@/assets/fonts/inter/Inter-Italic-VariableFont_opsz,wght.ttf'),
   });
 
-  // This useEffect is just for the font loading part.
-  // SplashScreen.hideAsync() is now handled in RootLayoutContent.
   useEffect(() => {
     if (loaded) {
-      // We don't hide splash here anymore, RootLayoutContent will do it
-      // after AuthStateGate is also done.
-      SplashScreen.hideAsync();
+      // SplashScreen.hideAsync() is handled in RootLayoutContent
     }
   }, [loaded]);
 
@@ -132,7 +125,12 @@ export default function RootLayout() {
     return null;
   }
 
-  return <RootLayoutContent />;
+  // Wrap the entire RootLayoutContent with ColorSchemeProvider
+  return (
+    <ColorSchemeProvider>
+      <RootLayoutContent />
+    </ColorSchemeProvider>
+  );
 }
 
 const styles = StyleSheet.create({
