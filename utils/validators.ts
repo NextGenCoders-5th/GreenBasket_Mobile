@@ -119,3 +119,25 @@ export const AddressSchema = yup.object({
 });
 
 export type AddressFormData = yup.InferType<typeof AddressSchema>;
+
+export const passwordUpdateSchema = yup.object().shape({
+  oldPassword: yup.string().required('Current password is required'),
+  password: yup
+    .string()
+    .required('New password is required')
+    .min(8, 'Password must be at least 8 characters long')
+    // Add more password strength criteria if needed (e.g., uppercase, number, symbol)
+    // .matches(/[A-Z]/, 'Password must contain at least one uppercase letter')
+    // .matches(/[0-9]/, 'Password must contain at least one number')
+    // .matches(/[^a-zA-Z0-9]/, 'Password must contain at least one symbol')
+    .notOneOf(
+      [yup.ref('oldPassword')],
+      'New password cannot be the same as the current password'
+    ), // Ensure new password is different
+  passwordConfirm: yup
+    .string()
+    .required('Confirm password is required')
+    .oneOf([yup.ref('password')], 'Passwords must match'), // Ensure passwords match
+});
+
+export type PasswordUpdateFormData = yup.InferType<typeof passwordUpdateSchema>;
