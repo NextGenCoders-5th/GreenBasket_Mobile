@@ -75,7 +75,7 @@ export default function OrderHistoryScreen() {
       </Text>
       <Button
         title='Start Shopping'
-        onPress={() => router.push('/(tabs)/home')}
+        onPress={() => router.push('/(tabs)/explore')}
         style={{ marginTop: 20, width: '60%' }}
       />
     </View>

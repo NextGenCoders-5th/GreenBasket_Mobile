@@ -1,5 +1,4 @@
 import { CategoryStatus, ProductStatus } from '@/config/enums';
-import { OrderItemType } from './orderItem';
 
 export interface Category {
   id: string;
@@ -91,7 +90,7 @@ export interface UpdateProductDto {
   stock?: number;
   image_url?: string;
   is_featured?: boolean;
-  status?: 'ACTIVE' | 'INACTIVE';
+  status?: ProductStatus;
   vendorId?: string;
   categoryIds?: string[];
 }
