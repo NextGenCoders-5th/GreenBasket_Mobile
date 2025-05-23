@@ -30,7 +30,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       onPress={handlePress}
     >
       <Image
-        source={{ uri: imageUrl }}
+        source={{ uri: imageUrl || '' }}
         // src={imageUrl}
         style={styles.image}
         resizeMode='cover'

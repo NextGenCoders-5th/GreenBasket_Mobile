@@ -210,7 +210,7 @@ export default function AccountScreen() {
           )}
 
           <AccountButton
-            label='Edit Profile'
+            label='Profile'
             icon='person-circle-outline'
             onPress={() => router.navigate(`/(profile)/${user.id}`)} // Assuming an edit screen
           />
@@ -222,7 +222,7 @@ export default function AccountScreen() {
           <AccountButton
             label='Order History'
             icon='receipt-outline'
-            onPress={() => router.navigate('/(order)')} // Navigate to order history group
+            onPress={() => router.navigate('/(order)/order-history')} // Navigate to order history group
           />
           <AccountButton
             label='Change Password'
