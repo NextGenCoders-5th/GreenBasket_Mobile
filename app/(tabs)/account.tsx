@@ -227,7 +227,7 @@ export default function AccountScreen() {
           <AccountButton
             label='Change Password'
             icon='lock-closed-outline'
-            onPress={() => router.navigate('/(profile)/change-password')} // Example route
+            onPress={() => router.navigate('/(auth)/update-password')} // Example route
           />
           <AccountButton
             label='Language'
