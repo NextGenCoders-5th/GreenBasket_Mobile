@@ -10,6 +10,7 @@ import {
   CreateProductDto,
   UpdateProductDto,
   ApiResponseEnvelope,
+  GetProductsByCategoryResponse,
 } from '@/types/product'; // Using @ alias
 
 export const productApi = apiSlice.injectEndpoints({
@@ -78,7 +79,32 @@ export const productApi = apiSlice.injectEndpoints({
         { type: 'Product' as const, id: 'LIST' },
       ],
     }),
+
+    getProductsByCategory: builder.query<GetProductsByCategoryResponse, string>(
+      {
+        // Assuming the endpoint is '/products/category/{categoryId}'
+        query: (categoryId) => ({
+          url: `/products/category/${categoryId}`,
+          method: 'GET',
+        }),
+        // Provides tags for the category itself and all products within it
+        providesTags: (result, error, categoryId) => {
+          const tags: Array<any> = [
+            { type: 'Category' as const, id: categoryId },
+          ]; // Tag the category
+          if (result?.data?.data?.products) {
+            // Tag each product found within the category
+            result.data.data.products.forEach((product) => {
+              tags.push({ type: 'Product' as const, id: product.id });
+            });
+            tags.push({ type: 'Product' as const, id: 'LIST' }); // Also tag the general product list
+          }
+          return tags;
+        },
+      }
+    ),
   }),
+  overrideExisting: true,
 });
 
 export const {
@@ -87,4 +113,5 @@ export const {
   useCreateProductMutation,
   useUpdateProductMutation,
   useDeleteProductMutation,
+  useGetProductsByCategoryQuery,
 } = productApi;

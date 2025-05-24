@@ -17,6 +17,21 @@ export default function ProductLayout() {
           fontFamily: 'Inter-Regular', // Ensure you have this font
         },
       }}
-    />
+    >
+      <Stack.Screen
+        name='[id]' // Matches app/(product)/[id].tsx
+        options={{
+          title: 'Product Details', // Default title, overridden by the screen
+        }}
+      />
+
+      {/* Add the new dynamic route for category product lists */}
+      <Stack.Screen
+        name='category/[categoryId]' // Matches app/(product)/category/[categoryId].tsx
+        options={{
+          title: 'Category Products', // Default title, overridden by the screen
+        }}
+      />
+    </Stack>
   );
 }

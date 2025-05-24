@@ -1,4 +1,5 @@
 import { CategoryStatus, ProductStatus } from '@/config/enums';
+import { Vendor } from './vendor';
 
 export interface Category {
   id: string;
@@ -95,6 +96,31 @@ export interface UpdateProductDto {
   categoryIds?: string[];
 }
 
+export interface ProductWithVendor {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  discount_price: number | null;
+  unit: string;
+  stock: number;
+  image_url: string;
+  status: ProductStatus;
+  is_featured: boolean;
+  Vendor: Vendor;
+}
+
+export interface CategoryWithProductsAndVendors {
+  id: string;
+  updatedAt: string;
+  createdAt: string;
+  name: string;
+  slug: string;
+  image_url: string;
+  status: CategoryStatus;
+  products: ProductWithVendor[];
+}
+
 // ==============================
 // API Response Types
 // ==============================
@@ -107,3 +133,6 @@ export type ProductListResponse = ApiResponseEnvelope<Product[]>;
 
 // Create product response
 export type CreateProductResponse = ApiResponseEnvelope<ProductWithCategories>;
+
+export type GetProductsByCategoryResponse =
+  ApiResponseEnvelope<CategoryWithProductsAndVendors>;
