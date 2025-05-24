@@ -50,6 +50,15 @@ export type UpdateUserPasswordDto = {
   passwordConfirm: string;
 };
 
+export type UpdateCurrentUserDataDto = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber: string;
+  date_of_birth: string;
+  gender: Gender;
+};
+
 export interface UpdateProfilePictureDto {
   profile_picture: PickedImage;
 }
@@ -76,6 +85,7 @@ export type ApiResponse<T> = {
 
 export type GetCurrentUserResponse = ApiResponse<User>;
 export type UpdateProfilePictureResponse = ApiResponse<User>;
+export type UpdateCurrentUserResponse = ApiResponse<User>;
 export type UpdatePasswordResponse = ApiResponse<User>;
 export type CompleteOnboardingResponse = ApiResponse<User>;
 export type RequestAccountVerificationResponse = ApiResponse<null>;

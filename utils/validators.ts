@@ -141,3 +141,45 @@ export const passwordUpdateSchema = yup.object().shape({
 });
 
 export type PasswordUpdateFormData = yup.InferType<typeof passwordUpdateSchema>;
+
+export const updateUserDataSchema = yup.object().shape({
+  firstName: yup.string().required('First name is required'),
+  lastName: yup.string().required('Last name is required'),
+  email: yup
+    .string()
+    .required('Email is required')
+    .email('Invalid email format'),
+  phoneNumber: yup
+    .string()
+    .required('Phone number is required')
+    // Add more specific phone number validation regex if needed
+    .matches(/^\+251\d{9}$/, 'Invalid Ethiopian phone number format (+251...)'),
+  date_of_birth: yup
+    .string()
+    .required('Date of birth is required')
+    .test(
+      'is-iso-date',
+      'Invalid date format. Please select a valid date.',
+      (value) => {
+        if (!value) return false;
+        const date = parseISO(value);
+        return isValidDateFns(date);
+      }
+    )
+    .test(
+      'is-not-future-date',
+      'Date of birth cannot be in the future.',
+      (value) => {
+        if (!value) return true;
+        const date = parseISO(value);
+        if (!isValidDateFns(date)) return true;
+        return date <= new Date();
+      }
+    ),
+  gender: yup
+    .mixed<Gender>()
+    .oneOf(GENDER_OPTIONS, 'Invalid gender selection')
+    .required('Gender is required'), // Ensure it's one of the allowed values
+});
+
+export type UpdateUserDataFormData = yup.InferType<typeof updateUserDataSchema>;

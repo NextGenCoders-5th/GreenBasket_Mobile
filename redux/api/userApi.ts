@@ -10,6 +10,8 @@ import {
   UpdateUserPasswordDto,
   CompleteOnboardingDto,
   UpdateProfilePictureDto,
+  UpdateCurrentUserDataDto,
+  UpdateCurrentUserResponse,
 } from '@/types/user';
 
 export const userApi = apiSlice.injectEndpoints({
@@ -23,6 +25,49 @@ export const userApi = apiSlice.injectEndpoints({
               { type: 'User' as const, id: 'ME' },
             ]
           : [{ type: 'User' as const, id: 'ME' }],
+    }),
+
+    updateCurrentUserData: builder.mutation<
+      UpdateCurrentUserResponse, // Use the new response type
+      UpdateCurrentUserDataDto // Use the new DTO type
+    >({
+      query: (userData) => ({
+        url: '/users/account/update-my-data', // The backend endpoint URL
+        method: 'PATCH', // The HTTP method
+        body: userData, // The data to send in the request body
+      }),
+      // Invalidate the 'ME' user tag after successful update
+      // This will cause useGetCurrentUserQuery to refetch and update the cache
+      invalidatesTags: (result) =>
+        result && result.data.data
+          ? [
+              { type: 'User' as const, id: result.data.data.id },
+              { type: 'User' as const, id: 'ME' },
+            ]
+          : [{ type: 'User' as const, id: 'ME' }], // Invalidate 'ME' even if no result data
+      // Optional: Optimistic update logic
+      async onQueryStarted(userData, { dispatch, queryFulfilled }) {
+        // Optimistically update the current user data in the cache
+        const patchResult = dispatch(
+          userApi.util.updateQueryData('getCurrentUser', undefined, (draft) => {
+            if (draft.data.data) {
+              // Update the relevant fields based on the DTO and User type
+              draft.data.data.first_name = userData.firstName;
+              draft.data.data.last_name = userData.lastName;
+              draft.data.data.email = userData.email;
+              draft.data.data.phone_number = userData.phoneNumber;
+              draft.data.data.date_of_birth = userData.date_of_birth; // Update date_of_birth
+              draft.data.data.gender = userData.gender; // Update gender
+            }
+          })
+        );
+
+        try {
+          await queryFulfilled; // Wait for the actual API call to finish
+        } catch {
+          patchResult.undo(); // If the API call fails, revert the optimistic update
+        }
+      },
     }),
 
     updateProfilePicture: builder.mutation<
@@ -239,4 +284,5 @@ export const {
   useUpdateUserPasswordMutation,
   useCompleteOnboardingMutation,
   useRequestAccountVerificationMutation,
+  useUpdateCurrentUserDataMutation,
 } = userApi;
