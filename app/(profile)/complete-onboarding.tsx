@@ -134,7 +134,7 @@ export default function CompleteOnboardingScreen() {
             ]}
           >
             <Text style={[styles.formTitle, { color: colors['gray-800'] }]}>
-              Finish Setting Up
+              Complete your profile
             </Text>
             <Text style={[styles.formSubtitle, { color: colors['gray-600'] }]}>
               Provide a few more details to complete your profile.
@@ -310,7 +310,7 @@ const styles = StyleSheet.create({
   formContainer: {
     width: '100%',
     maxWidth: 500, // Max width for larger screens if applicable
-    borderWidth: 1,
+    // borderWidth: 1,
     borderRadius: 12, // Slightly more rounded
     padding: 20, // More padding inside the form box
     // boxShadow: shadows['shadow-1'], // Apply shadow if defined

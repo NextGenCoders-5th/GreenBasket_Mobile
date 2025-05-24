@@ -33,6 +33,7 @@ import {
 } from '@/contexts/ColorSchmeContext';
 import Button from '@/components/ui/Button';
 import Toast from 'react-native-toast-message';
+import LoadingError from '@/components/ui/LoadingError';
 
 export default function AccountScreen() {
   const colors = useColorTheme(); // Use the colors from the active theme
@@ -61,32 +62,6 @@ export default function AccountScreen() {
   const isLoading =
     isInitialAuthLoading || isUserLoading || !isColorSchemeLoaded;
 
-  // Handle cases where user is not authenticated or user object is missing/error after loading
-  useEffect(() => {
-    // Redirect to sign-in if not authenticated after all loading is complete
-    if (!isAuthenticated && !isLoading) {
-      Toast.show({
-        type: 'info',
-        text1: 'Please Sign In',
-        text2: 'You need to be logged in to access your account.',
-        visibilityTime: 3000,
-      });
-      router.replace('/(auth)/signin');
-    }
-    // Handle user data fetch error after auth loading is complete
-    if (userError && !user && !isLoading && isAuthenticated) {
-      console.error('Error fetching user for account screen:', userError);
-      Toast.show({
-        type: 'error',
-        text1: 'Error Loading User',
-        text2: 'Could not load your profile information.',
-        visibilityTime: 3000,
-      });
-      // Decide if you want to prevent access or allow limited access on error
-      // router.replace('/(tabs)/home'); // Example redirect
-    }
-  }, [isAuthenticated, user, isLoading, userError, router]);
-
   const profileImageUrl = useTransformImageUrl({
     imageUrl: user?.profile_picture,
   }); // Use user from hook
@@ -111,6 +86,19 @@ export default function AccountScreen() {
   // Show combined loading state
   if (isLoading) {
     return <LoadingIndicator message='Loading account...' />;
+  }
+  if (userError) {
+    const errorMessage =
+      (userError as any)?.data?.message ||
+      'Failed to load user data. Check your connection.';
+    return (
+      <SafeAreaView
+        style={[styles.centered, { backgroundColor: colors.background }]}
+      >
+        {/* <ErrorMessage message={errorMessage} onRetry={refetch} /> */}
+        <LoadingError message={errorMessage} onRetry={refetchCurrentUser} />
+      </SafeAreaView>
+    );
   }
 
   // Show sign-in prompt if not authenticated after loading
@@ -292,7 +280,7 @@ export default function AccountScreen() {
             label='Profile'
             icon='person-circle-outline'
             // Navigate to the non-dynamic edit profile screen
-            onPress={() => router.navigate('/(profile)/edit')}
+            onPress={() => router.navigate(`/(profile)/${userId}`)}
           />
           <AccountButton
             label='Shipping Addresses'

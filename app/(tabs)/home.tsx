@@ -42,7 +42,8 @@ export default function HomeScreen() {
   // Primary error state for the entire screen
   if (categoriesError && categories.length === 0) {
     const errorMessage =
-      (categoriesError as any)?.data?.message || 'Failed to load categories.';
+      (categoriesError as any)?.data?.message ||
+      'Failed to load categories. Check your connection.';
     return (
       <SafeAreaView
         style={[

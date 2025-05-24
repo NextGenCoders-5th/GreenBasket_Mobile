@@ -14,6 +14,8 @@ import { useColorTheme } from '@/hooks/useColorTheme';
 import ErrorMessage from '@/components/ui/ErrorMessage'; // Assuming you have this
 import { SafeAreaView } from 'react-native-safe-area-context'; // For better screen edges
 import { GetProductsParams } from '@/types/product';
+import LoadingIndicator from '../ui/LoadingIndicator';
+import LoadingError from '../ui/LoadingError';
 
 export default function ProductsList() {
   const colors = useColorTheme();
@@ -61,33 +63,19 @@ export default function ProductsList() {
   };
 
   if (isLoading && queryParams.page === 1) {
-    return (
-      <SafeAreaView
-        style={[styles.centered, { backgroundColor: colors.background }]}
-      >
-        <ActivityIndicator size='large' color={colors.primary} />
-        <Text
-          style={{
-            color: colors['gray-700'],
-            marginTop: 10,
-            fontFamily: 'Inter-Regular',
-          }}
-        >
-          Loading Products...
-        </Text>
-      </SafeAreaView>
-    );
+    return <LoadingIndicator message='Loading products...' />;
   }
 
   if (error) {
     const errorMessage =
-      (error as any)?.data?.message || 'Failed to load products.';
+      (error as any)?.data?.message ||
+      'Failed to load products. Check your connection.';
     return (
       <SafeAreaView
         style={[styles.centered, { backgroundColor: colors.background }]}
       >
         {/* <ErrorMessage message={errorMessage} onRetry={refetch} /> */}
-        <ErrorMessage message={errorMessage} />
+        <LoadingError message={errorMessage} onRetry={refetch} />
       </SafeAreaView>
     );
   }

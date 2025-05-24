@@ -16,6 +16,7 @@ import {
   useGetCurrentUserQuery,
 } from '@/redux/api/userApi';
 import { PickedImage } from '@/components/form/ImagePickerButton';
+import Button from '@/components/ui/Button';
 
 export default function UserProfileScreen() {
   const colors = useColorTheme();
@@ -146,6 +147,28 @@ export default function UserProfileScreen() {
     >
       <Stack.Screen options={{ title: `Your Profile` }} />
       <View style={styles.container}>
+        <Button
+          onPress={() => {
+            router.push('/(profile)/update-user');
+          }}
+          title='Edit'
+          icon='account-edit-outline'
+          style={{
+            width: 70,
+            paddingTop: 5,
+            paddingBottom: 0,
+            borderRadius: 0,
+            position: 'absolute',
+            zIndex: 1,
+            right: 20,
+            top: 20,
+            backgroundColor: colors.background,
+            borderBottomWidth: 1,
+            borderBottomColor: colors['primary-200'],
+          }}
+          iconColor={colors.primary}
+          titleStyle={{ color: colors.primary }}
+        />
         <View style={styles.profileHeader}>
           <ImageButton
             imageUrl={currentProfileImageUrl || undefined}
@@ -205,7 +228,8 @@ const styles = StyleSheet.create({
   },
   container: {
     paddingVertical: 15,
-    paddingHorizontal: 20, // Consistent padding
+    paddingHorizontal: 20,
+    position: 'relative',
   },
   profileHeader: {
     alignItems: 'center',

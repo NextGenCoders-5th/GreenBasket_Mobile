@@ -22,6 +22,12 @@ export default function ProfileLayout() {
           headerTitle: 'Complete Your profile information',
         }}
       />
+      <Stack.Screen
+        name='update-user' // Matches app/(profile)/update-user.tsx
+        options={{
+          title: 'Update Profile', // Set a header title for this screen
+        }}
+      />
     </Stack>
   );
 }
