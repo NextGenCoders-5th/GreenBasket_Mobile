@@ -1,39 +1,3 @@
-// import { View, Text } from 'react-native';
-// import React from 'react';
-// import { Link, router } from 'expo-router';
-// import TextButton from '@/components/ui/TextButton';
-
-// export default function Welcome() {
-//   return (
-//     <View
-//       style={{
-//         flex: 1,
-//         alignItems: 'center',
-//         justifyContent: 'center',
-//         padding: 20,
-//         backgroundColor: '#f0f0f0',
-//         gap: 20,
-//       }}
-//     >
-//       <Text
-//         style={{
-//           fontSize: 28,
-//         }}
-//       >
-//         Welcome
-//       </Text>
-
-//       <TextButton
-//         title='Lets Get Started'
-//         onPress={() => {
-//           router.navigate('/(tabs)/home');
-//         }}
-//       />
-//     </View>
-//   );
-// }
-
-// app/index.tsx
 import { View, Text, StyleSheet, Image } from 'react-native';
 import React from 'react';
 import { router } from 'expo-router';

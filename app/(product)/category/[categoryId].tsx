@@ -1,12 +1,5 @@
-// app/(product)/category/[categoryId].tsx
 import React, { useEffect } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  ActivityIndicator,
-} from 'react-native';
+import { View, Text, StyleSheet, FlatList } from 'react-native';
 import { Stack, router, useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
@@ -14,9 +7,8 @@ import Toast from 'react-native-toast-message';
 import { useColorTheme } from '@/hooks/useColorTheme';
 import LoadingIndicator from '@/components/ui/LoadingIndicator';
 import LoadingError from '@/components/ui/LoadingError';
-import ProductCard from '@/components/product/ProductCard'; // Import ProductCard
-import { useGetProductsByCategoryQuery } from '@/redux/api/productApi'; // Import the query hook
-import { ProductWithVendor } from '@/types/product'; // Import the specific product type
+import { useGetProductsByCategoryQuery } from '@/redux/api/productApi';
+import { ProductWithVendor } from '@/types/product';
 import Button from '@/components/ui/Button';
 import { RefreshControl } from 'react-native';
 import ProductWithVendorCard from '@/components/product/ProductWithVendorCard';
@@ -36,11 +28,9 @@ export default function CategoryProductsScreen() {
     skip: !categoryId, // Skip the query if categoryId is not available
   });
 
-  // Access the category details and products from the response data structure
-  const category = categoryProductsResponse?.data?.data; // This should be CategoryWithProductsAndVendors
-  const products = category?.products || []; // Array of ProductWithVendor
+  const category = categoryProductsResponse?.data?.data;
+  const products = category?.products || [];
 
-  // Handle case where categoryId is missing (shouldn't happen with dynamic routes usually)
   useEffect(() => {
     if (!categoryId) {
       Toast.show({
@@ -48,14 +38,13 @@ export default function CategoryProductsScreen() {
         text1: 'Invalid Category',
         text2: 'Category ID is missing.',
       });
-      router.replace('/(tabs)/home'); // Redirect home if ID is missing
+      router.replace('/(tabs)/home');
     }
   }, [categoryId, router]);
 
   const handleProductPress = (product: ProductWithVendor) => {
     console.log('Product pressed:', product.name);
-    // Navigate to the single product detail screen, passing the product ID
-    router.push(`/(product)/${product.id}`); // Assuming product detail route is /(product)/[id].tsx
+    router.push(`/(product)/${product.id}`);
   };
 
   const renderProductItem = ({ item }: { item: ProductWithVendor }) => (
@@ -73,6 +62,12 @@ export default function CategoryProductsScreen() {
           No products found in this category.
         </Text>
         {/* Optional: Button to go back or shop other categories */}
+        <Button
+          title='Back Home'
+          onPress={() => router.replace('/(tabs)/home')}
+          style={{ marginTop: 20 }}
+          titleStyle={{ color: colors['gray-100'] }}
+        />
       </View>
     );
   };
@@ -83,9 +78,7 @@ export default function CategoryProductsScreen() {
     !isCategoryProductsFetching &&
     products.length === 0
   ) {
-    return (
-      <LoadingIndicator message={`Loading products for ${categoryId}...`} />
-    );
+    return <LoadingIndicator message='Loading products in a category...' />;
   }
 
   // Handle error state for the entire screen
@@ -123,7 +116,7 @@ export default function CategoryProductsScreen() {
           Category not found.
         </Text>
         <Button
-          title='Go Back Home'
+          title='Back Home'
           onPress={() => router.replace('/(tabs)/home')}
           style={{ marginTop: 20, width: '60%' }}
         />
@@ -135,18 +128,14 @@ export default function CategoryProductsScreen() {
     <SafeAreaView
       style={[styles.container, { backgroundColor: colors['gray-50'] }]}
     >
-      {/* Header title is set dynamically in useEffect */}
-      {/* Ensure a default title while loading if needed in _layout.tsx */}
-      <Stack.Screen
-        options={{ title: category?.name || 'Category Products' }}
-      />
+      <Stack.Screen options={{ title: category?.name || 'Products' }} />
 
       <FlatList
         data={products}
         renderItem={renderProductItem}
         keyExtractor={(item) => item.id}
-        numColumns={2} // Example: display in a 2-column grid
-        columnWrapperStyle={styles.row} // Style for rows in grid
+        numColumns={2}
+        columnWrapperStyle={styles.row}
         contentContainerStyle={styles.listContentContainer}
         ListEmptyComponent={ListEmptyComponent}
         refreshControl={
@@ -174,14 +163,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   centered: {
-    // For full screen loading/error/not found
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
   },
   emptyContainer: {
-    // For empty list state
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
@@ -193,21 +180,19 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   listContentContainer: {
-    paddingHorizontal: 10, // Padding around the list
+    paddingHorizontal: 10,
     paddingVertical: 10,
-    flexGrow: 1, // Allows ListEmptyComponent to center
+    flexGrow: 1,
   },
   row: {
-    // Style for rows when numColumns > 1
-    justifyContent: 'space-between', // Distribute items evenly
-    gap: 10, // Space between items horizontally in a row
-    marginBottom: 5, // Optional: space between rows
+    justifyContent: 'space-between',
+    gap: 10,
+    marginBottom: 5,
   },
   sectionTitle: {
-    // Reused style if you add a list header title
     fontSize: 18,
     fontFamily: 'Inter-Bold',
     marginBottom: 15,
-    paddingHorizontal: 5, // Adjust padding
+    paddingHorizontal: 5,
   },
 });

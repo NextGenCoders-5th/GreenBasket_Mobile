@@ -36,8 +36,8 @@ export default function SignUpScreen() {
     defaultValues: {
       email: 'test@test.com',
       phoneNumber: '912345678',
-      password: 'test1234',
-      passwordConfirm: 'test1234',
+      password: 'password123',
+      passwordConfirm: 'password123',
       agreeToTerms: true,
     },
   });
@@ -72,7 +72,7 @@ export default function SignUpScreen() {
           fontSize: 12,
         },
       });
-      router.replace('/(auth)/signin');
+      router.replace('/(tabs)/home');
     } else {
       Toast.show({
         type: 'error',

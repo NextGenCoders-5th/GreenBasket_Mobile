@@ -24,8 +24,8 @@ export default function SignInScreen() {
   } = useForm<AuthSignIn>({
     resolver: yupResolver(SingInSchema),
     defaultValues: {
-      email: 'tewodros@test.com',
-      password: 'test1234',
+      email: 'ted@test.com',
+      password: 'password123',
     },
   });
 

@@ -87,10 +87,21 @@ export default function AccountScreen() {
   if (isLoading) {
     return <LoadingIndicator message='Loading account...' />;
   }
+
+  // Show sign-in prompt if not authenticated after loading
+  if (!isAuthenticated) {
+    // This condition is also handled by the useEffect redirect, but kept here for clarity
+    return <SignIn message='Please sign in to access your account.' />;
+  }
+
   if (userError) {
     const errorMessage =
       (userError as any)?.data?.message ||
       'Failed to load user data. Check your connection.';
+    console.log('userError', userError);
+    if ((userError as any)?.status === '404') {
+      console.log('status code', userError.data?.status);
+    }
     return (
       <SafeAreaView
         style={[styles.centered, { backgroundColor: colors.background }]}
@@ -99,12 +110,6 @@ export default function AccountScreen() {
         <LoadingError message={errorMessage} onRetry={refetchCurrentUser} />
       </SafeAreaView>
     );
-  }
-
-  // Show sign-in prompt if not authenticated after loading
-  if (!isAuthenticated) {
-    // This condition is also handled by the useEffect redirect, but kept here for clarity
-    return <SignIn message='Please sign in to access your account.' />;
   }
 
   // If authenticated but user data is still null or error after loading (should be rare)
@@ -132,6 +137,7 @@ export default function AccountScreen() {
   const {
     email,
     first_name,
+    last_name,
     profile_picture,
     is_onboarding,
     id: userId,
@@ -181,21 +187,20 @@ export default function AccountScreen() {
               style={[styles.userName, { color: colors['gray-900'] }]}
               numberOfLines={1}
             >
-              {is_onboarding ? email : first_name} {/* Conditional display */}
+              {is_onboarding ? email : `${first_name} ${last_name}`}
+              {/* Conditional display */}
             </Text>
           </View>
 
           {/* Header Icons */}
-          <View style={styles.headerIcons}>
-            {/* Removed the static 'moon' icon button as theme toggle is in settings */}
-            {/* Optional: Keep notifications icon */}
+          {/* <View style={styles.headerIcons}>
             <IconButton
               icon='notifications-outline'
               onPress={() => {}}
               color={colors['gray-700']}
               size={24}
             />
-          </View>
+          </View> */}
         </View>
 
         {/* Quick Actions */}
@@ -245,7 +250,7 @@ export default function AccountScreen() {
 
         {/* Account Options */}
         <View style={styles.accountOptionsContainer}>
-          {is_onboarding && (
+          {is_onboarding ? (
             <View style={styles.onboardingPromptHeader}>
               <Text
                 style={[
@@ -257,8 +262,8 @@ export default function AccountScreen() {
                 Welcome!
               </Text>
             </View>
-          )}
-          {is_onboarding && (
+          ) : null}
+          {is_onboarding ? (
             <AccountButton
               label='Complete Your Profile'
               labelStyle={{
@@ -273,7 +278,7 @@ export default function AccountScreen() {
               icon='checkmark-done-circle-outline'
               iconColor={colors.primary} // Use color from the current theme
             />
-          )}
+          ) : null}
 
           {/* Standard Account Buttons */}
           <AccountButton
@@ -300,21 +305,24 @@ export default function AccountScreen() {
             // Navigate to the update password screen
             onPress={() => router.navigate('/(auth)/update-password')}
           />
-          <AccountButton
+          {/* <AccountButton
             label='Language'
             icon='language-outline'
             onPress={() => alert('Language Settings (To be implemented)')}
-          />
+          /> */}
 
           {/* Theme Settings Section */}
           <View style={[{ marginTop: 25 }]}>
-            {' '}
             {/* Add margin top to separate */}
             <Text style={[styles.sectionTitle, { color: colors['gray-700'] }]}>
               Theme preference
             </Text>
             <View style={styles.themeButtonsContainer}>
-              <TextButton
+              <Button
+                icon='color-palette-outline'
+                iconColor={
+                  preference === 'system' ? colors.primary : colors['gray-700']
+                }
                 title='System'
                 onPress={() => handleThemeChange('system')}
                 style={[
@@ -327,7 +335,7 @@ export default function AccountScreen() {
                   preference === 'system' && {
                     borderColor: colors.primary,
                     borderWidth: 1.5,
-                  }, // Highlight active
+                  },
                 ]}
                 titleStyle={{
                   ...styles.themeButtonText,
@@ -337,7 +345,11 @@ export default function AccountScreen() {
                       : colors['gray-700'],
                 }}
               />
-              <TextButton
+              <Button
+                icon='sunny-outline'
+                iconColor={
+                  preference === 'light' ? colors.primary : colors['gray-700']
+                }
                 title='Light'
                 onPress={() => handleThemeChange('light')}
                 style={[
@@ -360,7 +372,11 @@ export default function AccountScreen() {
                       : colors['gray-700'],
                 }}
               />
-              <TextButton
+              <Button
+                icon='moon-outline'
+                iconColor={
+                  preference === 'dark' ? colors.primary : colors['gray-700']
+                }
                 title='Dark'
                 onPress={() => handleThemeChange('dark')}
                 style={[
