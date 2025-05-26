@@ -1,14 +1,14 @@
 // components/product/ProductWithVendorCard.tsx
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
-import { ProductWithVendor } from '@/types/product'; // Assuming this type includes Vendor and is what GetProductsByCategoryResponse returns
+import { Product } from '@/types/product'; // Assuming this type includes Vendor and is what GetProductsByCategoryResponse returns
 import { useColorTheme } from '@/hooks/useColorTheme';
 import { formatPrice } from '@/utils/formatters';
 import { useTransformImageUrl } from '@/hooks/useTransformImageUrl'; // Assuming this hook
 
 interface ProductWithVendorCardProps {
-  product: ProductWithVendor; // Use the type that includes Vendor
-  onPress?: (product: ProductWithVendor) => void; // Optional press handler to view product details
+  product: Product; // Use the type that includes Vendor
+  onPress?: (product: Product) => void; // Optional press handler to view product details
 }
 
 export default function ProductWithVendorCard({

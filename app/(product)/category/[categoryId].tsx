@@ -8,7 +8,7 @@ import { useColorTheme } from '@/hooks/useColorTheme';
 import LoadingIndicator from '@/components/ui/LoadingIndicator';
 import LoadingError from '@/components/ui/LoadingError';
 import { useGetProductsByCategoryQuery } from '@/redux/api/productApi';
-import { ProductWithVendor } from '@/types/product';
+import { Product } from '@/types/product';
 import Button from '@/components/ui/Button';
 import { RefreshControl } from 'react-native';
 import ProductWithVendorCard from '@/components/product/ProductWithVendorCard';
@@ -42,12 +42,12 @@ export default function CategoryProductsScreen() {
     }
   }, [categoryId, router]);
 
-  const handleProductPress = (product: ProductWithVendor) => {
+  const handleProductPress = (product: Product) => {
     console.log('Product pressed:', product.name);
     router.push(`/(product)/${product.id}`);
   };
 
-  const renderProductItem = ({ item }: { item: ProductWithVendor }) => (
+  const renderProductItem = ({ item }: { item: Product }) => (
     <ProductWithVendorCard product={item} onPress={handleProductPress} />
   );
 

@@ -27,6 +27,7 @@ export interface Product {
   is_featured: boolean;
 
   vendorId: string;
+  Vendor: Vendor;
 }
 
 // Product with categories
@@ -96,20 +97,6 @@ export interface UpdateProductDto {
   categoryIds?: string[];
 }
 
-export interface ProductWithVendor {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  discount_price: number | null;
-  unit: string;
-  stock: number;
-  image_url: string;
-  status: ProductStatus;
-  is_featured: boolean;
-  Vendor: Vendor;
-}
-
 export interface CategoryWithProductsAndVendors {
   id: string;
   updatedAt: string;
@@ -118,7 +105,7 @@ export interface CategoryWithProductsAndVendors {
   slug: string;
   image_url: string;
   status: CategoryStatus;
-  products: ProductWithVendor[];
+  products: Product[];
 }
 
 // ==============================
