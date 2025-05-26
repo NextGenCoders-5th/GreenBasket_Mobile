@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "multi-vendor-marketplace",
-    "slug": "multi-vendor-marketplace",
+    "name": "miniExpress",
+    "slug": "miniExpress",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -15,7 +15,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.tewodrosm.miniExpress"
     },
     "web": {
       "bundler": "metro",
@@ -37,6 +38,14 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "8fc6fe96-953d-4915-99e2-2e50b446ff27"
+      }
     }
   }
 }
