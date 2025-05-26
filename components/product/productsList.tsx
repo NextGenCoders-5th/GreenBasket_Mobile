@@ -8,7 +8,6 @@ import {
   Text,
 } from 'react-native';
 import { useGetProductsQuery } from '@/redux/api/productApi';
-// Use ProductCardWithVendor if that's the component for this list, otherwise ProductCard
 import ProductCardWithVendor from '@/components/product/ProductWithVendorCard';
 import { useColorTheme } from '@/hooks/useColorTheme';
 import { SafeAreaView } from 'react-native-safe-area-context';

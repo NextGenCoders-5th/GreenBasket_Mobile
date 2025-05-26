@@ -62,26 +62,26 @@ export default function ExploreScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingVertical: 10, // Vertical padding for the whole screen
+    paddingVertical: 10,
   },
   searchInputContainer: {
     display: 'flex',
     alignItems: 'center',
     flexDirection: 'row',
-    height: 50, // Slightly reduced height
-    borderRadius: 25, // Make it more rounded
-    borderWidth: 1, // Use border width from theme
-    marginHorizontal: 15, // Add horizontal margin
-    marginBottom: 10, // Space below search input
+    height: 50,
+    borderRadius: 25,
+    borderWidth: 1,
+    marginHorizontal: 15,
+    marginBottom: 10,
   },
   searchIcon: {
-    paddingLeft: 15, // Adjust padding for icon
+    paddingLeft: 15,
   },
   searchInput: {
     flex: 1,
-    paddingVertical: 10, // Adjust padding
+    paddingVertical: 10,
     paddingHorizontal: 10,
-    borderRadius: 25, // Match container radius
+    borderRadius: 25,
     fontSize: 16,
     // fontFamily: 'Inter-Regular', // Already in style
     // fontWeight: 'normal', // Already in style

@@ -7,8 +7,8 @@ import { formatPrice } from '@/utils/formatters';
 import { useTransformImageUrl } from '@/hooks/useTransformImageUrl'; // Assuming this hook
 
 interface ProductWithVendorCardProps {
-  product: Product; // Use the type that includes Vendor
-  onPress?: (product: Product) => void; // Optional press handler to view product details
+  product: Product;
+  onPress?: (product: Product) => void;
 }
 
 export default function ProductWithVendorCard({
@@ -18,7 +18,6 @@ export default function ProductWithVendorCard({
   const colors = useColorTheme();
   const imageUrl = useTransformImageUrl({ imageUrl: product.image_url });
 
-  // Determine the price to display (discounted or original)
   const displayPrice =
     product.discount_price !== null && product.discount_price > 0
       ? product.discount_price
