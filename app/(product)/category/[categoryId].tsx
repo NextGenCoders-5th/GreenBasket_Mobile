@@ -42,13 +42,8 @@ export default function CategoryProductsScreen() {
     }
   }, [categoryId, router]);
 
-  const handleProductPress = (product: Product) => {
-    console.log('Product pressed:', product.name);
-    router.push(`/(product)/${product.id}`);
-  };
-
   const renderProductItem = ({ item }: { item: Product }) => (
-    <ProductWithVendorCard product={item} onPress={handleProductPress} />
+    <ProductWithVendorCard product={item} />
   );
 
   const ListEmptyComponent = () => {

@@ -5,18 +5,19 @@ import { Product } from '@/types/product'; // Assuming this type includes Vendor
 import { useColorTheme } from '@/hooks/useColorTheme';
 import { formatPrice } from '@/utils/formatters';
 import { useTransformImageUrl } from '@/hooks/useTransformImageUrl'; // Assuming this hook
+import { router } from 'expo-router';
 
 interface ProductWithVendorCardProps {
   product: Product;
-  onPress?: (product: Product) => void;
 }
 
 export default function ProductWithVendorCard({
   product,
-  onPress,
 }: ProductWithVendorCardProps) {
   const colors = useColorTheme();
   const imageUrl = useTransformImageUrl({ imageUrl: product.image_url });
+
+  const { id } = product;
 
   const displayPrice =
     product.discount_price !== null && product.discount_price > 0
@@ -35,8 +36,8 @@ export default function ProductWithVendorCard({
         styles.card,
         { backgroundColor: colors.background, borderColor: colors['gray-200'] },
       ]}
-      onPress={() => onPress?.(product)}
-      disabled={!onPress}
+      onPress={() => router.push(`/(product)/${id}`)} // Navigate to product details
+      // disabled={!onPress}
     >
       {imageUrl ? (
         <Image

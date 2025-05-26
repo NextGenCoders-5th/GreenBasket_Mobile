@@ -204,49 +204,45 @@ export default function AccountScreen() {
         </View>
 
         {/* Quick Actions */}
-        {!is_onboarding && (
-          <View
-            style={[
-              styles.quickActionsContainer,
-              // Use color from the current theme
-              { borderBottomColor: colors['gray-200'] },
-            ]}
-          >
-            {/* ... Quick Action Buttons ... */}
-            <TouchableOpacity
-              style={styles.quickActionItem}
-              onPress={() => router.push('/wishlist')} // Assuming wishlist is a route
-            >
-              <Ionicons
-                name='heart-outline'
-                size={22}
-                // Use color from the current theme
-                color={colors['gray-700']}
-              />
-              <Text
-                style={[styles.quickActionText, { color: colors['gray-700'] }]}
-              >
-                Wishlist
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.quickActionItem}
-              onPress={() => router.push('/(tabs)/cart')}
-            >
-              <Ionicons
-                name='cart-outline'
-                size={22}
-                // Use color from the current theme
-                color={colors['gray-700']}
-              />
-              <Text
-                style={[styles.quickActionText, { color: colors['gray-700'] }]}
-              >
-                Cart
-              </Text>
-            </TouchableOpacity>
-          </View>
-        )}
+        {/* {!is_onboarding && ( */}
+        <View
+          style={[
+            styles.quickActionsContainer,
+            // Use color from the current theme
+            { borderBottomColor: colors['gray-200'] },
+          ]}
+        >
+          {/* ... Quick Action Buttons ... */}
+
+          <Button
+            icon='heart'
+            onPress={() => {
+              router.push('/(profile)/wishlist');
+            }}
+            title='Wishlists'
+            style={{
+              ...styles.quickActionItem,
+              backgroundColor: colors['primary-100'],
+              width: 90,
+            }}
+            iconColor={colors.notification}
+            titleStyle={{ color: colors['gray-700'] }}
+          />
+
+          <Button
+            icon='cart-outline'
+            onPress={() => router.push('/(tabs)/cart')}
+            title='Cart'
+            style={{
+              ...styles.quickActionItem,
+              backgroundColor: colors['primary-100'],
+              width: 90,
+            }}
+            iconColor={colors['gray-700']}
+            titleStyle={{ color: colors['gray-700'] }}
+          />
+        </View>
+        {/* )} */}
 
         {/* Account Options */}
         <View style={styles.accountOptionsContainer}>
@@ -506,6 +502,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 4,
     paddingHorizontal: 10,
+    display: 'flex',
+    flexDirection: 'column',
   },
   quickActionText: {
     fontFamily: 'Inter-Medium',
