@@ -28,6 +28,12 @@ export default function ProfileLayout() {
           title: 'Update Profile', // Set a header title for this screen
         }}
       />
+      <Stack.Screen
+        name='wishlist' // Matches app/(profile)/wishlist.tsx
+        options={{
+          title: 'My Wishlist',
+        }}
+      />
     </Stack>
   );
 }
