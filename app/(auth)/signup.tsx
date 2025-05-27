@@ -42,7 +42,7 @@ export default function SignUpScreen() {
     },
   });
 
-  const { signUp, isLoading } = useAuth();
+  const { signUp, isSignUpLoading } = useAuth();
 
   const onSubmit = async (formData: SignUpFormType) => {
     const { email, phoneNumber, password, passwordConfirm } = formData;
@@ -58,7 +58,7 @@ export default function SignUpScreen() {
         type: 'success',
         position: 'top',
         text1: 'Welcome👋',
-        text2: 'Successfully registered',
+        text2: 'You registered successfully',
         text1Style: {
           color: colors.primary,
           fontFamily: 'Inter',
@@ -95,14 +95,6 @@ export default function SignUpScreen() {
       });
     }
   };
-
-  if (isLoading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size={'large'} color={colors['primary-600']} />
-      </View>
-    );
-  }
 
   return (
     <SafeAreaView
@@ -227,7 +219,8 @@ export default function SignUpScreen() {
             titleStyle={{
               color: colors['gray-50'],
             }}
-            disabled={isLoading}
+            disabled={isSignUpLoading}
+            isLoading={isSignUpLoading}
           />
           <View style={styles.haveAccountContainer}>
             <Text

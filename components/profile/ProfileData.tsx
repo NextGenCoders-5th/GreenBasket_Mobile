@@ -24,7 +24,7 @@ const ProfileData: React.FC<ProfileDataProps> = ({
         style,
       ]}
     >
-      <Text style={styles.label}>{label}</Text>
+      <Text style={{ ...styles.label, color: colors.text }}>{label}</Text>
       <Text style={{ ...styles.value, color: colors.text }}>
         {`${value1 || 'Not set'} ${value2 || ''}`}
       </Text>

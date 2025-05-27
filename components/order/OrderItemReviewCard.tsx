@@ -25,13 +25,13 @@ export default function OrderItemReviewCard({
         { borderColor: colors['gray-200'], backgroundColor: colors.background },
       ]}
     >
-      {imageUrl && (
+      {imageUrl ? (
         <Image
-          source={{ uri: imageUrl }}
+          source={{ uri: imageUrl || '' }}
           style={styles.productImage}
           resizeMode='contain'
         />
-      )}
+      ) : null}
       <View style={styles.detailsContainer}>
         <Text
           style={[styles.productName, { color: colors['gray-900'] }]}
@@ -40,7 +40,7 @@ export default function OrderItemReviewCard({
           {item.Product?.name || 'Unknown Product'}
         </Text>
         <Text style={[styles.quantityText, { color: colors['gray-600'] }]}>
-          Qty: {item.quantity}
+          quantity: {item.quantity}
         </Text>
         {/* Display price for the order item, which should be item.price * item.quantity */}
         {/* Your OrderItem already has sub_total, which is good */}

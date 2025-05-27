@@ -107,15 +107,15 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     borderWidth: 1,
     overflow: 'hidden',
-    marginBottom: 15, // Space below each card in a vertical list/grid
-    marginHorizontal: 5, // Optional: Space between cards horizontally if in grid
-    flex: 1, // Allow flex for grid layout (adjust based on number of columns)
-    minWidth: 150, // Example min width for responsiveness
-    maxWidth: 200, // Example max width for responsiveness
+    marginBottom: 15,
+    marginHorizontal: 5,
+    flex: 1,
+    minWidth: 150,
+    maxWidth: 200,
   },
   productImage: {
     width: '100%',
-    height: 150, // Example height
+    height: 100,
     marginBottom: 10,
   },
   productImagePlaceholder: {

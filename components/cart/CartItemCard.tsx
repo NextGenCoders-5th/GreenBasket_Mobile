@@ -6,6 +6,7 @@ import { useColorTheme } from '@/hooks/useColorTheme';
 import { formatPrice } from '@/utils/formatters';
 import { IconButton } from '@/components/ui/IconButton';
 import { useTransformImageUrl } from '@/hooks/useTransformImageUrl';
+import { router } from 'expo-router';
 
 interface CartItemCardProps {
   item: CartItem;
@@ -58,11 +59,17 @@ const CartItemCard: React.FC<CartItemCardProps> = ({
         { backgroundColor: colors.background, opacity: isUpdating ? 0.6 : 1 },
       ]}
     >
-      <Image
-        source={{ uri: imageUrl || 'https://via.placeholder.com/80' }}
-        style={styles.image}
-        resizeMode='cover'
-      />
+      <TouchableOpacity
+        onPress={() => {
+          router.push(`/(product)/${productDetails.id}`);
+        }}
+      >
+        <Image
+          source={{ uri: imageUrl || 'https://via.placeholder.com/80' }}
+          style={styles.image}
+          resizeMode='cover'
+        />
+      </TouchableOpacity>
       <View style={styles.infoContainer}>
         <Text
           style={[styles.productName, { color: colors['gray-800'] }]}

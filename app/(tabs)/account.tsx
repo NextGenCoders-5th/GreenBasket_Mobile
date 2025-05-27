@@ -5,12 +5,9 @@ import {
   Text,
   View,
   Image,
-  TouchableOpacity,
 } from 'react-native';
-import React, { useEffect } from 'react'; // Import useEffect
+import React from 'react'; // Import useEffect
 import { useColorTheme } from '@/hooks/useColorTheme';
-import { Ionicons } from '@expo/vector-icons';
-import { IconButton } from '@/components/ui/IconButton';
 import TextButton from '@/components/ui/TextButton';
 import { router, Stack } from 'expo-router';
 import {
@@ -242,7 +239,6 @@ export default function AccountScreen() {
             titleStyle={{ color: colors['gray-700'] }}
           />
         </View>
-        {/* )} */}
 
         {/* Account Options */}
         <View style={styles.accountOptionsContainer}>
@@ -399,7 +395,7 @@ export default function AccountScreen() {
 
         {/* Action Buttons */}
         <View style={styles.actionButtonsContainer}>
-          <TextButton
+          {/* <TextButton
             style={[
               styles.actionButtonBase,
               // Use theme colors
@@ -413,7 +409,7 @@ export default function AccountScreen() {
             titleStyle={{ color: colors.red }}
             title='Delete Account'
             onPress={() => alert('Delete Account (To be implemented)')}
-          />
+          /> */}
           <TextButton
             style={[
               styles.actionButtonBase,
@@ -494,7 +490,7 @@ const styles = StyleSheet.create({
   quickActionsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    paddingVertical: 15,
+    paddingBottom: 15,
     borderBottomWidth: 1,
     marginBottom: 15,
   },
@@ -524,6 +520,7 @@ const styles = StyleSheet.create({
     gap: 15,
     paddingTop: 20,
     marginBottom: 10,
+    marginTop: 20,
   },
   actionButtonBase: {
     width: '100%',

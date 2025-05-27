@@ -29,7 +29,7 @@ export default function SignInScreen() {
     },
   });
 
-  const { signIn, isLoading } = useAuth();
+  const { signIn, isSignInLoading } = useAuth();
 
   const onSubmit = async (formData: AuthSignIn) => {
     const { success, error } = await signIn(formData);
@@ -125,8 +125,8 @@ export default function SignInScreen() {
             titleStyle={{
               color: colors['gray-50'],
             }}
-            disabled={isLoading}
-            isLoading={isLoading}
+            disabled={isSignInLoading}
+            isLoading={isSignInLoading}
           />
           <View style={styles.noAccountContainer}>
             <Text

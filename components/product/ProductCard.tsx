@@ -68,11 +68,15 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     elevation: 3,
     overflow: 'hidden', // Ensures image corners are rounded if image is first child
-    flex: 1, // For 2-column layout
+    // flex: 1, // For 2-column layout
+    width: 150,
+    height: 150,
+    marginBottom: 10,
+    paddingBottom: 10,
   },
   image: {
-    width: '100%',
-    height: 150,
+    width: '90%',
+    height: 100,
   },
   infoContainer: {
     padding: 12,

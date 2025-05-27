@@ -59,7 +59,6 @@ export default function OrderCard({ order, onPress }: OrderCardProps) {
         </Text>
       </View>
 
-      {/* Order Items Section */}
       <View
         style={[
           styles.itemsContainer,
@@ -77,7 +76,7 @@ export default function OrderCard({ order, onPress }: OrderCardProps) {
                   uri:
                     useTransformImageUrl({
                       imageUrl: item.Product.image_url,
-                    }) || '',
+                    }) || 'https://via.placeholder.com/40',
                 }}
                 style={styles.itemImage}
                 resizeMode='contain'
@@ -105,8 +104,6 @@ export default function OrderCard({ order, onPress }: OrderCardProps) {
 
       <View style={styles.footer}>
         <View>
-          {' '}
-          {/* Container for Total */}
           <Text style={[styles.footerLabel, { color: colors['gray-700'] }]}>
             Total:
           </Text>
@@ -115,8 +112,6 @@ export default function OrderCard({ order, onPress }: OrderCardProps) {
           </Text>
         </View>
         <View>
-          {' '}
-          {/* Container for Status */}
           <Text
             style={[
               styles.footerLabel,

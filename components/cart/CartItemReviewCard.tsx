@@ -36,7 +36,7 @@ export default function CartItemReviewCard({ item }: CartItemReviewCardProps) {
           {item.Product?.name || 'Unknown Product'}
         </Text>
         <Text style={[styles.quantityText, { color: colors['gray-600'] }]}>
-          Qty: {item.quantity}
+          quantity: {item.quantity}
         </Text>
         <Text style={[styles.priceText, { color: colors.primary }]}>
           {formatPrice(item.sub_total)} {/* sub_total for this item */}

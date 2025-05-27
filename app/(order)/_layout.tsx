@@ -22,7 +22,7 @@ export default function OrderLayout() {
       <Stack.Screen
         name='[orderId]'
         options={{
-          title: 'Order Details', // Default title, overridden by the screen
+          title: 'Continue payment', // Default title, overridden by the screen
         }}
       />
       {/* The Place Order screen */}

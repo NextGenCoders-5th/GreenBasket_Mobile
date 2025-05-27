@@ -1,4 +1,4 @@
-// app/(order)/index.tsx
+// app/(order)/order-history.tsx
 import React, { useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet, RefreshControl } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -110,7 +110,7 @@ export default function OrderHistoryScreen() {
 const renderOrderItem = ({ item }: { item: Order }) => (
   <OrderCard
     order={item}
-    // onPress={() => router.navigate(`/(order)/${item.id}`)}
+    onPress={() => router.navigate(`/(order)/${item.id}`)}
   />
 );
 
