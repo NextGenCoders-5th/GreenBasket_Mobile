@@ -6,20 +6,29 @@ import {
 
 export const paymentApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    // POST /api/v1/payments/chapa/initialize - Initialize payment with Chapa
     initializeChapaPayment: builder.mutation<
       InitializePaymentResponse,
       InitializePaymentDto
     >({
       query: (paymentData) => ({
-        url: '/payments/chapa/initialize',
+        url: '/payments/initialize',
         method: 'POST',
         body: paymentData,
       }),
-      invalidatesTags: (result, error, args) =>
-        args.orderId ? [{ type: 'Order', id: args.orderId }] : [],
+      invalidatesTags: (result, error, args) => {
+        const tags = [];
+        if (args.orderId) {
+          // Invalidate the specific order details query
+          tags.push({ type: 'Order' as const, id: args.orderId });
+          // Invalidate the getMyOrders list query
+          tags.push({ type: 'Order' as const, id: 'LIST' });
+        }
+        return tags;
+      },
     }),
   }),
+  // Use overrideExisting: true if this slice is injected after others
+  overrideExisting: true,
 });
 
 export const { useInitializeChapaPaymentMutation } = paymentApi;
