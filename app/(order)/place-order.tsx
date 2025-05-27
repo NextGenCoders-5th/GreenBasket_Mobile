@@ -1,12 +1,6 @@
 // app/(order)/place-order.tsx
 import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  StyleSheet,
-  ActivityIndicator,
-} from 'react-native';
+import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { Stack, router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
@@ -15,20 +9,15 @@ import { useSelector } from 'react-redux';
 import { useColorTheme } from '@/hooks/useColorTheme';
 import Button from '@/components/ui/Button';
 import { formatPrice } from '@/utils/formatters';
-import {
-  useGetMyCartQuery,
-  // Keep these if needed for cart review actions, otherwise remove
-  // useUpdateCartItemMutation,
-  // useDeleteCartItemMutation,
-} from '@/redux/api/cartApi';
+import { useGetMyCartQuery } from '@/redux/api/cartApi';
 import { useCreateOrderMutation } from '@/redux/api/orderApi'; // Import createOrder mutation
 import { selectIsAuthenticated } from '@/redux/slices/authSlice'; // Only need isAuthenticated here
 import LoadingIndicator from '@/components/ui/LoadingIndicator';
 import LoadingError from '@/components/ui/LoadingError';
 import CartItemReviewCard from '@/components/cart/CartItemReviewCard';
-import { CartItem } from '@/types/cart';
-import AccountButton from '@/components/account/AccountButton'; // Using this component for address display
 import { useCurrentUser } from '@/hooks/useCurrentUser'; // <-- Import useCurrentUser
+import TextButton from '@/components/ui/TextButton';
+import { UserVerifyStatus } from '@/config/enums';
 
 // Assuming tax is a fixed percentage for simplicity, or calculated on backend
 const ESTIMATED_TAX_RATE = 0.05; // 5% example
@@ -38,6 +27,8 @@ export default function PlaceOrderScreen() {
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const { user, isLoading: isUserLoading, error: userError } = useCurrentUser(); // <-- Use useCurrentUser
   const [isConfirmingOrder, setIsConfirmingOrder] = useState(false);
+
+  // console.log('User', user);
 
   // Fetch cart data for review
   const {
@@ -74,7 +65,7 @@ export default function PlaceOrderScreen() {
     }
     // Optionally handle userError: if userError and !user, maybe redirect?
     if (userError && !user && !isUserLoading) {
-      console.error('Error fetching user for checkout:', userError);
+      // console.error('Error fetching user for checkout:', userError);
       Toast.show({
         type: 'error',
         text1: 'Error Loading User',
@@ -120,7 +111,7 @@ export default function PlaceOrderScreen() {
         cartId: cart.id,
       }).unwrap();
 
-      console.log('Order creation result:', result);
+      // console.log('Order creation result:', result);
 
       // Adjusted access based on CreateOrderResponse = ApiResponse<Order[]>
       const newOrders = (result as any)?.data?.data;
@@ -133,12 +124,12 @@ export default function PlaceOrderScreen() {
           text1: 'Order Created',
           text2: `Order #${newOrderId} has been created.`,
         });
-        router.replace({
+        router.push({
           pathname: '/(order)/[orderId]',
           params: { orderId: newOrderId },
         });
       } else {
-        console.error('Unexpected order creation response structure:', result);
+        // console.error('Unexpected order creation response structure:', result);
         Toast.show({
           type: 'error',
           text1: 'Order Creation Failed',
@@ -146,7 +137,7 @@ export default function PlaceOrderScreen() {
         });
       }
     } catch (err: any) {
-      console.error('Failed to create order:', err);
+      // console.error('Failed to create order:', err);
       const message = err?.data?.message || 'Could not create order.';
       Toast.show({
         type: 'error',
@@ -266,10 +257,7 @@ export default function PlaceOrderScreen() {
               <Text
                 style={[styles.addressText, { color: colors['gray-700'] }]}
               >{`${shippingAddress.sub_city}, ${shippingAddress.city}, ${shippingAddress.country}`}</Text>
-              {/* <Text style={[styles.addressText, { color: colors['gray-700'] }]}>
-                Zip: {shippingAddress.zip_code}
-              </Text> */}
-              {/* Button to manage address (will navigate to address list where they can edit/add) */}
+
               <Button
                 title='Edit Address'
                 onPress={() => router.push('/(address)/edit')}
@@ -348,32 +336,78 @@ export default function PlaceOrderScreen() {
             </Text>
           </View>
         </View>
-      </ScrollView>
 
-      {/* Footer with Confirm Order Button */}
-      <View
-        style={[
-          styles.footer,
-          {
-            borderTopColor: colors['gray-200'],
-            backgroundColor: colors.background,
-          },
-        ]}
-      >
-        <Button
-          title='Confirm Order'
-          onPress={handleConfirmOrder}
-          isLoading={isConfirmingOrder || isCreatingOrder}
-          style={styles.confirmButton}
-          // Disable if no address, empty cart, or currently loading cart/user data
-          disabled={
-            !shippingAddress ||
-            !cartItems.length ||
-            isCartLoading ||
-            isUserLoading
-          }
-        />
-      </View>
+        {/* Footer with Confirm Order Button */}
+        <View
+          style={[
+            styles.footer,
+
+            {
+              // borderTopColor: colors['gray-200'],
+              // backgroundColor: colors.background,
+              borderWidth: 0,
+            },
+          ]}
+        >
+          {user.is_onboarding ? (
+            <View style={styles.completeProfileContainer}>
+              <Text style={{ ...styles.text, color: colors['gray-600'] }}>
+                Your profile is not complete.
+              </Text>
+              <TextButton
+                title='Click here'
+                onPress={() => router.push('/(profile)/complete-onboarding')}
+                style={styles.signupButton}
+                titleStyle={{
+                  ...styles.signupTitle,
+                  color: colors.primary,
+                  textDecorationColor: colors.primary,
+                }}
+              />
+              <Text style={{ ...styles.text, color: colors['gray-600'] }}>
+                to complete.
+              </Text>
+            </View>
+          ) : null}
+
+          <View style={styles.completeProfileContainer}>
+            {user.verify_status === UserVerifyStatus.REQUESTED ? (
+              <Text style={{ ...styles.text, color: colors['gray-600'] }}>
+                Your account verification is requested please wait until
+                verified.
+              </Text>
+            ) : null}
+          </View>
+          {user.verify_status === UserVerifyStatus.DECLINED ? (
+            <View style={styles.completeProfileContainer}>
+              <Text style={{ ...styles.text, color: colors['gray-600'] }}>
+                Your account verification is declined please provide valid
+                infomration.
+              </Text>
+            </View>
+          ) : null}
+
+          <Button
+            title={
+              user.verify_status === UserVerifyStatus.VERIFIED
+                ? 'Confirm Order'
+                : 'verify your account'
+            }
+            onPress={handleConfirmOrder}
+            isLoading={isConfirmingOrder || isCreatingOrder}
+            style={styles.confirmButton}
+            // Disable if no address, empty cart, or currently loading cart/user data
+            disabled={
+              !shippingAddress ||
+              !cartItems.length ||
+              isCartLoading ||
+              isUserLoading ||
+              user.is_onboarding ||
+              user.verify_status !== UserVerifyStatus.VERIFIED
+            }
+          />
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -449,6 +483,33 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     paddingHorizontal: 20,
     borderTopWidth: 1,
+    gap: 20,
+    alignSelf: 'center',
+    width: '100%',
   },
   confirmButton: {},
+  completeProfileContainer: {
+    width: '100%',
+    marginTop: 10,
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'flex-start',
+  },
+  text: {
+    fontSize: 16,
+    fontFamily: 'Inter',
+    fontWeight: '500',
+  },
+  signupButton: {
+    paddingVertical: 0,
+    paddingHorizontal: 2,
+    margin: 0,
+    borderRadius: 0,
+    backgroundColor: 'transparent',
+  },
+  signupTitle: {
+    fontSize: 14,
+    textDecorationLine: 'underline',
+  },
 });

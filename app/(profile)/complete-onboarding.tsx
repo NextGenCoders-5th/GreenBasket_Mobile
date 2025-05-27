@@ -27,7 +27,10 @@ import { shadows } from '@/styles/shadows'; // Assuming you have this for consis
 
 import { OnboardingSchema } from '@/utils/validators';
 import { CompleteOnboardingDto } from '@/types/user';
-import { useCompleteOnboardingMutation } from '@/redux/api/userApi';
+import {
+  useCompleteOnboardingMutation,
+  useRequestAccountVerificationMutation,
+} from '@/redux/api/userApi';
 import { useAuth } from '@/hooks/useAuth'; // To prefill data if available
 import { Gender } from '@/config/enums';
 
@@ -37,6 +40,11 @@ export default function CompleteOnboardingScreen() {
 
   const [completeOnboarding, { isLoading: isOnboardingLoading }] =
     useCompleteOnboardingMutation();
+
+  const [
+    requestAccountVerification,
+    { isLoading: isRequestingAccountVerification },
+  ] = useRequestAccountVerificationMutation();
 
   const {
     control,
@@ -87,18 +95,37 @@ export default function CompleteOnboardingScreen() {
 
     try {
       const result = await completeOnboarding(data).unwrap();
-      Toast.show({
-        type: 'success',
-        position: 'top',
-        text1: 'Profile Updated!',
-        text2: result.data.message || 'Your onboarding is complete.',
-        // ... (your toast styles)
-      });
+
+      try {
+        requestAccountVerification().unwrap();
+
+        Toast.show({
+          type: 'success',
+          position: 'top',
+          text1: 'Profile Updated!',
+          text2:
+            result.data.message ||
+            'Your profile is complete. Please wait for verification.',
+          // ... (your toast styles)
+        });
+        router.back(); // Navigate to account or home
+      } catch (err: any) {
+        const message =
+          err?.data?.message ||
+          'Failed to request account verification. Please try again.';
+        Toast.show({
+          type: 'error',
+          position: 'top',
+          text1: 'Request Account Verification Error',
+          text2: message,
+          // ... (your toast styles)
+        });
+      }
+
       // The useCompleteOnboardingMutation should invalidate 'User'/'ME' tag,
       // which will cause useGetCurrentUserQuery to refetch, updating user.is_onboarding.
-      router.replace('/(tabs)/account'); // Navigate to account or home
     } catch (err: any) {
-      console.error('Onboarding submission failed:', err);
+      // console.error('Onboarding submission failed:', err);
       const message =
         err?.data?.message ||
         'Failed to complete onboarding. Please try again.';
@@ -335,7 +362,7 @@ const styles = StyleSheet.create({
   },
   inputGroup: {
     width: '100%',
-    marginBottom: 5, // Space below each input group (FloatingLabelInput has its own internal gap for error)
+    marginBottom: 20, // Space below each input group (FloatingLabelInput has its own internal gap for error)
   },
   submitButton: {
     width: '100%',

@@ -7,7 +7,6 @@ import {
   StyleSheet,
   ActivityIndicator,
   Linking,
-  Image,
 } from 'react-native';
 import { Stack, router, useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -20,10 +19,10 @@ import { useGetMyOrderByIdQuery } from '@/redux/api/orderApi';
 import { useInitializeChapaPaymentMutation } from '@/redux/api/paymentApi';
 import LoadingIndicator from '@/components/ui/LoadingIndicator';
 import LoadingError from '@/components/ui/LoadingError';
+// Use the updated OrderStatus enum
 import { OrderStatus } from '@/config/enums';
 import OrderItemReviewCard from '@/components/order/OrderItemReviewCard';
 import { OrderItem } from '@/types/order';
-import ImageButton from '@/components/ui/ImageButton';
 // useCurrentUser is not needed if only showing order data
 // import { useCurrentUser } from '@/hooks/useCurrentUser';
 
@@ -38,9 +37,10 @@ export default function OrderSummaryScreen() {
     isLoading: isOrderLoading,
     isFetching: isOrderFetching,
     refetch: refetchOrder,
-  } = useGetMyOrderByIdQuery(orderId!, {
-    skip: !orderId,
-  });
+    // pollingInterval: 5000, // Poll every 5 seconds while component is mounted and query is active
+    // refetchOnMountOrArgChange: true,
+    // refetchOnReconnect: true,
+  } = useGetMyOrderByIdQuery(orderId);
 
   // Mutation to initiate payment for this order
   const [initiatePayment, { isLoading: isInitiatingPayment }] =
@@ -48,6 +48,16 @@ export default function OrderSummaryScreen() {
 
   const order = orderResponse?.data?.data;
   const orderItems = order?.OrderItems || [];
+
+  // Stop polling when order status is no longer PENDING
+  useEffect(() => {
+    if (order?.status !== OrderStatus.PENDING) {
+      console.log(
+        `Order ${orderId} status is now ${order?.status}, stopping proactive polling check.`
+      );
+    }
+    // This dependency on order?.status helps trigger this effect when the status changes
+  }, [order?.status]);
 
   // Handle case where orderId is missing (shouldn't happen with router.replace)
   useEffect(() => {
@@ -100,22 +110,11 @@ export default function OrderSummaryScreen() {
           text2: 'Please complete the payment in your browser.',
         });
         await Linking.openURL(chapaPaymentUrl);
-        // After opening URL, manually refetch the order to check status update
-        // Polling is also active, but a manual refetch can sometimes provide faster initial update
-        setTimeout(() => {
-          refetchOrder(); // Refetch after a short delay to allow backend webhook processing
-          Toast.show({
-            // Optional feedback
-            type: 'info',
-            text1: 'Checking Payment Status...',
-            visibilityTime: 2000,
-          });
-        }, 2000); // Adjust delay if needed
       } else {
-        console.error(
-          'Chapa checkout URL missing from initiation response:',
-          result
-        );
+        // console.error(
+        //   'Chapa checkout URL missing from initiation response:',
+        //   result
+        // );
         Toast.show({
           type: 'error',
           text1: 'Payment Failed',
@@ -123,7 +122,7 @@ export default function OrderSummaryScreen() {
         });
       }
     } catch (err: any) {
-      console.error('Failed to initiate payment:', err);
+      // console.error('Failed to initiate payment:', err);
       const message = err?.data?.message || 'Could not initiate payment.';
       Toast.show({
         type: 'error',
@@ -133,12 +132,10 @@ export default function OrderSummaryScreen() {
     }
   };
 
-  // Handle loading state for order data
   if (!orderId || isOrderLoading || isOrderFetching) {
     return <LoadingIndicator message='Loading order details...' />;
   }
 
-  // Handle errors for order data
   if (orderError) {
     const errorMessage =
       (orderError as any)?.data?.message || 'Failed to load order details.';
@@ -155,7 +152,6 @@ export default function OrderSummaryScreen() {
     );
   }
 
-  // Handle case where order is not found (e.g., 404 error after loading)
   if (!order) {
     return (
       <SafeAreaView
@@ -187,24 +183,71 @@ export default function OrderSummaryScreen() {
     <SafeAreaView
       style={[styles.container, { backgroundColor: colors['gray-50'] }]}
     >
-      <View
-        style={[
-          styles.priceRow,
-          {
-            borderTopColor: colors['gray-200'],
-          },
-        ]}
-      >
-        <Text style={[styles.totalLabel, { color: colors['gray-800'] }]}>
-          Total Price:
-        </Text>
-        <Text style={[styles.totalValue, { color: colors.primary }]}>
-          {formatPrice(orderTotalIncludingTax)}
-        </Text>
-      </View>
+      <Stack.Screen options={{ title: `Order #${order.id}` }} />
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        <View style={styles.section}>
+          <Text style={[styles.sectionTitle, { color: colors['gray-900'] }]}>
+            Order Status
+          </Text>
+          <View
+            style={[
+              styles.statusBadge,
+              { backgroundColor: getStatusColor(order.status, colors) },
+            ]}
+          >
+            <Text style={styles.statusText}>{order.status.toUpperCase()}</Text>
+          </View>
+        </View>
 
-      {/* Only show payment button if order is PENDING */}
-      {order?.status === OrderStatus.PENDING && (
+        <View style={styles.section}>
+          <Text style={[styles.sectionTitle, { color: colors['gray-900'] }]}>
+            Items
+          </Text>
+          {orderItems.map((item: OrderItem) => (
+            // Use OrderItemReviewCard here
+            <OrderItemReviewCard key={item.id} item={item} />
+          ))}
+        </View>
+
+        <View style={styles.section}>
+          <Text style={[styles.sectionTitle, { color: colors['gray-900'] }]}>
+            Price Details
+          </Text>
+          <View
+            style={[
+              styles.priceRow,
+              styles.totalPriceRow,
+              {
+                borderTopColor: colors['gray-200'],
+                borderTopWidth: 0,
+                marginTop: 0,
+                paddingTop: 0,
+              },
+            ]}
+          >
+            <Text
+              style={[
+                styles.priceLabel,
+                styles.totalLabel,
+                { color: colors['gray-900'] },
+              ]}
+            >
+              Total:
+            </Text>
+            <Text
+              style={[
+                styles.priceValue,
+                styles.totalValue,
+                { color: colors.primary },
+              ]}
+            >
+              {formatPrice(orderTotalIncludingTax)}
+            </Text>
+          </View>
+        </View>
+      </ScrollView>
+
+      {order?.status === OrderStatus.PENDING ? (
         <View
           style={[
             styles.footer,
@@ -214,57 +257,57 @@ export default function OrderSummaryScreen() {
             },
           ]}
         >
-          <Image
-            source={require('@/assets/images/chapa.png')}
-            style={{
-              width: 200,
-              height: 50,
-            }}
-          />
           <Button
-            title='Continue Payment with Chapa'
+            title='Continue to Payment'
             onPress={handleContinuePayment}
             isLoading={isInitiatingPayment}
             style={styles.paymentButton}
-            titleStyle={{
-              fontSize: 20,
-              fontFamily: 'Inter-Medium',
-              fontWeight: '700',
-            }}
           />
         </View>
-      )}
+      ) : null}
 
-      {/* Optionally show a message if payment is processing after redirect */}
-      {/* Only show if status is still pending but a fetch is happening */}
       {order?.status === OrderStatus.PENDING &&
-        isOrderFetching &&
-        !isInitiatingPayment && (
-          <View
-            style={[
-              styles.processingOverlay,
-              { backgroundColor: colors.background + 'b0' },
-            ]}
-          >
-            <ActivityIndicator size='large' color={colors.primary} />
-            <Text
-              style={[styles.processingText, { color: colors['gray-700'] }]}
-            >
-              Checking payment status...
-            </Text>
-          </View>
-        )}
+      isOrderFetching &&
+      !isInitiatingPayment ? (
+        <View
+          style={[
+            styles.processingOverlay,
+            { backgroundColor: colors.background + 'b0' },
+          ]}
+        >
+          <ActivityIndicator size='large' color={colors.primary} />
+          <Text style={[styles.processingText, { color: colors['gray-700'] }]}>
+            Checking payment status...
+          </Text>
+        </View>
+      ) : null}
     </SafeAreaView>
   );
+}
+
+// Helper function to get status badge color (customize as needed)
+// Use the updated OrderStatus enum values
+function getStatusColor(status: OrderStatus, colors: any) {
+  switch (status) {
+    case OrderStatus.PENDING:
+      return colors.warning;
+    case OrderStatus.CONFIRMED: // Added confirmed status color
+      return colors.info; // Example: use info color
+    case OrderStatus.SHIPPED:
+      return colors.primary; // Example: green for shipped
+    case OrderStatus.DELIVERED:
+      return colors.success; // Example: success for delivered
+    case OrderStatus.CANCELLED:
+    case OrderStatus.RETURNED: // Added returned status color
+      return colors.red;
+    default:
+      return colors['gray-500']; // Default color
+  }
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    display: 'flex',
-    justifyContent: 'center',
-    // alignItems: 'center',
-    paddingHorizontal: 10,
   },
   centered: {
     flex: 1,
@@ -277,32 +320,80 @@ const styles = StyleSheet.create({
     fontFamily: 'Inter-Medium',
     textAlign: 'center',
   },
-
+  scrollContent: {
+    padding: 20,
+    flexGrow: 1,
+  },
+  section: {
+    marginBottom: 25,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontFamily: 'Inter-Bold',
+    marginBottom: 15,
+  },
+  statusBadge: {
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 20,
+    alignSelf: 'flex-start',
+    marginBottom: 15,
+  },
+  statusText: {
+    fontSize: 14,
+    fontFamily: 'Inter-SemiBold',
+    color: 'white',
+    textTransform: 'uppercase',
+  },
+  addressContainer: {
+    // Kept styles, although section is removed from display
+    borderWidth: 1,
+    borderRadius: 8,
+    padding: 15,
+  },
+  addressText: {
+    // Kept styles, although section is removed from display
+    fontSize: 15,
+    fontFamily: 'Inter-Regular',
+    marginBottom: 5,
+  },
   priceRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 30,
+    marginBottom: 8,
   },
-
+  priceLabel: {
+    fontSize: 16,
+    fontFamily: 'Inter-Regular',
+  },
+  priceValue: {
+    fontSize: 16,
+    fontFamily: 'Inter-Medium',
+  },
+  totalPriceRow: {
+    // Adjusted styles for only total
+    // Removed borderTopWidth, marginTop, paddingTop if showing only total in its own view
+    // If integrating directly after items, keep borderTop and padding
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    // marginBottom: 0, // Adjust spacing
+  },
   totalLabel: {
     fontSize: 18,
-    fontFamily: 'Inter',
-    fontWeight: '700',
+    fontFamily: 'Inter-Bold',
   },
   totalValue: {
     fontSize: 18,
-    fontFamily: 'Inter',
-    fontWeight: '700',
+    fontFamily: 'Inter-Bold',
   },
   footer: {
     paddingVertical: 15,
     paddingHorizontal: 20,
     borderTopWidth: 1,
   },
-  paymentButton: {
-    paddingVertical: 15,
-  },
+  paymentButton: {},
   processingOverlay: {
     position: 'absolute',
     top: 0,
