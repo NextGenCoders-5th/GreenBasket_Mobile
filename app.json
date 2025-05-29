@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "miniExpress",
-    "slug": "miniExpress",
+    "name": "GreenBasket",
+    "slug": "GreenBasket",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -16,7 +16,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.tewodrosm.miniExpress"
+      "package": "com.tewodrosm.GreenBasket"
     },
     "web": {
       "bundler": "metro",

@@ -21,7 +21,7 @@ export default function WelcomeScreen() {
         />
 
         <Text style={[styles.title, { color: colors['gray-900'] }]}>
-          Welcome to Mirt Gebeya!
+          Welcome to GreenBasket!
         </Text>
         <Text style={[styles.subtitle, { color: colors['gray-600'] }]}>
           Your one-stop shop for fresh produce.

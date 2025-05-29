@@ -105,7 +105,15 @@ export default function SignUpScreen() {
     >
       <ScrollView contentContainerStyle={styles.container}>
         {/* Logo */}
-        <Image source={require('@/assets/images/react-logo.png')} />
+        <Image
+          source={require('@/assets/app-logo.png')}
+          style={{
+            width: 100,
+            height: 100,
+            marginBottom: 20,
+            borderRadius: 50,
+          }}
+        />
 
         <View
           style={{
