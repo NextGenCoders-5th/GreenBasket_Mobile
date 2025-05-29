@@ -9,7 +9,7 @@ import { Vendor } from './vendor';
 import { Address } from './address';
 import { Cart } from './cart';
 import { PickedImage } from '@/components/form/ImagePickerButton';
-import { Review } from './Review';
+import { Review } from './review';
 import { Order } from './order';
 
 export type User = {
