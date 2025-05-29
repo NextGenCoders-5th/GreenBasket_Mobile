@@ -26,7 +26,7 @@ export function useCurrentUser(): UseCurrentUserResult {
     skip: !isAuthenticated, // Only fetch if authenticated
     // You can add refetchOnMountOrArgChange: true, or refetchOnReconnect: true
     // depending on your caching strategy.
-    refetchOnMountOrArgChange: true,
+    // refetchOnMountOrArgChange: true,
   });
 
   // The actual user object is nested inside the data property of the response

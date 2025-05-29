@@ -124,7 +124,7 @@ export default function ProductDetailScreen() {
       });
       // The invalidatesTags in wishlistApi should refetch the wishlist automatically
     } catch (err: any) {
-      console.error('Failed to add to wishlist:', err);
+      // console.error('Failed to add to wishlist:', err);
       const message = err?.data?.message || 'Could not add item to wishlist.';
       Toast.show({
         type: 'error',
@@ -152,7 +152,7 @@ export default function ProductDetailScreen() {
       });
       // The invalidatesTags in wishlistApi should refetch the wishlist automatically
     } catch (err: any) {
-      console.error('Failed to remove from wishlist:', err);
+      // console.error('Failed to remove from wishlist:', err);
       const message =
         err?.data?.message || 'Could not remove item from wishlist.';
       Toast.show({
@@ -214,7 +214,7 @@ export default function ProductDetailScreen() {
         });
       }
     } catch (err: any) {
-      console.error('Failed to add to cart:', err);
+      // console.error('Failed to add to cart:', err);
       const message =
         err?.data?.data?.message ||
         err?.data?.message ||

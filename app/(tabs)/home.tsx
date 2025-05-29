@@ -143,6 +143,13 @@ export default function HomeScreen() {
     );
   }
 
+  //  {/* Optional: Show error message below category list if category list is empty but products loaded */}
+  //         {categoriesError && categories.length === 0 && (
+  //           <Text style={[styles.inlineErrorText, { color: colors.red }]}>
+  //             Failed to load categories.
+  //           </Text>
+  //         )}
+
   // Render function for recent product items in the FlatList
   const renderRecentProductItem = ({ item }: { item: Product }) => (
     // Use ProductWithVendorCard if it correctly handles Product type with Vendor relation
@@ -188,12 +195,6 @@ export default function HomeScreen() {
             isLoading={isCategoriesLoading || isCategoriesFetching}
             error={categoriesError}
           />
-          {/* Optional: Show error message below category list if category list is empty but products loaded */}
-          {categoriesError && categories.length === 0 && (
-            <Text style={[styles.inlineErrorText, { color: colors.red }]}>
-              Failed to load categories.
-            </Text>
-          )}
         </View>
 
         {/* Recently Added Products Section */}
@@ -213,17 +214,17 @@ export default function HomeScreen() {
           />
           {/* Optional: Show error message below product list if product list is empty but categories loaded */}
           {recentProductsError &&
-            recentProducts.length === 0 &&
-            !(isRecentProductsLoading || isRecentProductsFetching) && (
-              <Text
-                style={[
-                  styles.inlineErrorText,
-                  { color: colors.red, paddingHorizontal: 15 },
-                ]}
-              >
-                Failed to load recent products.
-              </Text>
-            )}
+          recentProducts.length === 0 &&
+          !(isRecentProductsLoading || isRecentProductsFetching) ? (
+            <Text
+              style={[
+                styles.inlineErrorText,
+                { color: colors.red, paddingHorizontal: 15 },
+              ]}
+            >
+              Failed to load recent products.
+            </Text>
+          ) : null}
         </View>
       </ScrollView>
     </SafeAreaView>

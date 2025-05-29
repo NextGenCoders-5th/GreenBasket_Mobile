@@ -25,7 +25,12 @@ const ESTIMATED_TAX_RATE = 0.05; // 5% example
 export default function PlaceOrderScreen() {
   const colors = useColorTheme();
   const isAuthenticated = useSelector(selectIsAuthenticated);
-  const { user, isLoading: isUserLoading, error: userError } = useCurrentUser(); // <-- Use useCurrentUser
+  const {
+    user,
+    isLoading: isUserLoading,
+    error: userError,
+    refetchCurrentUser,
+  } = useCurrentUser(); // <-- Use useCurrentUser
   const [isConfirmingOrder, setIsConfirmingOrder] = useState(false);
 
   // console.log('User', user);
@@ -154,6 +159,28 @@ export default function PlaceOrderScreen() {
     return <LoadingIndicator message='Preparing checkout...' />;
   }
 
+  if (cartError) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          padding: 20,
+        }}
+      >
+        <Text style={[styles.emptyCartText, { color: colors['gray-700'] }]}>
+          Your cart is empty.
+        </Text>
+        <Button
+          title='Start Shopping'
+          onPress={() => router.push('/(tabs)/home')}
+          style={{ marginTop: 20, width: '60%' }}
+        />
+      </View>
+    );
+  }
+
   // Handle errors for cart AND user data
   if (cartError || userError) {
     const errorMessage =
@@ -172,10 +199,9 @@ export default function PlaceOrderScreen() {
           message={errorMessage}
           onRetry={() => {
             refetchCart();
-            useCurrentUser().refetchCurrentUser();
+            refetchCurrentUser();
           }}
-        />{' '}
-        {/* Retry both queries */}
+        />
       </SafeAreaView>
     );
   }
@@ -370,7 +396,7 @@ export default function PlaceOrderScreen() {
             </View>
           ) : null}
 
-          <View style={styles.completeProfileContainer}>
+          {/* <View style={styles.completeProfileContainer}>
             {user.verify_status === UserVerifyStatus.REQUESTED ? (
               <Text style={{ ...styles.text, color: colors['gray-600'] }}>
                 Your account verification is requested please wait until
@@ -385,7 +411,7 @@ export default function PlaceOrderScreen() {
                 infomration.
               </Text>
             </View>
-          ) : null}
+          ) : null} */}
 
           <Button
             title={

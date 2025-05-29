@@ -7,6 +7,7 @@ import {
   StyleSheet,
   ActivityIndicator,
   Linking,
+  Image,
 } from 'react-native';
 import { Stack, router, useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -23,6 +24,7 @@ import LoadingError from '@/components/ui/LoadingError';
 import { OrderStatus } from '@/config/enums';
 import OrderItemReviewCard from '@/components/order/OrderItemReviewCard';
 import { OrderItem } from '@/types/order';
+import ImageButton from '@/components/ui/ImageButton';
 // useCurrentUser is not needed if only showing order data
 // import { useCurrentUser } from '@/hooks/useCurrentUser';
 
@@ -52,9 +54,9 @@ export default function OrderSummaryScreen() {
   // Stop polling when order status is no longer PENDING
   useEffect(() => {
     if (order?.status !== OrderStatus.PENDING) {
-      console.log(
-        `Order ${orderId} status is now ${order?.status}, stopping proactive polling check.`
-      );
+      // console.log(
+      //   `Order ${orderId} status is now ${order?.status}, stopping proactive polling check.`
+      // );
     }
     // This dependency on order?.status helps trigger this effect when the status changes
   }, [order?.status]);
@@ -241,7 +243,9 @@ export default function OrderSummaryScreen() {
                 { color: colors.primary },
               ]}
             >
-              {formatPrice(orderTotalIncludingTax)}
+              {orderTotalIncludingTax
+                ? formatPrice(orderTotalIncludingTax)
+                : null}
             </Text>
           </View>
         </View>
@@ -257,6 +261,15 @@ export default function OrderSummaryScreen() {
             },
           ]}
         >
+          <Image
+            source={require('@/assets/images/chapa.png')}
+            style={{
+              width: '100%',
+              height: 60,
+              marginBottom: 10,
+              resizeMode: 'cover',
+            }}
+          />
           <Button
             title='Continue to Payment'
             onPress={handleContinuePayment}
