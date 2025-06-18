@@ -5,22 +5,22 @@ import { router } from 'expo-router';
 import { useColorTheme } from '@/hooks/useColorTheme';
 import TextButton from '@/components/ui/TextButton';
 
-interface SignInProps {
+interface SignInIndicatorProps {
   style?: ViewStyle;
   message?: string;
 }
 
-export default function SignIn({
+export default function SignInIndicator({
   message = 'You are not logged in. Please log in.',
   style,
-}: SignInProps) {
+}: SignInIndicatorProps) {
   const colors = useColorTheme();
   return (
     <View style={{ ...styles.container, ...style }}>
       <Text style={{ ...styles.welcomeText, color: colors['gray-700'] }}>
         Welcome to{' '}
         <Text style={{ fontWeight: 900, color: colors['gray-900'] }}>
-          MiniExpress
+          GreenBasket
         </Text>
       </Text>
       <Text style={{ ...styles.message, color: colors['gray-700'] }}>

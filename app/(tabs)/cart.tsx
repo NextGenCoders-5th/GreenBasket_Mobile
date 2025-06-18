@@ -22,7 +22,7 @@ import { formatPrice } from '@/utils/formatters';
 import { CartItem } from '@/types/cart';
 import LoadingError from '@/components/ui/LoadingError';
 import LoadingIndicator from '@/components/ui/LoadingIndicator';
-import SignIn from '@/components/account/SignIn';
+import SignInIndicator from '@/components/account/SignInIndicator';
 import TextButton from '@/components/ui/TextButton';
 
 export default function CartScreen() {
@@ -132,7 +132,7 @@ export default function CartScreen() {
 
   if (!isAuthenticated || !user) {
     // Check isAuthenticated first, then user
-    return <SignIn message='Please sign in to access your account.' />;
+    return <SignInIndicator message='Please sign in to access your account.' />;
   }
 
   if (isCartLoading && !cartItems.length) {

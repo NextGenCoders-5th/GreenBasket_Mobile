@@ -14,7 +14,7 @@ import { selectIsAuthenticated } from '@/redux/slices/authSlice';
 import OrderCard from '@/components/order/OrderCard';
 import { Order } from '@/types/order';
 import { useAuth } from '@/hooks/useAuth'; // <-- Import useAuth hook
-import SignIn from '@/components/account/SignIn'; // <-- Import SignIn component
+import SignInIndicator from '@/components/account/SignInIndicator'; // <-- Import SignIn component
 
 export default function OrderHistoryScreen() {
   const colors = useColorTheme();
@@ -40,7 +40,9 @@ export default function OrderHistoryScreen() {
 
   // If not authenticated after auth loading is complete, show sign-in prompt
   if (!isAuthenticated) {
-    return <SignIn message='Please sign in to view your order history.' />;
+    return (
+      <SignInIndicator message='Please sign in to view your order history.' />
+    );
   }
 
   // Now that we know the user is authenticated, handle order data loading and errors

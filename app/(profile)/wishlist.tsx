@@ -16,7 +16,7 @@ import {
 } from '@/redux/api/wishlistApi'; // Import the hooks
 import { WishlistWithProduct } from '@/types/wishlist'; // Import the item type
 import { useAuth } from '@/hooks/useAuth'; // For auth check
-import SignIn from '@/components/account/SignIn'; // For auth check
+import SignInIndicator from '@/components/account/SignInIndicator'; // For auth check
 import { useCreateCartItemMutation } from '@/redux/api/cartApi'; // Optional: for Add to Cart
 
 export default function WishlistScreen() {
@@ -54,7 +54,7 @@ export default function WishlistScreen() {
 
   // If not authenticated after auth loading is complete, show sign-in prompt
   if (!isAuthenticated) {
-    return <SignIn message='Please sign in to view your wishlist.' />;
+    return <SignInIndicator message='Please sign in to view your wishlist.' />;
   }
 
   const handleRemoveItem = async (wishlistItemId: string) => {

@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
   },
   listContentContainer: {
     paddingHorizontal: 6, // Adjust to match ProductCard margin
-    paddingVertical: 10,
+    // paddingVertical: 10,
     flexGrow: 1, // Allows ListEmptyComponent to center
   },
   row: {

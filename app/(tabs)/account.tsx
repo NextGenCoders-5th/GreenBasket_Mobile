@@ -17,7 +17,7 @@ import {
 import { useSelector } from 'react-redux';
 import AccountButton from '@/components/account/AccountButton';
 import { useAuth } from '@/hooks/useAuth';
-import SignIn from '@/components/account/SignIn';
+import SignInIndicator from '@/components/account/SignInIndicator';
 import LoadingIndicator from '@/components/ui/LoadingIndicator';
 import { useTransformImageUrl } from '@/hooks/useTransformImageUrl';
 // Use the useCurrentUser hook instead of direct RTK Query hook
@@ -88,7 +88,7 @@ export default function AccountScreen() {
   // Show sign-in prompt if not authenticated after loading
   if (!isAuthenticated) {
     // This condition is also handled by the useEffect redirect, but kept here for clarity
-    return <SignIn message='Please sign in to access your account.' />;
+    return <SignInIndicator message='Please sign in to access your account.' />;
   }
 
   if (userError) {
